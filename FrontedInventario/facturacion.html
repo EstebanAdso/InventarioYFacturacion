@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facturación</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css"> <!-- Asegúrate de tener tu archivo de estilos CSS -->
+</head>
+<body>
+
+    <header id="nav">
+        <nav>
+            <h6>Administrador</h6>
+            <ul>
+                <li><a href="index.html">Inventario</a></li>
+                <li><a href="#">Facturación</a></li>
+                <li><a href="#">Ventas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 class="text-center">Facturación</h1>
+
+        <!-- Formulario de datos del cliente -->
+        <form id="clienteForm" class="mb-4">
+            <div class="form-group">
+                <label for="nombreCliente">Nombre del Cliente:</label>
+                <input type="text" class="form-control" id="nombreCliente" required>
+            </div>
+            <div class="form-group">
+                <label for="cedulaNit">Cédula o NIT:</label>
+                <input type="text" class="form-control" id="cedulaNit" required>
+            </div>
+           <!-- <div class="form-group">
+                <label for="emailCliente">Correo Electrónico:</label>
+                <input type="email" class="form-control" id="emailCliente" required>
+            </div>-->
+        </form>
+
+        <!-- Formulario de datos de facturación -->
+        <form id="facturaForm">
+            <div class="form-group">
+                <label for="nombreProductoManual">Nombre del Producto:</label>
+                <input type="text" class="form-control" id="nombreProductoManual">
+            </div>
+            <div class="form-group">
+                <label for="descripcionFactura">Descripción:</label>
+                <textarea class="form-control" id="descripcionFactura" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="cantidadProductoManual">Cantidad:</label>
+                <input type="number" class="form-control" id="cantidadProductoManual">
+            </div>
+            <div class="form-group">
+                <label for="precioUnitarioManual">Precio Unitario:</label>
+                <input type="text" class="form-control" id="precioUnitarioManual">
+            </div>
+            <div class="form-group">
+                <label for="garantiaProducto">Garantía (en meses):</label>
+                <input type="number" class="form-control" id="garantiaProducto">
+            </div>
+            
+            <button type="button" class="btn btn-primary" onclick="agregarProducto()">Agregar Producto</button>
+        </form>
+
+        <!-- Tabla de productos seleccionados -->
+        <div class="mt-4">
+            <h5>Productos Seleccionados</h5>
+            <table id="productosTabla" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Garantía (meses)</th>
+                        <th>Descripción</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Filas de productos se llenarán dinámicamente aquí -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Botones para guardar y cancelar -->
+        <div class="mt-4">
+            <button type="button" class="btn btn-success" onclick="guardarFactura()">Guardar Factura</button>
+            <button type="button" class="btn btn-secondary" onclick="limpiarFormulario()">Cancelar</button>
+            <button id="enviarPorCorreoBtn" class="btn btn-primary">Enviar por Correo</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+
+    <script src="facturacion.js"></script>
+</body>
+</html>

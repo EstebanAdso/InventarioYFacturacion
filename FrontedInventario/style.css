@@ -1,0 +1,71 @@
+
+.container {
+    margin-top: 80px;
+ 
+}
+
+.row{
+   
+}
+
+.text-right {
+    margin-bottom: 20px;
+}
+.form-group {
+    margin-bottom: 20px;
+}
+.table {
+    margin-bottom: 20px;
+}
+.col-md-4 {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-left: 1px solid #ccc;
+}
+.modal-dialog {
+    max-width: 800px;
+}
+header {
+    position: fixed;
+    background-color: #48e;
+    width: 100%;
+    height: 70px;
+    z-index: 1;
+    top: 0;
+}
+header nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+}
+
+nav h6 {
+    margin-left: 70px;
+    font-size: 22px;
+    color: #ffffff;
+    font-weight: 900;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    font-size: 20px;
+}
+nav ul li{
+    margin-left: 30px;
+}
+
+nav ul li a{
+    color: #ddd;
+   
+}
+
+#searchForm input{
+    width: 90%;
+    padding: 6px;
+    border-radius: 7px;
+}
+
