@@ -2,11 +2,11 @@ package com.example.backendinventario.repositories;
 
 import com.example.backendinventario.entities.Producto;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
-    List<Producto> findByCategoriaNombre(String nombreCategoria);
-    //Busqueda por nombre
-    List<Producto> findByNombreContainingIgnoreCase(String nombre);
+    Page<Producto> findByCategoriaNombre(String nombreCategoria, Pageable pageable);
+    Page<Producto> findByNombreContainingIgnoreCase(String nombre, Pageable pageable);
+    Page<Producto> findAll(Pageable pageable);
 }

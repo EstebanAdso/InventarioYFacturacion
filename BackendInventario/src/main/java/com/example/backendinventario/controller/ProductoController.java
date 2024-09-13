@@ -3,6 +3,9 @@ package com.example.backendinventario.controller;
 import com.example.backendinventario.entities.Producto;
 import com.example.backendinventario.services.ProductoServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +20,11 @@ public class ProductoController {
     private ProductoServices productoService;
 
     @GetMapping
-    public List<Producto> listar() {
-        return productoService.findAll();
+    public Page<Producto> listar(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productoService.findAll(pageable);
     }
 
     @GetMapping("{id}")
@@ -27,8 +33,21 @@ public class ProductoController {
     }
 
     @GetMapping("/categoria/{nombreCategoria}")
-    public List<Producto> listarPorCategoria(@PathVariable String nombreCategoria) {
-        return productoService.findByCategoriaNombre(nombreCategoria);
+    public Page<Producto> listarPorCategoria(
+            @PathVariable String nombreCategoria,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productoService.findByCategoriaNombre(nombreCategoria, pageable);
+    }
+
+    @GetMapping("/nombre/{nombre}")
+    public Page<Producto> listarPorNombre(
+            @PathVariable String nombre,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productoService.findByNombre(nombre, pageable);
     }
 
     @PostMapping
@@ -57,18 +76,12 @@ public class ProductoController {
 
 
     @GetMapping("/totalGlobal")
-    public Integer totalGlobal() {
+    public Double totalGlobal() {
         return productoService.totalGlobal();
     }
 
     @GetMapping("/totalPorCategoria")
-    public Map<String, Integer> totalPorCategoria() {
+    public Map<String, Double> totalPorCategoria() {
         return productoService.totalPorCategoria();
-    }
-
-    // Nuevo endpoint para buscar productos por nombre
-    @GetMapping("/nombre/{nombre}")
-    public List<Producto> listarPorNombre(@PathVariable String nombre) {
-        return productoService.findByNombre(nombre);
     }
 }

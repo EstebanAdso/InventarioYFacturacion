@@ -3,6 +3,8 @@ package com.example.backendinventario.services;
 import com.example.backendinventario.entities.Producto;
 import com.example.backendinventario.repositories.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,44 +18,38 @@ public class ProductoServices {
     @Autowired
     private ProductoRepository productoRepository;
 
-    public List<Producto> findAll() {
-        return productoRepository.findAll();
-    }
-
     public Optional<Producto> findById(Long id) {
         return productoRepository.findById(id);
     }
-
     public Producto save(Producto producto) {
         return productoRepository.save(producto);
     }
-
     public void delete(Long id) {
         productoRepository.deleteById(id);
     }
 
-   
-    // Buscar productos por nombre de categoría
-    public List<Producto> findByCategoriaNombre(String nombreCategoria) {
-        return productoRepository.findByCategoriaNombre(nombreCategoria);
-    }
-
     // Calcular el total global de todos los productos
-    public Integer totalGlobal() {
+    public double totalGlobal() {
         List<Producto> productos = productoRepository.findAll();
-        return productos.stream().mapToInt(p -> p.getTotal()).sum();
+        return productos.stream().mapToDouble(p -> p.getTotal()).sum();
     }
-
     // Calcular el total por categoría
-    public Map<String, Integer> totalPorCategoria() {
+    public Map<String, Double> totalPorCategoria() {
         List<Producto> productos = productoRepository.findAll();
         return productos.stream()
                 .collect(Collectors.groupingBy(p -> p.getCategoria().getNombre(),
-                        Collectors.summingInt(Producto::getTotal)));
+                        Collectors.summingDouble(Producto::getTotal)));
     }
 
-    // Nuevo método para buscar productos por nombre
-    public List<Producto> findByNombre(String nombre) {
-        return productoRepository.findByNombreContainingIgnoreCase(nombre);
+    public Page<Producto> findAll(Pageable pageable) {
+        return productoRepository.findAll(pageable);
+    }
+
+    public Page<Producto> findByCategoriaNombre(String nombreCategoria, Pageable pageable) {
+        return productoRepository.findByCategoriaNombre(nombreCategoria, pageable);
+    }
+
+    public Page<Producto> findByNombre(String nombre, Pageable pageable) {
+        return productoRepository.findByNombreContainingIgnoreCase(nombre, pageable);
     }
 }

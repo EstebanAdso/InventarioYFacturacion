@@ -11,10 +11,10 @@ public class Producto {
     private Long id;
 
     private String nombre;
-    private Integer precioComprado;
-    private Integer precioVendido;
+    private float precioComprado;
+    private float precioVendido;
     private Integer cantidad;
-    private Integer total;
+    private float total;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
