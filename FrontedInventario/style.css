@@ -1,12 +1,9 @@
 
 .container {
     margin-top: 80px;
- 
+    height: 1000px;
 }
 
-.row{
-   
-}
 
 .text-right {
     margin-bottom: 20px;
@@ -69,3 +66,24 @@ nav ul li a{
     border-radius: 7px;
 }
 
+  /* Altura fija para las filas de la tabla */
+  #productoTableBody tr {
+    height: 50px; /* Ajusta la altura según prefieras */
+}
+
+#productoTableBodt{
+    height: 3000px;
+}
+
+/* Altura fija para las celdas */
+#productoTableBody td {
+    white-space: nowrap;  /* Evita que el texto se divida en varias líneas */
+    text-overflow: ellipsis; /* Añade puntos suspensivos si el texto es muy largo */
+    overflow: hidden; /* Oculta el desbordamiento del texto */
+}
+
+/* Ajustar el contenedor de la tabla */
+.table-responsive {
+    max-height: 400px; /* Limitar la altura de la tabla */
+    overflow-y: auto;  /* Agregar un scroll vertical si la tabla es muy larga */
+}
