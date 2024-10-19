@@ -12,7 +12,7 @@ public class Factura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String serial; // Serial de la factura, empezando desde 000001
+    private String serial; //empezando desde 000001
     private Date fechaEmision;
 
     @ManyToOne

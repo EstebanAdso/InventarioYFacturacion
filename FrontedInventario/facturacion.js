@@ -3,6 +3,7 @@ const apiClient = 'http://localhost:8082/cliente';
 const apiProducto = 'http://localhost:8082/producto'
 
 let productosFiltrados = [];
+let productosEnFactura = [];
 
 document.addEventListener('DOMContentLoaded', () => {
   
@@ -155,10 +156,14 @@ function mostrarSugerencias(clientes) {
 
 
 // Función para buscar productos y mostrar sugerencias
+
+let productoSeleccionadoId = null;
+
 function buscarProductos() {
     const nombreProducto = document.getElementById('nombreProductoManual').value;
-    if (nombreProducto.length < 3) {
-        // Oculta la lista si el texto es menor a 3 caracteres
+    
+    if (nombreProducto.length < 2) {
+        // Oculta la lista si el texto es menor a 2 caracteres
         document.getElementById('sugerenciasProductos').style.display = 'none';
         return;
     }
@@ -180,8 +185,16 @@ function buscarProductos() {
         if (Array.isArray(data)) {
             data.forEach(producto => {
                 const li = document.createElement('li');
-                li.textContent = producto.nombre;
-                li.onclick = () => seleccionarProducto(producto); 
+                li.innerHTML = producto.nombre + "<i>"+ "  $" + producto.precioVendido + "</i>" + " ID: " + producto.id;
+                
+                // Mensaje para depurar el click en cada producto
+                li.onclick = () => {
+                    console.log('Producto clickeado:', producto); // Para verificar qué producto se ha clickeado
+                    productoSeleccionadoId = producto.id
+                    console.log("id del producto seleccionado:" + productoSeleccionadoId)
+                    seleccionarProducto(producto); // Llama a la función para mostrar los detalles
+                };
+                
                 sugerencias.appendChild(li);
             });
             sugerencias.style.display = data.length ? 'block' : 'none';
@@ -191,8 +204,17 @@ function buscarProductos() {
         }
     })
     .catch(error => console.error('Error:', error));
-
 }
+
+function seleccionarProducto(producto) {
+    // Mostrar los detalles en la consola
+    console.log('Producto seleccionado:', producto.nombre);
+    console.log('Precio:', producto.precioVendido);
+    console.log('ID del producto:', producto.id);
+    productoSeleccionadoId = producto.id
+    console.log(productoSeleccionadoId)
+}
+
 
 // Agregar evento para el campo de producto
 document.getElementById('nombreProductoManual').addEventListener('input', buscarProductos);
@@ -218,18 +240,9 @@ function agregarDetalle(detalle) {
 function guardarFactura() {
     const nombreCliente = document.getElementById('nombreCliente').value.trim();
     const cedulaNit = document.getElementById('cedulaNit').value.trim();
-    const productos = obtenerProductosSeleccionados();
+    const productos = obtenerProductosSeleccionados(); // Aquí se obtienen los productos seleccionados
 
     if (nombreCliente && cedulaNit && productos.length > 0) {
-        // Verificar si el cliente ya existe y obtener su ID
-        const clienteId = verificarClienteExistente(cedulaNit); // Método que devuelve el ID del cliente o null si no existe
-
-        
-        if (!clienteId) {
-            alert('El cliente no existe en la base de datos. Por favor, selecciona un cliente válido.');
-            return;
-        }
-
         // Calcular el total de la factura
         let totalFactura = 0;
         const productosHTML = productos.map(producto => {
@@ -239,7 +252,7 @@ function guardarFactura() {
                     <td>${producto.nombre}</td>
                     <td>${producto.cantidad}</td>
                     <td>${producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 2 })}</td>
-                    <td>${producto.garantia || "Excelente calidad"}</td>  // Descripción por defecto
+                    <td>${producto.garantia || "Excelente calidad"}</td>
                     <td>${producto.descripcion || "Excelente calidad"}</td>
                     <td>${producto.total.toLocaleString('es-CO', { minimumFractionDigits: 2 })}</td>
                 </tr>
@@ -248,14 +261,14 @@ function guardarFactura() {
 
         const fechaActual = new Date().toLocaleDateString('es-CO');
 
-        // Crear el objeto de factura para mostrar en consola
+        // Crear el objeto de factura para enviar al backend
         const factura = {
-            clienteNombre: nombreCliente, // ID del cliente
+            clienteNombre: nombreCliente,
             clienteCedula: cedulaNit,
             fechaCreacion: fechaActual,
             totalFactura: totalFactura,
             detalles: productos.map(producto => ({
-                productoId: producto.nombre, // ID del producto
+                productoId: producto.id || "", // Ahora se incluye el productoId
                 cantidad: producto.cantidad,
                 precioUnitario: producto.precioUnitario,
                 garantia: producto.garantia || "Excelente calidad",
@@ -263,73 +276,91 @@ function guardarFactura() {
             })),
         };
 
-        console.log("Datos de la factura:", factura); // Mostrar los datos de la factura en la consola
+        // Mostrar los datos de la factura en consola
+        console.log("Datos de la factura:", factura);
 
-        // Crear la factura en el frontend
-        const facturaHTML = `
-            <h1 style="text-align: center;">Factura de Venta</h1>
-            <div style="text-align: center; margin-bottom: 20px;">
-                <img src="pc.png" alt="" style="width: 100px; height: auto;">
-                <h2>Compu Services Soft</h2>
-                <p>Servicio técnico de computadores y celulares,<br> venta de computadores y periféricos</p>
-            </div>
-            <div>
-                <p><strong>Cliente:</strong> ${nombreCliente}</p>
-                <p><strong>Cédula o NIT:</strong> ${cedulaNit}</p>
-                <p><strong>Fecha de Creación:</strong> ${fechaActual}</p>
-            </div>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                <thead>
-                    <tr style="background-color: #f2f2f2;">
-                        <th style="border: 1px solid #ddd; padding: 8px;">Nombre</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Cantidad</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Precio Unitario</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Garantía (meses)</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Descripción</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${productosHTML}
-                    <tr style="background-color: #f2f2f2;">
-                        <td colspan="5" style="text-align: right; padding: 8px;"><strong>Total Factura:</strong></td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${totalFactura.toLocaleString('es-CO', { minimumFractionDigits: 2 })}</td>
-                    </tr>
-                </tbody>
-            </table>
-        `;
+        // Guardar la factura en la base de datos mediante API
+        fetch('http://localhost:8082/api/facturas/crear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(factura),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Factura guardada exitosamente:', data);
 
-        // Abrir ventana de impresión
-        const ventanaImpresion = window.open('', '', 'height=600,width=800');
-        ventanaImpresion.document.write(`
-            <html>
-                <head>
-                    <title>Factura</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                        th, td { border: 1px solid #ddd; padding: 8px; }
-                        th { background-color: #f2f2f2; }
-                        h1, h2, h3 { text-align: center; }
-                    </style>
-                </head>
-                <body>
-                    ${facturaHTML}
-                </body>
-            </html>
-        `);
-        ventanaImpresion.document.close();
+            // Crear el HTML de la factura para visualización
+            const facturaHTML = `
+                <h1 style="text-align: center;">Factura de Venta</h1>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="pc.png" alt="" style="width: 100px; height: auto;">
+                    <h2>Compu Services Soft</h2>
+                    <p>Servicio técnico de computadores y celulares,<br> venta de computadores y periféricos</p>
+                </div>
+                <div>
+                    <p><strong>Cliente:</strong> ${nombreCliente}</p>
+                    <p><strong>Cédula o NIT:</strong> ${cedulaNit}</p>
+                    <p><strong>Fecha de Creación:</strong> ${fechaActual}</p>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                    <thead>
+                        <tr style="background-color: #f2f2f2;">
+                            <th style="border: 1px solid #ddd; padding: 8px;">Nombre</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Cantidad</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Precio Unitario</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Garantía</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Descripción</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${productosHTML}
+                        <tr style="background-color: #f2f2f2;">
+                            <td colspan="5" style="text-align: right; padding: 8px;"><strong>Total Factura:</strong></td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">${totalFactura.toLocaleString('es-CO', { minimumFractionDigits: 2 })}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
 
-        ventanaImpresion.onload = function() {
-            ventanaImpresion.focus();
-            ventanaImpresion.print();
-            ventanaImpresion.close();
-        };
+            // Abrir la ventana de previsualización de factura
+            const ventanaImpresion = window.open('', '', 'height=600,width=800');
+            ventanaImpresion.document.write(`
+                <html>
+                    <head>
+                        <title>Factura</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                            th, td { border: 1px solid #ddd; padding: 8px; }
+                            th { background-color: #f2f2f2; }
+                            h1, h2, h3 { text-align: center; }
+                        </style>
+                    </head>
+                    <body>
+                        ${facturaHTML}
+                    </body>
+                </html>
+            `);
+            ventanaImpresion.document.close();
 
+            ventanaImpresion.onload = function() {
+                ventanaImpresion.focus();
+                ventanaImpresion.print();
+            };
+        })
+        .catch(error => {
+            console.error('Error al guardar la factura:', error);
+            alert('Error al guardar la factura.');
+        });
     } else {
         alert('Por favor, completa todos los campos requeridos.');
     }
 }
+
+
 
 
 function verificarClienteExistente(cedulaNit) {
@@ -338,7 +369,7 @@ function verificarClienteExistente(cedulaNit) {
 }
 
 
-function agregarProducto(id) { // Asegúrate de pasar el id del producto como argumento
+function agregarProducto() {
     const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
     const descripcion = document.getElementById('descripcionFactura').value.trim();
     const cantidad = parseInt(document.getElementById('cantidadProductoManual').value.trim());
@@ -346,13 +377,19 @@ function agregarProducto(id) { // Asegúrate de pasar el id del producto como ar
     const garantia = parseInt(document.getElementById('garantiaProducto').value.trim());
 
     if (nombreProducto && descripcion && !isNaN(cantidad) && !isNaN(precioUnitario) && !isNaN(garantia)) {
+        // Usar el ID del producto seleccionado, o null si no se seleccionó de la lista
+        const productoId = productoSeleccionadoId || null;
+
+        // Calcular el total del producto
+        const totalProducto = cantidad * precioUnitario;
+
         const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
         const newRow = tbody.insertRow();
 
-        // Celda oculta para ID
+        // Celda para ID (puede ser visible o no, según prefieras)
         const cellId = newRow.insertCell(0);
-        cellId.style.display = 'none'; // Ocultando la celda de ID
-        cellId.textContent = id; // Asigna el ID del producto
+        cellId.textContent = productoId || 'N/A';
+        cellId.style.display = 'none'; // Ocultar la celda de ID si no quieres que sea visible
 
         const cellNombre = newRow.insertCell(1);
         const cellCantidad = newRow.insertCell(2);
@@ -367,26 +404,39 @@ function agregarProducto(id) { // Asegúrate de pasar el id del producto como ar
         cellPrecioUnitario.textContent = precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 2 });
         cellGarantia.textContent = garantia;
         cellDescripcion.textContent = descripcion;
-
-        const totalProducto = cantidad * precioUnitario;
         cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 2 });
 
-        limpiarFormularioProducto();
+        // Agregar el producto a un array para mantener un registro
+        productosEnFactura.push({
+            id: productoId,
+            nombre: nombreProducto,
+            cantidad: cantidad,
+            precioUnitario: precioUnitario,
+            garantia: garantia,
+            descripcion: descripcion,
+            total: totalProducto
+        });
 
+        // Botón de eliminar
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Eliminar';
         deleteBtn.className = 'btn btn-danger btn-sm';
         deleteBtn.addEventListener('click', () => {
             const row = deleteBtn.closest('tr');
-            tbody.deleteRow(row.rowIndex - 1);
+            const index = row.rowIndex - 1;
+            tbody.deleteRow(index);
+            productosEnFactura.splice(index, 1); // Eliminar el producto del array
         });
         cellAcciones.appendChild(deleteBtn);
+
+        // Resetear el ID del producto seleccionado después de agregarlo
+        productoSeleccionadoId = null;
+
+        limpiarFormularioProducto();
     } else {
         alert('Por favor, complete todos los campos correctamente.');
     }
 }
-
-
 function limpiarFormularioProducto() {
     document.getElementById('nombreProductoManual').value = '';
     document.getElementById('descripcionFactura').value = '';
@@ -396,27 +446,16 @@ function limpiarFormularioProducto() {
 }
 
 function obtenerProductosSeleccionados() {
-    const productos = [];
-    const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
-
-    for (let i = 0; i < tbody.rows.length; i++) {
-        const row = tbody.rows[i];
-        const producto = {
-            id: row.cells[0].textContent, // Extrae el ID del producto (columna oculta)
-            nombre: row.cells[1].textContent,
-            cantidad: parseInt(row.cells[2].textContent),
-            precioUnitario: parseFloat(row.cells[3].textContent.replace(/\./g, '').replace(',', '.')),
-            garantia: parseInt(row.cells[4].textContent),
-            descripcion: row.cells[5].textContent,
-            total: parseFloat(row.cells[6].textContent.replace(/\./g, '').replace(',', '.'))
-        };
-        productos.push(producto);
-    }
-
-    return productos;
+    return productosEnFactura.map(producto => ({
+        id: producto.id,
+        nombre: producto.nombre,
+        cantidad: producto.cantidad,
+        precioUnitario: producto.precioUnitario,
+        garantia: producto.garantia,
+        descripcion: producto.descripcion,
+        total: producto.total
+    }));
 }
-
-
 function limpiarFormulario() {
     document.getElementById('nombreCliente').value = '';
     document.getElementById('cedulaNit').value = '';
@@ -425,4 +464,5 @@ function limpiarFormulario() {
     document.getElementById('precioUnitarioManual').value = '';
     document.getElementById('garantiaProducto').value = '';
     document.getElementById('productosTabla').getElementsByTagName('tbody')[0].innerHTML = '';
+    productosEnFactura = [];
 }

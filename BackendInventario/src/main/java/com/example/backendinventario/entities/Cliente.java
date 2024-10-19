@@ -12,5 +12,6 @@ public class Cliente {
     private String nombre;
     @Column(unique = true)
     private String identificacion;
+    @Column(unique = true)
     private String correo;
 }

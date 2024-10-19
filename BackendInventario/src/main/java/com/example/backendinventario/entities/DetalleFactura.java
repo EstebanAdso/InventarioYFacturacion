@@ -18,10 +18,10 @@ public class DetalleFactura {
     @JoinColumn(name = "producto_id")
     private Producto producto;
 
-    private String descripcion; // Opcional
+    private String descripcion;
     private Integer cantidad;
     private float precioUnitario;
-    private String garantia; // Información de la garantía
+    private String garantia;
 
 
 }
