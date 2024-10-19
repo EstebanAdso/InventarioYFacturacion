@@ -1,7 +1,7 @@
 const apiUrl = 'http://localhost:8082/producto';
 
 let currentPage = 0;
-let pageSize = 13;
+let pageSize = 14;
 let totalPages = 0;
 let filtroCategoriaSeleccionada = null;
 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Clientes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 400px;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        input[type="submit"] {
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+        input[type="submit"]:hover {
+            background: #0056b3;
+        }
+        .suggestions {
+            border: 1px solid #ddd;
+            max-height: 150px;
+            overflow-y: auto;
+            background: #fff;
+            margin-top: -10px;
+        }
+        .suggestions div {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .suggestions div:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <form id="clientForm">
+        <h2>Registrar Cliente</h2>
+        <input type="text" id="nombre" name="nombre" placeholder="Nombre" required>
+        <input type="text" id="identificacion" name="identificacion" placeholder="Identificación" required>
+        <input type="email" id="correo" name="correo" placeholder="Correo (Opcional)">
+        <input type="submit" value="Guardar">
+    </form>
+    <div class="suggestions" id="suggestions"></div>
+
+    <script>
+        const form = document.getElementById('clientForm');
+        const suggestionsContainer = document.getElementById('suggestions');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const identificacion = document.getElementById('identificacion').value;
+            const correo = document.getElementById('correo').value;
+
+            try {
+                const response = await fetch('http://localhost:8082/cliente', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, identificacion, correo })
+                });
+
+                if (response.ok) {
+                    alert('Cliente guardado con éxito');
+                    form.reset();
+                    suggestionsContainer.innerHTML = '';
+                } else {
+                    alert('Error al guardar el cliente');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al conectar con el servidor');
+            }
+        });
+
+        document.getElementById('nombre').addEventListener('input', async (event) => {
+            const query = event.target.value;
+
+            if (query.length > 2) {
+                try {
+                    const response = await fetch(`http://localhost:8082/cliente/suggestions?query=${query}`);
+                    const suggestions = await response.json();
+
+                    suggestionsContainer.innerHTML = '';
+                    suggestions.forEach(cliente => {
+                        const suggestionDiv = document.createElement('div');
+                        suggestionDiv.textContent = `${cliente.nombre} - ${cliente.identificacion}`;
+                        suggestionDiv.addEventListener('click', () => {
+                            alert(`Nombre: ${cliente.nombre}\nIdentificación: ${cliente.identificacion}\nCorreo: ${cliente.correo || 'No registrado'}`);
+                            suggestionsContainer.innerHTML = '';
+                        });
+                        suggestionsContainer.appendChild(suggestionDiv);
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            } else {
+                suggestionsContainer.innerHTML = '';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -5,10 +5,12 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Categoria {
-
+public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     private String nombre;
+    @Column(unique = true)
+    private String identificacion;
+    private String correo;
 }

@@ -1,5 +1,7 @@
 package com.example.backendinventario.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,10 +22,18 @@ public class Producto {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
+    public Producto() {}
+
+
 
     @PrePersist
     @PreUpdate
     private void calcularTotal() {
-        this.total = this.cantidad * this.precioComprado;
+        if (this.cantidad != null && this.precioComprado != 0) {
+            this.total = this.cantidad * this.precioComprado;
+        } else {
+            this.total = 0;  // Si no hay cantidad o precio, el total es 0
+        }
     }
+
 }

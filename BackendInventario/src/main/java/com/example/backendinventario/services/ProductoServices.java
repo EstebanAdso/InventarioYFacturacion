@@ -52,4 +52,9 @@ public class ProductoServices {
     public Page<Producto> findByNombre(String nombre, Pageable pageable) {
         return productoRepository.findByNombreContainingIgnoreCase(nombre, pageable);
     }
+
+    public List<Producto> buscarPorNombre(String nombre) {
+        return productoRepository.findByNombreContainingIgnoreCase(nombre); // Implementa el método en el repositorio
+    }
+
 }
