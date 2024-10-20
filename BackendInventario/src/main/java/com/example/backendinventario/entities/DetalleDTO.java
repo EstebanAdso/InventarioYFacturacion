@@ -9,5 +9,5 @@ public class DetalleDTO {
     private Integer cantidad;
     private float precioUnitario;
     private String garantia;
-
+    private String nombreProducto;
 }

@@ -22,6 +22,6 @@ public class DetalleFactura {
     private Integer cantidad;
     private float precioUnitario;
     private String garantia;
-
+    private String nombreProducto;
 
 }

@@ -31,81 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-function guardarCliente() {
-    const nombreCliente = document.getElementById('nombreCliente').value.trim();
-    const cedulaNit = document.getElementById('cedulaNit').value.trim();
-
-    if (!nombreCliente || !cedulaNit) {
-        alert('Por favor, complete los datos del cliente.');
-        return;
-    }
-
-    const clienteData = {
-        nombre: nombreCliente,
-        identificacion: cedulaNit,
-        correo: "" // Puedes agregar un campo para el correo si lo necesitas
-    };
-
-    // Verificar si el cliente ya existe en la base de datos
-    fetch(`${apiClient}/buscar-por-identificacion?identificacion=${cedulaNit}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (response.ok) {
-            // Devuelve los datos del cliente si existe
-            return response.json(); 
-        } else if (response.status === 404) {
-            // Si el cliente no existe, simplemente retornar null sin lanzar un error
-            return null;
-        } else {
-            // Para otros errores, imprimir un mensaje en consola sin lanzar excepciones
-            console.error('Error al verificar la existencia del cliente:', response.statusText);
-            return null; // Continuar con el flujo sin detenerlo
-        }
-    })
-    .then(clienteExistente => {
-        if (clienteExistente) {
-            // Si el cliente ya existe
-            alert('El cliente ya existe en la base de datos.');
-        } else {
-            // Si el cliente no existe, hacer el POST para guardarlo
-            return fetch(apiClient, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(clienteData)
-            });
-        }
-    })
-    .then(response => {
-        if (response) {
-            if (!response.ok) {
-                console.error('No se pudo guardar el cliente en la base de datos:', response.statusText);
-                alert('Hubo un problema al guardar el cliente.');
-                return;
-            }
-            return response.json();
-        }
-    })
-    .then(data => {
-        if (data) {
-            console.log('Cliente guardado:', data);
-            alert('Cliente guardado exitosamente.');
-        }
-    })
-    .catch(error => {
-        console.error('Error inesperado:', error);
-        alert('Hubo un problema al procesar la solicitud.');
-    });
-}
-
-
-
-
 document.getElementById('nombreCliente').addEventListener('input', () => {
     const query = document.getElementById('nombreCliente').value.trim();
     if (query.length > 1) {
@@ -269,6 +194,7 @@ function guardarFactura() {
             totalFactura: totalFactura,
             detalles: productos.map(producto => ({
                 productoId: producto.id || "", // Ahora se incluye el productoId
+                nombreProducto: producto.nombre,
                 cantidad: producto.cantidad,
                 precioUnitario: producto.precioUnitario,
                 garantia: producto.garantia || "Excelente calidad",
@@ -325,8 +251,11 @@ function guardarFactura() {
                 </table>
             `;
 
+            limpiarFormularioProducto()
+            limpiarFormulario()
+    
             // Abrir la ventana de previsualización de factura
-            const ventanaImpresion = window.open('', '', 'height=600,width=800');
+            const ventanaImpresion = window.open('', '', 'height=1200,width=1600');
             ventanaImpresion.document.write(`
                 <html>
                     <head>
@@ -358,14 +287,6 @@ function guardarFactura() {
     } else {
         alert('Por favor, completa todos los campos requeridos.');
     }
-}
-
-
-
-
-function verificarClienteExistente(cedulaNit) {
-    // Simulación: Puedes hacer una petición GET al servidor para verificar si el cliente ya existe
-    return true; // Cambia esto según la lógica que utilices para verificar clientes
 }
 
 

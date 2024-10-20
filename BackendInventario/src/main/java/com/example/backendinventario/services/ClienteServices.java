@@ -31,7 +31,4 @@ public class ClienteServices {
     public Optional<Cliente> findByIdentificacion(String identificacion) {
         return clienteRepository.findByIdentificacion(identificacion);
     }
-
-
-
 }

@@ -18,8 +18,7 @@ public class Factura {
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
-
     private float total;
-
+    private String clienteNombre;
 
 }
