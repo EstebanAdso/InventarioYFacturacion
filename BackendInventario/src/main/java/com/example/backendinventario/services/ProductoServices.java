@@ -35,6 +35,7 @@ public class ProductoServices {
         return productos.stream().mapToDouble(Producto::getTotal).sum();
     }
 
+
     // Calcular el total por categoría
     public Map<String, Double> totalPorCategoria() {
         List<Producto> productos = productoRepository.findAll();
@@ -56,7 +57,13 @@ public class ProductoServices {
     }
 
     public List<Producto> buscarPorNombre(String nombre) {
-        return productoRepository.findByNombreContainingIgnoreCase(nombre); // Implementa el método en el repositorio
+        // Obtén todos los productos que contienen el nombre especificado
+        List<Producto> productos = productoRepository.findByNombreContainingIgnoreCase(nombre);
+
+        // Filtra los productos para que solo queden los que están activos
+        return productos.stream()
+                .filter(producto -> !producto.getEstado().equalsIgnoreCase("inactivo"))
+                .collect(Collectors.toList());
     }
 
     // Método para actualizar inventario al comprar productos
@@ -71,7 +78,8 @@ public class ProductoServices {
 
         // Verificar si hay suficiente cantidad
         if (producto.getCantidad() < cantidadComprada) {
-            throw new Exception("No hay suficiente stock del producto " + producto.getNombre());
+            throw new Exception("No hay suficiente stock del producto " + producto.getNombre() +
+                    "La cantidad del producto es de: " + producto.getCantidad());
         }
 
         // Actualizar la cantidad del inventario
@@ -79,12 +87,16 @@ public class ProductoServices {
 
         // Si la cantidad llega a 0, eliminar el producto
         if (producto.getCantidad() == 0) {
-            productoRepository.deleteById(producto.getId());
-        } else {
-            // Si no llega a 0, guardar los cambios
-            productoRepository.save(producto);
+            producto.setEstado("inactivo");
         }
+        if(producto.getCantidad()>0){
+            producto.setEstado("activo");
+        }
+            // Si no llega a 0, guardar los cambios
+        productoRepository.save(producto);
+
 
         return producto;
     }
+
 }

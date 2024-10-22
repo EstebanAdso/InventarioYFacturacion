@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -70,9 +72,20 @@ public class ProductoController {
     }
 
     @DeleteMapping("{id}")
-    public void eliminar(@PathVariable Long id) {
-        productoService.delete(id);
+    public Producto eliminar(@PathVariable Long id) {
+        Producto productoInactivo = productoService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        // Establecer la cantidad en cero
+        productoInactivo.setCantidad(0);
+
+        // Establecer el estado a inactivo
+        productoInactivo.setEstado("inactivo");
+
+        // Guardar el producto actualizado
+        return productoService.save(productoInactivo);
     }
+
 
 
     @GetMapping("/totalGlobal")
@@ -89,5 +102,4 @@ public class ProductoController {
     public List<Producto> buscarPorNombre(@PathVariable String nombre) {
         return productoService.buscarPorNombre(nombre); // Implementa este método en tu servicio
     }
-
 }

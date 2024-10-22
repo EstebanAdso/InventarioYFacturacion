@@ -4,6 +4,7 @@ import com.example.backendinventario.entities.*;
 import com.example.backendinventario.services.ClienteServices;
 import com.example.backendinventario.services.FacturaService;
 import com.example.backendinventario.services.ProductoServices;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class FacturaController {
     @Autowired
     private ProductoServices productoServices;
 
+    @Transactional
     @PostMapping("/crear")
     public ResponseEntity<?> crearFactura(@RequestBody FacturaDTO facturaDTO) {
         // Buscar si el cliente ya existe en la base de datos por la cédula
