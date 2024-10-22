@@ -29,6 +29,7 @@ public class FacturaController {
 
     @Autowired
     private ProductoServices productoServices;
+
     @PostMapping("/crear")
     public ResponseEntity<?> crearFactura(@RequestBody FacturaDTO facturaDTO) {
         // Buscar si el cliente ya existe en la base de datos por la cédula

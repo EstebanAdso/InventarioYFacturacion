@@ -193,7 +193,7 @@ function guardarFactura() {
             fechaCreacion: fechaActual,
             totalFactura: totalFactura,
             detalles: productos.map(producto => ({
-                productoId: producto.id || "", // Ahora se incluye el productoId
+                productoId: producto.id || "",
                 nombreProducto: producto.nombre,
                 cantidad: producto.cantidad,
                 precioUnitario: producto.precioUnitario,
@@ -201,9 +201,6 @@ function guardarFactura() {
                 descripcion: producto.descripcion || "Excelente calidad",
             })),
         };
-
-        // Mostrar los datos de la factura en consola
-        console.log("Datos de la factura:", factura);
 
         // Guardar la factura en la base de datos mediante API
         fetch('http://localhost:8082/api/facturas/crear', {
@@ -213,7 +210,16 @@ function guardarFactura() {
             },
             body: JSON.stringify(factura),
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    // Verificar si la respuesta no es JSON y mostrar alerta si supera inventario
+                    alert(`Error: ${text}`);
+                    throw new Error(text);
+                });
+            }
+            return response.json();
+        })
         .then(data => {
             console.log('Factura guardada exitosamente:', data);
 
@@ -251,9 +257,9 @@ function guardarFactura() {
                 </table>
             `;
 
-            limpiarFormularioProducto()
-            limpiarFormulario()
-    
+            limpiarFormularioProducto();
+            limpiarFormulario();
+
             // Abrir la ventana de previsualización de factura
             const ventanaImpresion = window.open('', '', 'height=1200,width=1600');
             ventanaImpresion.document.write(`
@@ -282,7 +288,6 @@ function guardarFactura() {
         })
         .catch(error => {
             console.error('Error al guardar la factura:', error);
-            alert('Error al guardar la factura.');
         });
     } else {
         alert('Por favor, completa todos los campos requeridos.');
