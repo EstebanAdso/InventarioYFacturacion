@@ -25,9 +25,7 @@ public class ProductoServices {
         return productoRepository.save(producto);
     }
 
-    public void delete(Long id) {
-        productoRepository.deleteById(id);
-    }
+
 
     // Calcular el total global de todos los productos
     public double totalGlobal() {
@@ -45,15 +43,19 @@ public class ProductoServices {
     }
 
     public Page<Producto> findAll(Pageable pageable) {
-        return productoRepository.findAll(pageable);
+        // Filtrar solo los productos con estado activo
+        return productoRepository.findByEstado("activo", pageable);
     }
 
     public Page<Producto> findByCategoriaNombre(String nombreCategoria, Pageable pageable) {
-        return productoRepository.findByCategoriaNombre(nombreCategoria, pageable);
+        // Filtrar productos por categoría y estado activo
+        return productoRepository.findByCategoriaNombreAndEstado(nombreCategoria, "activo", pageable);
     }
 
+
     public Page<Producto> findByNombre(String nombre, Pageable pageable) {
-        return productoRepository.findByNombreContainingIgnoreCase(nombre, pageable);
+        // Filtrar productos por nombre y estado activo
+        return productoRepository.findByNombreContainingAndEstado(nombre, "activo", pageable);
     }
 
     public List<Producto> buscarPorNombre(String nombre) {
@@ -97,6 +99,10 @@ public class ProductoServices {
 
 
         return producto;
+    }
+
+    public Page<Producto> findInactivos(Pageable pageable) {
+        return productoRepository.findByEstado("inactivo", pageable);
     }
 
 }

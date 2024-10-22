@@ -1,9 +1,11 @@
 const apiUrl = 'http://localhost:8082/producto';
 
+
 let currentPage = 0;
 let pageSize = 14;
 let totalPages = 0;
 let filtroCategoriaSeleccionada = null;
+let mostrandoInactivos = false; // Variable para controlar el estado actual (activos/inactivos)
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -72,11 +74,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    document.getElementById('filtroCategoria').addEventListener('change', async () => {
+    currentPage = 0;  // Reiniciar paginación
+    filtroCategoriaSeleccionada = document.getElementById('filtroCategoria').value;
+    if (mostrandoInactivos) {
+        cargarProductosInactivos();
+    } else {
+        cargarProductos();
+    }
+});
+
+
     document.getElementById('pageSize').addEventListener('change', (e) => {
         pageSize = parseInt(e.target.value);
         currentPage = 0;
         cargarProductos();
     });
+
+    document.getElementById('toggleProductosBtn').addEventListener('click', toggleProductos);
+
+    
+    function toggleProductos() {
+        const toggleBtn = document.getElementById('toggleProductosBtn');
+    
+        currentPage = 0;  // Reiniciar la paginación cuando cambies entre activos/inactivos
+        if (mostrandoInactivos) {
+            cargarProductos();  // Cargar productos activos
+            toggleBtn.textContent = 'Productos Inactivos';
+            toggleBtn.classList.remove('btn-success');
+            toggleBtn.classList.add('btn-warning');
+            mostrandoInactivos = false;
+        } else {
+            cargarProductosInactivos();  // Cargar productos inactivos
+            toggleBtn.textContent = 'Productos Activos';
+            toggleBtn.classList.remove('btn-warning');
+            toggleBtn.classList.add('btn-success');
+            mostrandoInactivos = true;
+        }
+    }
+    
 });
 
 async function editarProducto(id) {
@@ -123,7 +159,6 @@ async function cargarProductos(categoriaId = filtroCategoriaSeleccionada) {
         console.error('Error:', error);
     }
 }
-
 function mostrarProductosEnTabla(productos) {
     const tbody = document.getElementById('productoTableBody');
     tbody.innerHTML = '';
@@ -137,57 +172,90 @@ function mostrarProductosEnTabla(productos) {
             <td>${producto.cantidad}</td>
             <td>${producto.categoria.nombre}</td>
             <td>${formatNumber(producto.total)}</td>
+            <td>${producto.estado === 'activo' ? 'Activo' : 'Inactivo'}</td> <!-- Mostrar el estado -->
             <td>
-                <button class="btn btn-warning btn-sm" onclick="editarProducto(${producto.id})">Editar</button>
+                <button class="btn btn-dark btn-sm" onclick="editarProducto(${producto.id})">Editar</button>
                 <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})">Eliminar</button>
             </td>
         `;
         tbody.appendChild(tr);
     });
 }
+
+
+
+
 function actualizarPaginacion() {
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
-    
-    // Determinar el rango de páginas visibles
+
     const startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
     const endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
-    
-    // Botón "Anterior"
+
     const prevButton = document.createElement('li');
     prevButton.className = `page-item ${currentPage === 0 ? 'disabled' : ''}`;
     prevButton.innerHTML = '<a class="page-link" href="#">Anterior</a>';
     prevButton.onclick = () => {
         if (currentPage > 0) {
             currentPage--;
-            cargarProductos();  // Mantener la categoría seleccionada
+            if (mostrandoInactivos) {
+                cargarProductosInactivos();
+            } else {
+                cargarProductos();
+            }
         }
     };
     pagination.appendChild(prevButton);
-    
-    // Números de página
+
     for (let i = startPage; i <= endPage; i++) {
         const pageButton = document.createElement('li');
         pageButton.className = `page-item ${currentPage === i ? 'active' : ''}`;
         pageButton.innerHTML = `<a class="page-link" href="#">${i + 1}</a>`;
         pageButton.onclick = () => {
             currentPage = i;
-            cargarProductos();  // Mantener la categoría seleccionada
+            if (mostrandoInactivos) {
+                cargarProductosInactivos();
+            } else {
+                cargarProductos();
+            }
         };
         pagination.appendChild(pageButton);
     }
-    
-    // Botón "Siguiente"
+
     const nextButton = document.createElement('li');
     nextButton.className = `page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`;
     nextButton.innerHTML = '<a class="page-link" href="#">Siguiente</a>';
     nextButton.onclick = () => {
         if (currentPage < totalPages - 1) {
             currentPage++;
-            cargarProductos();  // Mantener la categoría seleccionada
+            if (mostrandoInactivos) {
+                cargarProductosInactivos();
+            } else {
+                cargarProductos();
+            }
         }
     };
     pagination.appendChild(nextButton);
+}
+
+async function cargarProductosInactivos() {
+    try {
+        const url = `${apiUrl}/inactivos?page=${currentPage}&size=${pageSize}`;
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('Error al cargar los productos inactivos.');
+        }
+
+        const data = await response.json();
+        const productos = data.content;
+        totalPages = data.totalPages;
+
+        mostrarProductosEnTabla(productos); // Mostramos los productos inactivos
+        actualizarPaginacion();  // Actualizamos la paginación si es necesario
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
 
@@ -219,7 +287,7 @@ async function buscarProductosPorNombre(nombre) {
 }
 
 async function eliminarProducto(id) {
-    if (confirm('¿Está seguro de que desea eliminar este producto?')) {
+    if (confirm('¿Está seguro de que desea desactivar este producto?')) {
         try {
             const response = await fetch(`${apiUrl}/${id}`, {
                 method: 'DELETE'
