@@ -1,0 +1,25 @@
+
+SELECT * FROM inventario_dinamico.producto order by id desc;
+select * from factura order by id desc;
+select * from detalle_factura order by id desc;
+select * from cliente;
+
+
+SET FOREIGN_KEY_CHECKS = 1;
+SET SQL_SAFE_UPDATES = 1;
+
+DELIMITER //
+
+CREATE TRIGGER ActualizarEstadoProducto
+BEFORE UPDATE ON producto
+FOR EACH ROW
+BEGIN
+    IF NEW.cantidad <= 0 THEN
+        SET NEW.estado = 'inactivo';
+    ELSE
+        SET NEW.estado = 'activo';
+    END IF;
+END;
+//
+
+DELIMITER ;

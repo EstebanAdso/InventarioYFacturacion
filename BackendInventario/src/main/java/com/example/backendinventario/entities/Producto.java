@@ -18,10 +18,11 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
+    private String estado;
 
-    public Producto() {}
-
-
+    public Producto() {
+        this.estado = "activo"; // Por defecto, el producto se considera activo al crearse
+    }
 
     @PrePersist
     @PreUpdate

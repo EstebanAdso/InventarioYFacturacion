@@ -8,6 +8,7 @@ import com.example.backendinventario.repositories.ClienteRepository;
 import com.example.backendinventario.repositories.DetalleFacturaRepository;
 import com.example.backendinventario.repositories.FacturaRepository;
 import com.example.backendinventario.repositories.ProductoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ public class FacturaService {
     @Autowired
     private ProductoRepository productoRepository;
 
+    @Transactional
     public Factura crearFactura(Factura factura, List<DetalleFactura> detalles) {
         // Verificar si el cliente ya existe
         Cliente cliente = factura.getCliente();

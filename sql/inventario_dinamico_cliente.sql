@@ -16,28 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `categoria`
+-- Table structure for table `cliente`
 --
 
-DROP TABLE IF EXISTS `categoria`;
+DROP TABLE IF EXISTS `cliente`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `categoria` (
+CREATE TABLE `cliente` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `correo` varchar(255) DEFAULT NULL,
+  `identificacion` varchar(255) DEFAULT NULL,
   `nombre` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `categoria`
+-- Dumping data for table `cliente`
 --
 
-LOCK TABLES `categoria` WRITE;
-/*!40000 ALTER TABLE `categoria` DISABLE KEYS */;
-INSERT INTO `categoria` VALUES (0,'RAM',NULL),(1,'DISCOS EXTERNOS',NULL),(2,'CELULARES',NULL),(3,'COMPUTADORES',NULL),(5,'DISCOS SOLIDOS',NULL),(6,'NVME',NULL),(7,'PROCESADORES',NULL),(8,'FUENTES DE PODER',NULL),(9,'MONITORES',NULL),(10,'MOTHERBOARD',NULL),(11,'DISIPADORES',NULL),(12,'TECLADOS',NULL),(13,'MOUSES',NULL),(14,'CARGADORES MOBILE',NULL),(15,'CARGADORES PORTATIL',NULL),(16,'USB Y MICRO SD',NULL),(17,'BASES REFRIGUERANTES',NULL),(18,'GRAFICAS',NULL),(19,'AUDIFONOS',NULL),(20,'PARLANTES',NULL),(21,'ACCESORIOS MOBILES',NULL),(22,'ACCESORIOS DE COMPUTO',NULL),(23,'CONTROLES Y JUEGOS ',NULL),(24,'OTROS',NULL);
-/*!40000 ALTER TABLE `categoria` ENABLE KEYS */;
+LOCK TABLES `cliente` WRITE;
+/*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
+INSERT INTO `cliente` VALUES (1,'','343432','Carlos Esteban Trujillo Paz'),(2,'','33243','Andres Camilo Perez'),(3,'','3434323','Camilo Mena Hernan'),(4,'','228939212','Luis Florez'),(5,'','1193023234','Ana Maria Toro'),(6,'','22343421','Laura Suarez'),(7,'','3342312','Eva Sofia Paris'),(8,'','32123124','Andres Ortiz'),(11,NULL,'3243254323','Eva Paris'),(12,'','1123342','Ansi Sanchez'),(13,NULL,'324312321','Milena Ortez'),(14,'','112323432','Camilo Peña'),(15,'','1234453','Sebastian Madroñero'),(18,NULL,'1234567890','Juan Miguel Pérez'),(20,NULL,'119303032','Ana Cecilia'),(21,NULL,'11234323','Milena Camila Delgado Carvajal'),(22,NULL,'98392098','Juan Carlos Trujillo Rojas'),(23,NULL,'8347324','Marcelo Timaran Cortez');
+/*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
