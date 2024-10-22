@@ -1,3 +1,14 @@
+# Ignorar la carpeta node_modules en cualquier parte del proyecto
 node_modules/
-BackendInventario - copia/
-prueba/
+
+# Ignorar la carpeta de backend copia
+/BackendInventario - copia/
+
+# Ignorar la carpeta de pruebas
+/prueba/
+
+# Ignorar la carpeta de Postman
+/Postman/
+
+# Ignorar el archivo de documentación
+/Documentacion.rtf
