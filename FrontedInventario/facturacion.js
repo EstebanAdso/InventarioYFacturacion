@@ -110,7 +110,7 @@ function buscarProductos() {
         if (Array.isArray(data)) {
             data.forEach(producto => {
                 const li = document.createElement('li');
-                li.innerHTML = producto.nombre + "<i>"+ "  $" + producto.precioVendido + "</i>" + " ID: " + producto.id;
+                li.innerHTML = producto.nombre + "<i>"+ "  $" + producto.precioVendido + "</i>" + " || Stock disponible : " + producto.cantidad;
                 
                 // Mensaje para depurar el click en cada producto
                 li.onclick = () => {

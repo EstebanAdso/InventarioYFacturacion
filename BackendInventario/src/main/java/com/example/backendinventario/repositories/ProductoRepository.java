@@ -8,8 +8,13 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
-    Page<Producto> findByCategoriaNombre(String nombreCategoria, Pageable pageable);
-    Page<Producto> findByNombreContainingIgnoreCase(String nombre, Pageable pageable);
     Page<Producto> findAll(Pageable pageable);
     List<Producto> findByNombreContainingIgnoreCase(String nombre);
+    Page<Producto> findByEstado(String estado, Pageable pageable);
+
+    // Filtrar productos por nombre de categoría y estado activo
+    Page<Producto> findByCategoriaNombreAndEstado(String nombreCategoria, String estado, Pageable pageable);
+
+    // Filtrar productos por nombre y estado activo
+    Page<Producto> findByNombreContainingAndEstado(String nombre, String estado, Pageable pageable);
 }

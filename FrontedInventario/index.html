@@ -25,15 +25,19 @@
         <!-- Botones en línea -->
         <div class="d-flex justify-content-end mb-3">
               <!-- Formulario de búsqueda -->
-            <form id="searchForm" class="col-md-9" >
+            <form id="searchForm" class="col-md-7" >
                 <input type="text" id="searchInput" placeholder="Buscar por nombre">
             </form>
             <div class="mr-2">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#productoModal" onclick="limpiarFormulario()">Agregar Producto</button>
             </div>
-            <div>
-                <button class="btn btn-secondary" data-toggle="modal" data-target="#totalModal">Ver Totales</button>
+            <div class="mr-2">
+                <button class="btn btn-info" data-toggle="modal" data-target="#totalModal">Ver Totales</button>
             </div>
+            <div class="mr-2">
+                <button class="btn btn-warning" id="toggleProductosBtn">Productos Inactivos</button>
+            </div>
+            
         </div>
   
         <!-- Filtro por categoría -->
@@ -80,6 +84,7 @@
                             <th class="col-md-1">Cantidad</th>
                             <th class="col-md-2">Categoría</th>
                             <th class="col-md-2">Total</th>
+                            <th class="col-md-2">Estado</th>
                             <th class="col-md-2">Acciones</th>
                         </tr>
                     </thead>

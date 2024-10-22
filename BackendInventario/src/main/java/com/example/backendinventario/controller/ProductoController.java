@@ -1,13 +1,10 @@
 package com.example.backendinventario.controller;
-
 import com.example.backendinventario.entities.Producto;
 import com.example.backendinventario.services.ProductoServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +23,7 @@ public class ProductoController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return productoService.findAll(pageable);
+        return productoService.findAll(pageable); // Solo productos activos
     }
 
     @GetMapping("{id}")
@@ -40,7 +37,7 @@ public class ProductoController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return productoService.findByCategoriaNombre(nombreCategoria, pageable);
+        return productoService.findByCategoriaNombre(nombreCategoria, pageable); // Solo productos activos por categoría
     }
 
     @GetMapping("/nombre/{nombre}")
@@ -49,7 +46,15 @@ public class ProductoController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return productoService.findByNombre(nombre, pageable);
+        return productoService.findByNombre(nombre, pageable); // Solo productos activos por nombre
+    }
+
+    @GetMapping("/inactivos")
+    public Page<Producto> listarInactivos(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productoService.findInactivos(pageable);
     }
 
     @PostMapping
