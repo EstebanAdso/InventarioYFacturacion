@@ -190,8 +190,9 @@ function guardarFactura() {
         const factura = {
             clienteNombre: nombreCliente,
             clienteCedula: cedulaNit,
+            clienteTelefono: telefono,
+            clienteDireccion: direccion,
             fechaCreacion: fechaActual,
-            totalFactura: totalFactura,
             detalles: productos.map(producto => ({
                 productoId: producto.id || "",
                 nombreProducto: producto.nombre,

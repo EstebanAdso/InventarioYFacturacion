@@ -1,4 +1,5 @@
 const apiUrl = 'http://localhost:8082/producto';
+const apiCategoria = 'http://localhost:8082/categoria'
 
 
 let currentPage = 0;
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarProductos();
     cargarTotalPorCategoria();
     cargarTotalGlobal()
+    cargarCategorias();
 
     document.getElementById('productoForm').addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -40,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(producto)
+                    body: JSON.stringify(producto, id)
                 });
             }
 
@@ -53,6 +55,48 @@ document.addEventListener('DOMContentLoaded', () => {
             cargarProductosPorCategoria();  // Recargar productos en la categoría seleccionada
             cargarTotalPorCategoria();
             cargarTotalGlobal();
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+    document.getElementById('categoriaForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const id = document.getElementById('productoId').value;
+        const nombre = document.getElementById('nombreCategoria').value.toUpperCase();
+
+        const categoria = { nombre};
+
+        try {
+            let response;
+            if (id) {
+                response = await fetch(`${apiCategoria}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(producto)
+                });
+            } else {
+                response = await fetch(apiCategoria, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(categoria)
+                });
+            }
+
+            if (!response.ok) {
+                throw new Error('Error al guardar la categoria.');
+            }
+
+            $('#categoriaModal').modal('hide');
+            limpiarFormulario();
+            cargarProductosPorCategoria();  
+            cargarTotalPorCategoria();
+            cargarTotalGlobal();
+            cargarCategorias();
         } catch (error) {
             console.error('Error:', error);
         }
@@ -75,14 +119,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('filtroCategoria').addEventListener('change', async () => {
-    currentPage = 0;  // Reiniciar paginación
-    filtroCategoriaSeleccionada = document.getElementById('filtroCategoria').value;
-    if (mostrandoInactivos) {
-        cargarProductosInactivos();
-    } else {
-        cargarProductos();
-    }
-});
+        currentPage = 0;  // Reiniciar paginación
+        filtroCategoriaSeleccionada = document.getElementById('filtroCategoria').value;
+        if (mostrandoInactivos) {
+            cargarProductosInactivos();
+        } else {
+            cargarProductos();
+        }
+    });
 
 
     document.getElementById('pageSize').addEventListener('change', (e) => {
@@ -93,10 +137,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('toggleProductosBtn').addEventListener('click', toggleProductos);
 
-    
+
     function toggleProductos() {
         const toggleBtn = document.getElementById('toggleProductosBtn');
-    
+
         currentPage = 0;  // Reiniciar la paginación cuando cambies entre activos/inactivos
         if (mostrandoInactivos) {
             cargarProductos();  // Cargar productos activos
@@ -112,7 +156,35 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrandoInactivos = true;
         }
     }
-    
+    async function cargarCategorias() {
+        try {
+            const response = await fetch(apiCategoria); // Ajusta la URL si es necesario
+            const categorias = await response.json();
+
+            const filtroCategoriaSelect = document.getElementById('filtroCategoria');
+            const categoriaSelect = document.getElementById('categoria');
+
+            filtroCategoriaSelect.innerHTML = '<option value="">Todos</option>';
+            categoriaSelect.innerHTML = '';
+
+            categorias.forEach(categoria => {
+                const option = document.createElement('option');
+                option.value = categoria.nombre;  // Ajusta según el campo de tu entidad
+                option.textContent = categoria.nombre;
+                filtroCategoriaSelect.appendChild(option);
+            });
+
+            categorias.forEach(categoria => {
+                const option = document.createElement('option');
+                option.value = categoria.id;  // Ajusta según el campo de tu entidad
+                option.textContent = categoria.nombre;
+                categoriaSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error al cargar las categorías:', error);
+        }
+    }
+
 });
 
 async function editarProducto(id) {
@@ -175,7 +247,7 @@ function mostrarProductosEnTabla(productos) {
             <td>${producto.estado === 'activo' ? 'Activo' : 'Inactivo'}</td> <!-- Mostrar el estado -->
             <td>
                 <button class="btn btn-dark btn-sm" onclick="editarProducto(${producto.id})">Editar</button>
-                <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})">Eliminar</button>
+                <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})">Agotar</button>
             </td>
         `;
         tbody.appendChild(tr);

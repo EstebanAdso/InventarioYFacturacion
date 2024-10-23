@@ -25,11 +25,14 @@
         <!-- Botones en línea -->
         <div class="d-flex justify-content-end mb-3">
               <!-- Formulario de búsqueda -->
-            <form id="searchForm" class="col-md-7" >
+            <form id="searchForm" class="col-md-5" >
                 <input type="text" id="searchInput" placeholder="Buscar por nombre">
             </form>
             <div class="mr-2">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#productoModal" onclick="limpiarFormulario()">Agregar Producto</button>
+            </div>
+            <div class="mr-2">
+                <button class="btn btn-dark" data-toggle="modal" data-target="#categoriaModal" onclick="limpiarFormulario()">Agregar Categoria</button>
             </div>
             <div class="mr-2">
                 <button class="btn btn-info" data-toggle="modal" data-target="#totalModal">Ver Totales</button>
@@ -44,31 +47,7 @@
         <div class="form-group">
             <label for="filtroCategoria">Filtrar por Categoría:</label>
             <select class="form-control" id="filtroCategoria">
-                <option value="">Todos</option>
-                <option value="RAM ">Ram</option>
-                <option value="Discos Externos ">Discos Externos</option>
-                <option value="Celulares">Celulares</option>
-                <option value="Computadores">Computadores</option>
-                <option value="Discos Solidos">Discos Solidos</option>
-                <option value="Nvme">Nvme</option>
-                <option value="Procesadores">Procesadores</option>
-                <option value="Fuentes de Poder">Fuentes de Poder</option>
-                <option value="Monitores">Monitores</option>
-                <option value="Motherboard">Motherboard</option>
-                <option value="Disipadores">Disipadores</option>
-                <option value="Teclados">Teclados</option>
-                <option value="Mouses">Mouses</option>
-                <option value="Cargadores Mobile">Cargadores de movil</option>
-                <option value="Cargadores Portatil">Cargadores de portatil</option>
-                <option value="Usb y Micro SD">Usb y Micro SD</option>
-                <option value="BASES REFRIGUERANTES">BASES REFRIGUERANTES</option>
-                <option value="Graficas">Graficas</option>
-                <option value="Audifonos">Audifonos</option>
-                <option value="Parlantes">Parlantes</option>
-                <option value="Accesorios Mobiles">Accesorios Mobiles</option>
-                <option value="Accesorios de computo">Accesorios de computo</option>
-                <option value="Controles y Juegos">Controles y Juegos</option>
-                <option value="Otros">Otros</option>
+             <!-- Las opciones de categorías se llenarán dinámicamente -->
             </select>
         </div>
         
@@ -163,7 +142,7 @@
                         <input type="hidden" id="productoId">
                         <div class="form-group">
                             <label for="nombre">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" required>
+                            <input type="text" class="form-control" id="nombre"  required>
                         </div>
                         <div class="form-group">
                             <label for="precioComprado">Precio Comprado</label>
@@ -175,35 +154,12 @@
                         </div>
                         <div class="form-group">
                             <label for="cantidad">Cantidad</label>
-                            <input type="number" class="form-control" id="cantidad" required>
+                            <input type="number" class="form-control" value="" id="cantidad" required>
                         </div>
                         <div class="form-group">
                             <label for="categoria">Categoría</label>
                             <select class="form-control" id="categoria" required>
-                                <option value="0">Ram</option>
-                                <option value="1">Discos Externos</option>
-                                <option value="2">Celulares</option>
-                                <option value="3">Computadores</option>
-                                <option value="5">Discos Solidos</option>
-                                <option value="6">NVME</option>
-                                <option value="7">PROCESADORES</option>
-                                <option value="8">Fuentes de Poder</option>
-                                <option value="9">Monitores</option>
-                                <option value="10">Motherboard</option>
-                                <option value="11">Disipadores</option>
-                                <option value="12">Teclados</option>
-                                <option value="13">Mouses</option>
-                                <option value="14">Cargadores de movil</option>
-                                <option value="15">Cargadores de Portatil</option>
-                                <option value="16">USB Y Micro SD</option>
-                                <option value="17">Bases refriguerantes</option>
-                                <option value="18">Graficas</option>
-                                <option value="19">Audifonos</option>
-                                <option value="20">Parlantes</option>
-                                <option value="21">Accesorios Mobile</option>
-                                <option value="22">Accesorios de Computo</option>
-                                <option value="23">Controles y Juegos</option>
-                                <option value="24">Otros</option>
+                               <!-- Las opciones de categorías se llenarán dinámicamente -->
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Guardar</button>
@@ -212,6 +168,32 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal para Agregar/Editar Categoria -->
+    <div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoriaModalLabel">Agregar Categoria</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="categoriaForm">
+                        <input type="hidden" id="categoriaId">
+                        <div class="form-group">
+                            <label for="nombreCategoria">Nombre de la Categoria</label>
+                            <input type="text" class="form-control" id="nombreCategoria" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
