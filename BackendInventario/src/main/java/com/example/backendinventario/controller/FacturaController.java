@@ -34,21 +34,47 @@ public class FacturaController {
     @Transactional
     @PostMapping("/crear")
     public ResponseEntity<?> crearFactura(@RequestBody FacturaDTO facturaDTO) {
-        // Buscar si el cliente ya existe en la base de datos por la cédula
+        // Buscar si el cliente ya existe en la base de datos por la identificación
         Optional<Cliente> clienteExistente = clienteService.findByIdentificacion(facturaDTO.getClienteCedula());
 
         Cliente cliente;
         if (clienteExistente.isPresent()) {
             cliente = clienteExistente.get();
+
+            // Actualizar solo si el valor ha cambiado o si es nulo
             if (!cliente.getNombre().equals(facturaDTO.getClienteNombre())) {
                 cliente.setNombre(facturaDTO.getClienteNombre());
-                clienteService.save(cliente);  // Guardar el cliente actualizado
             }
+            if (facturaDTO.getCorreo() != null && !facturaDTO.getCorreo().equals(cliente.getCorreo())) {
+                cliente.setCorreo(facturaDTO.getCorreo());
+            }
+            if (facturaDTO.getTelefono() != null && !facturaDTO.getTelefono().equals(cliente.getTelefono())) {
+                cliente.setTelefono(facturaDTO.getTelefono());
+            }
+            if (facturaDTO.getDireccion() != null && !facturaDTO.getDireccion().equals(cliente.getDireccion())) {
+                cliente.setDireccion(facturaDTO.getDireccion());
+            }
+
+            // Guardar el cliente actualizado
+            clienteService.save(cliente);
         } else {
+            // Si el cliente no existe, crear uno nuevo
             cliente = new Cliente();
             cliente.setNombre(facturaDTO.getClienteNombre());
             cliente.setIdentificacion(facturaDTO.getClienteCedula());
-            clienteService.save(cliente);  // Guardar el nuevo cliente
+
+            // Guardar los datos opcionales si están presentes
+            if (facturaDTO.getCorreo() != null) {
+                cliente.setCorreo(facturaDTO.getCorreo());
+            }
+            if (facturaDTO.getTelefono() != null) {
+                cliente.setTelefono(facturaDTO.getTelefono());
+            }
+            if (facturaDTO.getDireccion() != null) {
+                cliente.setDireccion(facturaDTO.getDireccion());
+            }
+
+            clienteService.save(cliente);
         }
 
         List<DetalleFactura> detalles = new ArrayList<>();
@@ -86,4 +112,5 @@ public class FacturaController {
 
         return ResponseEntity.ok(nuevaFactura);
     }
+
 }
