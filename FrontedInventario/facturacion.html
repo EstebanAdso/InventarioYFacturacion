@@ -13,9 +13,10 @@
         <nav>
             <h6>Administrador</h6>
             <ul>
-                <li><a href="index.html">Inventario</a></li>
                 <li><a href="#">Facturación</a></li>
-                <li><a href="#">Ventas</a></li>
+                <li><a href="index.html">Inventario</a></li>
+                <li><a href="ventas.html">Ventas</a></li>
+                <li><a href="#">Pedidos</a></li>
             </ul>
         </nav>
     </header>
@@ -33,33 +34,33 @@
                     <!-- Campo Nombre del Cliente -->
                     <div class="form-group col-md-6">
                         <label for="nombreCliente">Nombre del Cliente:</label>
-                        <input type="text" class="form-control" id="nombreCliente" placeholder="Jhon Doe" required>
+                        <input type="text" class="form-control" id="nombreCliente" autocomplete="off" placeholder="Obligatorio" required>
                         <ul id="sugerenciasClientes" style="border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
                     </div>
     
                     <!-- Campo Cédula o NIT -->
                     <div class="form-group col-md-6">
                         <label for="cedulaNit">Cédula o NIT:</label>
-                        <input type="text" class="form-control" placeholder="Obligatorio" id="cedulaNit" required>
+                        <input type="text" class="form-control" autocomplete="off" placeholder="Obligatorio" id="cedulaNit" required>
                     </div>
                 </div>
     
                 <div class="form-row">
                     <div class="form-group col-md-12">
                         <label for="correoCliente">Correo Electronico:</label>
-                        <input type="text" class="form-control" placeholder="Obligatorio" id="correoCliente">
+                        <input type="text" class="form-control" autocomplete="off" placeholder="Obligatorio" id="correoCliente">
                     </div>
 
                     <!-- Campo Teléfono -->
                     <div class="form-group col-md-6">
                         <label for="telefonoCliente">Teléfono:</label>
-                        <input type="text" class="form-control" placeholder="Opcional" id="telefonoCliente">
+                        <input type="text" class="form-control" autocomplete="off" placeholder="Opcional" id="telefonoCliente">
                     </div>
     
                     <!-- Campo Dirección -->
                     <div class="form-group col-md-6">
                         <label for="direccionCliente">Dirección:</label>
-                        <input type="text" class="form-control" placeholder="Opcional" id="direccionCliente">
+                        <input type="text" class="form-control" autocomplete="off" placeholder="Opcional" id="direccionCliente">
                     </div>
                     
                 </div>
@@ -71,27 +72,33 @@
             <legend>Datos de Facturación</legend>
             <!-- Formulario de datos de facturación -->
             <form id="facturaForm">
-                <div class="form-group">
-                    <label for="nombreProductoManual">Nombre del Producto:</label>
-                    <input type="text" class="form-control" id="nombreProductoManual">
-                    <ul id="sugerenciasProductos" style="border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="nombreProductoManual">Nombre del Producto:</label>
+                        <input type="text" class="form-control" autocomplete="off" id="nombreProductoManual">
+                        <ul id="sugerenciasProductos" style="border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="descripcionFactura">Descripción:</label>
+                        <textarea class="form-control" autocomplete="off" id="descripcionFactura" rows="1"></textarea>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="descripcionFactura">Descripción:</label>
-                    <textarea class="form-control" id="descripcionFactura" rows="1"></textarea>
+               
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="cantidadProductoManual">Cantidad:</label>
+                        <input type="number" autocomplete="off" class="form-control" id="cantidadProductoManual" value="1">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="precioUnitarioManual">Precio Unitario:</label>
+                        <input type="text" autocomplete="off" class="form-control" id="precioUnitarioManual">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="garantiaProducto">Garantía (en meses):</label>
+                        <input type="number" autocomplete="off" class="form-control" id="garantiaProducto" value="1">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="cantidadProductoManual">Cantidad:</label>
-                    <input type="number" class="form-control" id="cantidadProductoManual" value="1">
-                </div>
-                <div class="form-group">
-                    <label for="precioUnitarioManual">Precio Unitario:</label>
-                    <input type="text" class="form-control" id="precioUnitarioManual">
-                </div>
-                <div class="form-group">
-                    <label for="garantiaProducto">Garantía (en meses):</label>
-                    <input type="number" class="form-control" id="garantiaProducto">
-                </div>
+                
     
                 <button type="button" class="btn btn-primary" onclick="agregarProducto()">Agregar Producto</button>
             </form>
@@ -117,6 +124,7 @@
                     <!-- Filas de productos se llenarán dinámicamente aquí -->
                 </tbody>
             </table>
+            <h6 id="totalDeFactura">TOTAL: $0.00</h6>
         </div>
     
         <!-- Botones para guardar y cancelar -->

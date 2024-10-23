@@ -7,13 +7,19 @@ let pageSize = 14;
 let totalPages = 0;
 let filtroCategoriaSeleccionada = null;
 let mostrandoInactivos = false; // Variable para controlar el estado actual (activos/inactivos)
-
+let modificarTexto = document.getElementById('productoModalLabel')
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarProductos();
     cargarTotalPorCategoria();
     cargarTotalGlobal()
     cargarCategorias();
+
+    let botonModificador = document.getElementById('agregarProducto');
+
+    botonModificador.addEventListener('click', function() {
+        modificarTexto.textContent = 'Agregar Producto';
+    });
 
     document.getElementById('productoForm').addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -194,6 +200,9 @@ async function editarProducto(id) {
             throw new Error('Error al cargar el producto para editar.');
         }
 
+        modificarTexto = document.getElementById('productoModalLabel')
+        modificarTexto.textContent = 'Editar Producto'
+
         const producto = await response.json();
         document.getElementById('productoId').value = producto.id;
         document.getElementById('nombre').value = producto.nombre;
@@ -246,8 +255,10 @@ function mostrarProductosEnTabla(productos) {
             <td>${formatNumber(producto.total)}</td>
             <td>${producto.estado === 'activo' ? 'Activo' : 'Inactivo'}</td> <!-- Mostrar el estado -->
             <td>
-                <button class="btn btn-dark btn-sm" onclick="editarProducto(${producto.id})">Editar</button>
-                <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})">Agotar</button>
+                <button class="btn btn-dark btn-sm"  id="botonEditar" onclick="editarProducto(${producto.id})">Editar</button>
+                ${producto.estado === 'activo' 
+                    ? `<button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})">Agotar</button>` 
+                    : ''} <!-- Ocultar botón Agotar si está inactivo -->
             </td>
         `;
         tbody.appendChild(tr);
@@ -366,7 +377,7 @@ async function eliminarProducto(id) {
             });
 
             if (!response.ok) {
-                throw new Error('Error al eliminar el producto.');
+                throw new Error('Error al desactivar el producto.');
             }
 
             cargarProductos();
@@ -404,7 +415,7 @@ async function cargarTotalPorCategoria() {
 
         for (const [categoria, total] of Object.entries(totales)) {
             const li = document.createElement('li');
-            li.textContent = `${categoria}: ${formatNumber(total)}`;
+            li.textContent = `${categoria}:  $${formatNumber(total)}`;
             totalCategoriasList.appendChild(li);
         }
     } catch (error) {
@@ -420,6 +431,7 @@ function formatNumber(number) {
 function limpiarFormulario() {
     document.getElementById('productoId').value = '';
     document.getElementById('productoForm').reset();
+    document.getElementById('categoriaForm').reset();
 }
 
 function formatNumber(number) {

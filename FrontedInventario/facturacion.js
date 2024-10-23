@@ -70,6 +70,9 @@ function mostrarSugerencias(clientes) {
         li.addEventListener('click', () => {
             document.getElementById('nombreCliente').value = cliente.nombre;
             document.getElementById('cedulaNit').value = cliente.identificacion;
+            document.getElementById('correoCliente').value = cliente.correo;
+            document.getElementById('telefonoCliente').value = cliente.telefono;
+            document.getElementById('direccionCliente').value = cliente.direccion;
             sugerenciasDiv.style.display = 'none';
         });
 
@@ -169,10 +172,12 @@ function guardarFactura() {
     const correoCliente = document.getElementById('correoCliente').value.trim();
     const direccionCliente = document.getElementById('direccionCliente').value.trim();
     const productos = obtenerProductosSeleccionados(); // Aquí se obtienen los productos seleccionados
+    totalFacturaGlobal = 0;
 
     if (nombreCliente && cedulaNit && productos.length > 0) {
         // Calcular el total de la factura
         let totalFactura = 0;
+        actualizarTotalFactura(); 
         const productosHTML = productos.map(producto => {
             totalFactura += producto.total;
             return `
@@ -188,6 +193,7 @@ function guardarFactura() {
         }).join('');
 
         const fechaActual = new Date().toLocaleDateString('es-CO');
+        
 
         // Crear el objeto de factura para enviar al backend, incluyendo los campos opcionales
         const factura = {
@@ -226,7 +232,7 @@ function guardarFactura() {
         })
         .then(data => {
             console.log('Factura guardada exitosamente:', data);
-
+        
             // Crear el HTML de la factura para visualización
             const facturaHTML = `
                 <h1 style="text-align: center;">Factura de Venta</h1>
@@ -238,11 +244,12 @@ function guardarFactura() {
                 <div>
                     <p><strong>Cliente:</strong> ${nombreCliente}</p>
                     <p><strong>Cédula o NIT:</strong> ${cedulaNit}</p>
-                    <p><strong>Teléfono:</strong> ${telefonoCliente || 'No registrado'}</p>
-                    <p><strong>Correo:</strong> ${correoCliente || 'No registrado'}</p>
-                    <p><strong>Dirección:</strong> ${direccionCliente || 'No registrado'}</p>
+                    ${telefonoCliente ? `<p><strong>Teléfono:</strong> ${telefonoCliente}</p>` : ''}
+                    ${correoCliente ? `<p><strong>Correo:</strong> ${correoCliente}</p>` : ''}
+                    ${direccionCliente ? `<p><strong>Dirección:</strong> ${direccionCliente}</p>` : ''}
                     <p><strong>Fecha de Creación:</strong> ${fechaActual}</p>
                 </div>
+                
                 <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                     <thead>
                         <tr style="background-color: #f2f2f2;">
@@ -263,9 +270,10 @@ function guardarFactura() {
                     </tbody>
                 </table>
             `;
-
+        
             limpiarFormularioProducto();
             limpiarFormulario();
+            
 
             // Abrir la ventana de previsualización de factura
             const ventanaImpresion = window.open('', '', 'height=1200,width=1600');
@@ -303,6 +311,8 @@ function guardarFactura() {
 
 
 
+let totalFacturaGlobal = 0; // Variable global para almacenar el total de la factura
+
 function agregarProducto() {
     const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
     const descripcion = document.getElementById('descripcionFactura').value.trim();
@@ -311,19 +321,15 @@ function agregarProducto() {
     const garantia = parseInt(document.getElementById('garantiaProducto').value.trim());
 
     if (nombreProducto && descripcion && !isNaN(cantidad) && !isNaN(precioUnitario) && !isNaN(garantia)) {
-        // Usar el ID del producto seleccionado, o null si no se seleccionó de la lista
         const productoId = productoSeleccionadoId || null;
-
-        // Calcular el total del producto
         const totalProducto = cantidad * precioUnitario;
 
         const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
         const newRow = tbody.insertRow();
 
-        // Celda para ID (puede ser visible o no, según prefieras)
         const cellId = newRow.insertCell(0);
         cellId.textContent = productoId || 'N/A';
-        cellId.style.display = 'none'; // Ocultar la celda de ID si no quieres que sea visible
+        cellId.style.display = 'none'; 
 
         const cellNombre = newRow.insertCell(1);
         const cellCantidad = newRow.insertCell(2);
@@ -340,7 +346,6 @@ function agregarProducto() {
         cellDescripcion.textContent = descripcion;
         cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 2 });
 
-        // Agregar el producto a un array para mantener un registro
         productosEnFactura.push({
             id: productoId,
             nombre: nombreProducto,
@@ -351,7 +356,10 @@ function agregarProducto() {
             total: totalProducto
         });
 
-        // Botón de eliminar
+        // Actualizar el total de la factura
+        totalFacturaGlobal += totalProducto;
+        actualizarTotalFactura();
+
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Eliminar';
         deleteBtn.className = 'btn btn-danger btn-sm';
@@ -359,18 +367,27 @@ function agregarProducto() {
             const row = deleteBtn.closest('tr');
             const index = row.rowIndex - 1;
             tbody.deleteRow(index);
+            
+            // Restar el total del producto eliminado
+            totalFacturaGlobal -= productosEnFactura[index].total;
             productosEnFactura.splice(index, 1); // Eliminar el producto del array
+            
+            actualizarTotalFactura();
         });
         cellAcciones.appendChild(deleteBtn);
 
-        // Resetear el ID del producto seleccionado después de agregarlo
         productoSeleccionadoId = null;
-
         limpiarFormularioProducto();
     } else {
         alert('Por favor, complete todos los campos correctamente.');
     }
 }
+
+// Función para actualizar el total de la factura en el DOM
+function actualizarTotalFactura() {
+    document.getElementById('totalDeFactura').textContent = `TOTAL: $${totalFacturaGlobal.toLocaleString('es-CO', { minimumFractionDigits: 2 })}`;
+}
+
 function limpiarFormularioProducto() {
     document.getElementById('nombreProductoManual').value = '';
     document.getElementById('descripcionFactura').value = '';
@@ -393,6 +410,9 @@ function obtenerProductosSeleccionados() {
 function limpiarFormulario() {
     document.getElementById('nombreCliente').value = '';
     document.getElementById('cedulaNit').value = '';
+    document.getElementById('telefonoCliente').value = '';
+    document.getElementById('correoCliente').value = '';
+    document.getElementById('direccionCliente').value = '';
     document.getElementById('nombreProductoManual').value = '';
     document.getElementById('cantidadProductoManual').value = '';
     document.getElementById('precioUnitarioManual').value = '';
