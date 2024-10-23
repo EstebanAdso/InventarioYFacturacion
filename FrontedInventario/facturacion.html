@@ -20,52 +20,77 @@
         </nav>
     </header>
 
+
     <div class="container">
         <h1 class="text-center">Facturación</h1>
-
-        <!-- Formulario de datos del cliente -->
-        <form id="clienteForm" class="mb-4">
-            <div class="form-group">
-                <label for="nombreCliente">Nombre del Cliente:</label>
-                <input type="text" class="form-control" id="nombreCliente" required>
-                <ul id="sugerenciasClientes" style="border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
-                
-            </div>
-            <div class="form-group">
-                <label for="cedulaNit">Cédula o NIT:</label>
-                <input type="text" class="form-control" id="cedulaNit" required>
-            </div>
-            
-        </form>
-
-        <!-- Formulario de datos de facturación -->
-        <form id="facturaForm">
-            <div class="form-group">
-                <label for="nombreProductoManual">Nombre del Producto:</label>
-                <input type="text" class="form-control" id="nombreProductoManual">
-                <ul id="sugerenciasProductos" style="border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
-
-            </div>
-            <div class="form-group">
-                <label for="descripcionFactura">Descripción:</label>
-                <textarea class="form-control" id="descripcionFactura"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="cantidadProductoManual">Cantidad:</label>
-                <input type="number" class="form-control" id="cantidadProductoManual" value="1">
-            </div>
-            <div class="form-group">
-                <label for="precioUnitarioManual">Precio Unitario:</label>
-                <input type="text" class="form-control" id="precioUnitarioManual">
-            </div>
-            <div class="form-group">
-                <label for="garantiaProducto">Garantía (en meses):</label>
-                <input type="number" class="form-control" id="garantiaProducto">
-            </div>
-            
-            <button type="button" class="btn btn-primary" onclick="agregarProducto()">Agregar Producto</button>
-        </form>
-
+    
+        <!-- Fieldset para datos del cliente -->
+        <fieldset style="border: 2px solid #1116; border-radius: 10px; padding: 10px;">
+            <legend>Datos del Cliente</legend>
+            <!-- Formulario de datos del cliente -->
+            <form id="clienteForm" class="mb-4">
+                <div class="form-row">
+                    <!-- Campo Nombre del Cliente -->
+                    <div class="form-group col-md-6">
+                        <label for="nombreCliente">Nombre del Cliente:</label>
+                        <input type="text" class="form-control" id="nombreCliente" placeholder="Jhon Doe" required>
+                        <ul id="sugerenciasClientes" style="border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
+                    </div>
+    
+                    <!-- Campo Cédula o NIT -->
+                    <div class="form-group col-md-6">
+                        <label for="cedulaNit">Cédula o NIT:</label>
+                        <input type="text" class="form-control" placeholder="Obligatorio" id="cedulaNit" required>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <!-- Campo Teléfono -->
+                    <div class="form-group col-md-6">
+                        <label for="telefono">Teléfono:</label>
+                        <input type="text" class="form-control" placeholder="Opcional" id="telefono">
+                    </div>
+    
+                    <!-- Campo Dirección -->
+                    <div class="form-group col-md-6">
+                        <label for="direccion">Dirección:</label>
+                        <input type="text" class="form-control" placeholder="Opcional" id="direccion">
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    
+        <!-- Fieldset para datos del producto -->
+        <fieldset style="border: 2px solid #1116; padding: 10px; margin-top: 20px; border-radius: 10px;">
+            <legend>Datos de Facturación</legend>
+            <!-- Formulario de datos de facturación -->
+            <form id="facturaForm">
+                <div class="form-group">
+                    <label for="nombreProductoManual">Nombre del Producto:</label>
+                    <input type="text" class="form-control" id="nombreProductoManual">
+                    <ul id="sugerenciasProductos" style="border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
+                </div>
+                <div class="form-group">
+                    <label for="descripcionFactura">Descripción:</label>
+                    <textarea class="form-control" id="descripcionFactura"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="cantidadProductoManual">Cantidad:</label>
+                    <input type="number" class="form-control" id="cantidadProductoManual" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="precioUnitarioManual">Precio Unitario:</label>
+                    <input type="text" class="form-control" id="precioUnitarioManual">
+                </div>
+                <div class="form-group">
+                    <label for="garantiaProducto">Garantía (en meses):</label>
+                    <input type="number" class="form-control" id="garantiaProducto">
+                </div>
+    
+                <button type="button" class="btn btn-primary" onclick="agregarProducto()">Agregar Producto</button>
+            </form>
+        </fieldset>
+    
         <!-- Tabla de productos seleccionados -->
         <div class="mt-4">
             <h5>Productos Seleccionados</h5>
@@ -87,13 +112,14 @@
                 </tbody>
             </table>
         </div>
-
+    
         <!-- Botones para guardar y cancelar -->
         <div class="mt-4">
             <button type="button" class="btn btn-success" onclick="guardarFactura()">Guardar Factura</button>
             <button type="button" class="btn btn-secondary" onclick="limpiarFormulario()">Cancelar</button>
         </div>
     </div>
+    
 
    
     
