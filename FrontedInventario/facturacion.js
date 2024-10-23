@@ -165,6 +165,9 @@ function agregarDetalle(detalle) {
 function guardarFactura() {
     const nombreCliente = document.getElementById('nombreCliente').value.trim();
     const cedulaNit = document.getElementById('cedulaNit').value.trim();
+    const telefonoCliente = document.getElementById('telefonoCliente').value.trim();
+    const correoCliente = document.getElementById('correoCliente').value.trim();
+    const direccionCliente = document.getElementById('direccionCliente').value.trim();
     const productos = obtenerProductosSeleccionados(); // Aquí se obtienen los productos seleccionados
 
     if (nombreCliente && cedulaNit && productos.length > 0) {
@@ -186,19 +189,20 @@ function guardarFactura() {
 
         const fechaActual = new Date().toLocaleDateString('es-CO');
 
-        // Crear el objeto de factura para enviar al backend
+        // Crear el objeto de factura para enviar al backend, incluyendo los campos opcionales
         const factura = {
             clienteNombre: nombreCliente,
             clienteCedula: cedulaNit,
-            clienteTelefono: telefono,
-            clienteDireccion: direccion,
+            telefono: telefonoCliente || null,  // Campo opcional
+            correo: correoCliente || null,      // Campo opcional
+            direccion: direccionCliente || null, // Campo opcional
             fechaCreacion: fechaActual,
             detalles: productos.map(producto => ({
                 productoId: producto.id || "",
                 nombreProducto: producto.nombre,
                 cantidad: producto.cantidad,
                 precioUnitario: producto.precioUnitario,
-                garantia: producto.garantia || "Excelente calidad",
+                garantia: producto.garantia || "1",
                 descripcion: producto.descripcion || "Excelente calidad",
             })),
         };
@@ -214,7 +218,6 @@ function guardarFactura() {
         .then(response => {
             if (!response.ok) {
                 return response.text().then(text => {
-                    // Verificar si la respuesta no es JSON y mostrar alerta si supera inventario
                     alert(`Error: ${text}`);
                     throw new Error(text);
                 });
@@ -235,6 +238,9 @@ function guardarFactura() {
                 <div>
                     <p><strong>Cliente:</strong> ${nombreCliente}</p>
                     <p><strong>Cédula o NIT:</strong> ${cedulaNit}</p>
+                    <p><strong>Teléfono:</strong> ${telefonoCliente || 'No registrado'}</p>
+                    <p><strong>Correo:</strong> ${correoCliente || 'No registrado'}</p>
+                    <p><strong>Dirección:</strong> ${direccionCliente || 'No registrado'}</p>
                     <p><strong>Fecha de Creación:</strong> ${fechaActual}</p>
                 </div>
                 <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
@@ -294,6 +300,7 @@ function guardarFactura() {
         alert('Por favor, completa todos los campos requeridos.');
     }
 }
+
 
 
 function agregarProducto() {
