@@ -11,25 +11,26 @@
 
     <header id="nav">
         <nav>
-            <h6>Administrador</h6>
+            <h6 style="user-select: none;">Gestión Total</h6>
             <ul>
-                <li><a href="#">Inventario</a></li>
                 <li><a href="facturacion.html">Facturacion</a></li>
-                <li><a href="#">Ventas</a></li>
+                <li><a href="#">Inventario</a></li>
+                <li><a href="ventas.html">Ventas</a></li>
+                <li><a href="#">Pedidos</a></li>
             </ul>
         </nav>        
     </header>
 
     <div class="container"> 
-        <h1 class="text-center">Inventario de Productos</h1>
+        <h1 class="text-center" style="user-select: none;">Inventario de Productos</h1>
         <!-- Botones en línea -->
         <div class="d-flex justify-content-end mb-3">
               <!-- Formulario de búsqueda -->
             <form id="searchForm" class="col-md-5" >
-                <input type="text" id="searchInput" placeholder="Buscar por nombre">
+                <input type="text" id="searchInput" autocomplete="off" placeholder="Buscar por nombre">
             </form>
             <div class="mr-2">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#productoModal" onclick="limpiarFormulario()">Agregar Producto</button>
+                <button class="btn btn-primary" id="agregarProducto" data-toggle="modal" data-target="#productoModal" onclick="limpiarFormulario()">Agregar Producto</button>
             </div>
             <div class="mr-2">
                 <button class="btn btn-dark" data-toggle="modal" data-target="#categoriaModal" onclick="limpiarFormulario()">Agregar Categoria</button>
@@ -113,25 +114,25 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <ul id="totalCategorias">
+                    <ul id="totalCategorias" class="list-group">
                         <!-- Aquí se llenará con JavaScript -->
                     </ul>
                     <hr>
-                    <h4>Total Global</h4>
-                    <p id="totalGlobal">0</p>
+                    <h4 class="mt-4 text-primary">Total Global</h4>
+                    <p id="totalGlobal" class="font-weight-bold display-4">0</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
-
+    
     <!-- Modal para Agregar/Editar Producto -->
     <div class="modal fade" id="productoModal" tabindex="-1" aria-labelledby="productoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header" id="modal-producto">
                     <h5 class="modal-title" id="productoModalLabel">Agregar Producto</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -142,23 +143,23 @@
                         <input type="hidden" id="productoId">
                         <div class="form-group">
                             <label for="nombre">Nombre</label>
-                            <input type="text" class="form-control" id="nombre"  required>
+                            <input type="text" autocomplete="off" class="form-control" id="nombre"  required>
                         </div>
                         <div class="form-group">
                             <label for="precioComprado">Precio Comprado</label>
-                            <input type="text" class="form-control" id="precioComprado" pattern="^[0-9,.]+$" title="Ingrese un número válido">
+                            <input type="text" autocomplete="off" class="form-control" id="precioComprado" pattern="^[0-9,.]+$" title="Ingrese un número válido">
                         </div>
                         <div class="form-group">
                             <label for="precioVendido">Precio Vendido</label>
-                            <input type="text" class="form-control" id="precioVendido" pattern="^[0-9,.]+$" title="Ingrese un número válido">
+                            <input type="text" autocomplete="off" class="form-control" id="precioVendido" pattern="^[0-9,.]+$" title="Ingrese un número válido">
                         </div>
                         <div class="form-group">
                             <label for="cantidad">Cantidad</label>
-                            <input type="number" class="form-control" value="" id="cantidad" required>
+                            <input type="number" autocomplete="off" class="form-control" value="" id="cantidad" required>
                         </div>
                         <div class="form-group">
                             <label for="categoria">Categoría</label>
-                            <select class="form-control" id="categoria" required>
+                            <select class="form-control" id="categoria" required >
                                <!-- Las opciones de categorías se llenarán dinámicamente -->
                             </select>
                         </div>
@@ -184,10 +185,10 @@
                         <input type="hidden" id="categoriaId">
                         <div class="form-group">
                             <label for="nombreCategoria">Nombre de la Categoria</label>
-                            <input type="text" class="form-control" id="nombreCategoria" required>
+                            <input type="text" autocomplete="off" class="form-control" id="nombreCategoria" required>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="submit" class="btn btn-dark">Guardar</button>
                     </form>
                 </div>
             </div>

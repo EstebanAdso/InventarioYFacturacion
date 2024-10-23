@@ -15,16 +15,14 @@
     margin-bottom: 20px;
 }
 .col-md-4 {
-    background-color: #f8f9fa;
     padding: 20px;
-    border-left: 1px solid #ccc;
 }
 .modal-dialog {
     max-width: 800px;
 }
 header {
     position: fixed;
-    background-color: #48e;
+    background-color: #343a40;
     width: 100%;
     height: 70px;
     z-index: 1;
@@ -57,7 +55,12 @@ nav ul li{
 
 nav ul li a{
     color: #ddd;
-   
+    user-select: none;
+}
+
+nav ul li a:hover{
+    text-decoration: none;
+    color: #aaa;
 }
 
 #searchForm input{
@@ -101,4 +104,98 @@ legend {
     padding-left: 5px; /* Opcional: Agrega espacio a la izquierda */
     padding-right: 5px; /* Opcional: Agrega espacio a la derecha */
     text-align: left; /* Opcional: centra el texto dentro del legend */
+}
+
+.hide {
+    display: none;
+}
+
+
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+#productoModal .modal-header {
+    background-color: #007bff; /* Color del encabezado */
+    color: white;
+    border-bottom: none;
+}
+
+#categoriaModal .modal-header {
+    background-color: #252627; /* Color del encabezado */
+    color: white;
+    border-bottom: none;
+}
+
+#headerOscuro {
+    background-color: #252627; /* Color del encabezado */
+    color: white;
+    border-bottom: none;
+}
+
+#categoriaModal button {
+    background-color: #252627; /* Color del encabezado */
+    color: white;
+    
+}
+
+#totalModal .modal-header {
+    background-color: #17a2b8; /* Color del encabezado */
+    color: white;
+    border-bottom: none;
+}
+.modal-title {
+    font-weight: bold;
+}
+
+.list-group {
+    margin-top: 20px;
+}
+
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border: 1px solid #007bff; /* Borde de las categorías */
+    border-radius: 5px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+}
+
+.list-group-item:hover {
+    background-color: #e9f7ff; /* Color de fondo al pasar el mouse */
+}
+
+#totalGlobal {
+    color: #dc3545; /* Color rojo para el total global */
+}
+
+@media (max-width: 576px) {
+    .modal-dialog {
+        width: 90%; /* Ancho en dispositivos pequeños */
+    }
+}
+
+#totalCategorias li {
+    margin-left: 20px; /* Ajusta el valor según sea necesario */
+}
+
+
+/* Alternar el color de fondo de las filas de la tabla */
+#productoTableBody tr:nth-child(odd) {
+    background-color: #f7f7f7; /* Color de fondo para filas impares */
+}
+
+#productoTableBody tr:nth-child(even) {
+    background-color: #ffffff; /* Color de fondo para filas pares */
+}
+
+#clienteForm input{
+    font-weight: 400;
+}
+
+#facturaForm input{
+    font-weight: 400;
 }
