@@ -20,8 +20,6 @@ public class CategoriaController {
         return categoriaServices.findAll();
     }
 
-
-
     @PostMapping
     public Categoria insertar(@RequestBody Categoria categoria) {
         return categoriaServices.save(categoria);
