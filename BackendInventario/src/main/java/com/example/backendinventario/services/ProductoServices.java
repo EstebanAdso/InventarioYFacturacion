@@ -25,8 +25,6 @@ public class ProductoServices {
         return productoRepository.save(producto);
     }
 
-
-
     // Calcular el total global de todos los productos
     public double totalGlobal() {
         List<Producto> productos = productoRepository.findAll();

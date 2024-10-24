@@ -8,10 +8,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +28,11 @@ public class FacturaController {
 
     @Autowired
     private ProductoServices productoServices;
+
+    @GetMapping
+    public List<Factura> getAllFacturas() {
+        return facturaService.findAll();
+    }
 
     @Transactional
     @PostMapping("/crear")
@@ -112,5 +115,14 @@ public class FacturaController {
 
         return ResponseEntity.ok(nuevaFactura);
     }
+
+    @GetMapping("/{id}/detalles")
+    public List<DetalleDTO> getDetallesFactura(@PathVariable Long id) {
+        if (!facturaService.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Factura no encontrada");
+        }
+        return facturaService.getDetallesFactura(id);
+    }
+
 
 }

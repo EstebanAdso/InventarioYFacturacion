@@ -1,9 +1,6 @@
 package com.example.backendinventario.services;
 
-import com.example.backendinventario.entities.Cliente;
-import com.example.backendinventario.entities.DetalleFactura;
-import com.example.backendinventario.entities.Factura;
-import com.example.backendinventario.entities.Producto;
+import com.example.backendinventario.entities.*;
 import com.example.backendinventario.repositories.ClienteRepository;
 import com.example.backendinventario.repositories.DetalleFacturaRepository;
 import com.example.backendinventario.repositories.FacturaRepository;
@@ -14,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FacturaService {
@@ -29,6 +27,10 @@ public class FacturaService {
     @Autowired
     private ProductoRepository productoRepository;
 
+    public List<Factura> findAll() {
+        return facturaRepository.findAll();
+    }
+
     @Transactional
     public Factura crearFactura(Factura factura, List<DetalleFactura> detalles) {
         // Verificar si el cliente ya existe
@@ -43,7 +45,7 @@ public class FacturaService {
 
         // Asignar serial incremental
         Long ultimoId = facturaRepository.count() + 1;
-        String serial = String.format("%06d", ultimoId);
+        String serial = String.format("%08d", ultimoId);
         factura.setSerial(serial);
 
         // Inicializar el total de la factura en cero
@@ -79,4 +81,26 @@ public class FacturaService {
 
         return nuevaFactura;
     }
+
+    // Método para obtener los detalles de una factura
+    public List<DetalleDTO> getDetallesFactura(Long facturaId) {
+        return detalleFacturaRepository.findByFacturaId(facturaId)
+                .stream()
+                .map(detalle -> {
+                    DetalleDTO dto = new DetalleDTO();
+                    dto.setProductoId(detalle.getProducto().getId());
+                    dto.setDescripcion(detalle.getDescripcion());
+                    dto.setCantidad(detalle.getCantidad());
+                    dto.setPrecioUnitario(detalle.getPrecioUnitario());
+                    dto.setGarantia(detalle.getGarantia());
+                    dto.setNombreProducto(detalle.getNombreProducto());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public boolean existsById(Long id) {
+        return facturaRepository.existsById(id);
+    }
+
 }
