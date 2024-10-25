@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('productoForm').addEventListener('submit', async (event) => {
         event.preventDefault();
         const id = document.getElementById('productoId').value;
-        const nombre = document.getElementById('nombre').value;
+        const nombre = document.getElementById('nombre').value.toUpperCase();
         const precioComprado = parseInt(document.getElementById('precioComprado').value.replace(/\./g, ''));
         const precioVendido = parseInt(document.getElementById('precioVendido').value.replace(/\./g, ''));
         const cantidad = document.getElementById('cantidad').value;
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const filtroCategoriaSelect = document.getElementById('filtroCategoria');
             const categoriaSelect = document.getElementById('categoria');
-
+            
             filtroCategoriaSelect.innerHTML = '<option value="">Todos</option>';
             categoriaSelect.innerHTML = '';
 
@@ -247,7 +247,7 @@ function mostrarProductosEnTabla(productos) {
     productos.forEach(producto => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${producto.nombre}</td>
+            <td>${producto.nombre.toUpperCase()}</td>
             <td>${formatNumber(producto.precioComprado)}</td>
             <td>${formatNumber(producto.precioVendido)}</td>
             <td>${producto.cantidad}</td>
@@ -434,7 +434,4 @@ function limpiarFormulario() {
     document.getElementById('categoriaForm').reset();
 }
 
-function formatNumber(number) {
-    return number.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-}
 

@@ -12,14 +12,124 @@
         <nav>
             <h6 style="user-select: none;">Gestión Total</h6>
             <ul>
-                <li><a href="facturacion.html">Facturacion</a></li>
-                <li><a href="#">Inventario</a></li>
+                <li><a href="facturacion.html">Facturación</a></li>
+                <li><a href="index.html">Inventario</a></li>
                 <li><a href="ventas.html">Ventas</a></li>
-                <li><a href="Pedidos.html">Pedidos</a></li>
+                <li><a href="#">Pedidos</a></li>
                 <li><a href="herramientas.html">Activos</a></li>
             </ul>
         </nav>        
     </header>
 
+    <div class="container">
+        <h1 class="text-center" style="user-select: none;">Inventario de Pedidos</h1>
+
+        <div class="d-flex justify-content-end mb-3">
+            <!-- Formulario de búsqueda -->
+          <form id="searchForm" class="col-md-8" >
+              <input type="text" id="searchPedido" autocomplete="off" placeholder="Buscar por nombre">
+          </form>
+          <div class="mr-2">
+              <button class="btn btn-primary" id="agregarPedido" data-toggle="modal" data-target="#pedidoModal">Agregar Pedido</button>
+          </div> 
+          <div class="mr-2">
+            <button class="btn btn-info" id="totalPedido" data-toggle="modal" data-target="#totalModal">Ver Total</button>
+        </div> 
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="col-md-2">Nombre</th>
+                            <th class="col-md-1">$Comprado</th>
+                            <th class="col-md-1">$Vendido</th>
+                            <th class="col-md-1">Cantidad</th>
+                            <th class="col-md-2">Categoría</th>
+                            <th class="col-md-1">Total</th>
+                            <th class="col-md-1">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pedidoTableBody">
+                        <!-- Aquí se llenará la tabla con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="pedidoModal" tabindex="-1" aria-labelledby="pedidoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" id="modal-pedido">
+                        <h5 class="modal-title" id="pedidoModalLabel">Agregar Pedido</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="pedidoForm">
+                            <input type="hidden" id="pedidoId">
+                            <div class="form-group">
+                                <label for="nombrePedido">Nombre</label>
+                                <input type="text" autocomplete="off" class="form-control" id="nombrePedido"  required>
+                            </div>
+                            <div class="form-group">
+                                <label for="precioCompradoPedido">Precio Comprado</label>
+                                <input type="text" autocomplete="off" class="form-control" id="precioCompradoPedido" pattern="^[0-9,.]+$" title="Ingrese un número válido">
+                            </div>
+                            <div class="form-group">
+                                <label for="precioVendidoPedido">Precio Vendido</label>
+                                <input type="text" autocomplete="off" class="form-control" id="precioVendidoPedido" pattern="^[0-9,.]+$" title="Ingrese un número válido">
+                            </div>
+                            <div class="form-group">
+                                <label for="cantidadPedido">Cantidad</label>
+                                <input type="number" autocomplete="off" class="form-control" value="" id="cantidadPedido" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="categoriaPedido">Categoría</label>
+                                <select class="form-control" id="categoriaPedido" required >
+                                   <!-- Las opciones de categorías se llenarán dinámicamente -->
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal para mostrar totales -->
+    <div class="modal fade" id="totalModal" tabindex="-1" aria-labelledby="totalModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="totalModalLabel">Totales de Categorías y Global</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="mt-4 text-primary">Total Global</h4>
+                    <p id="totalGlobal" class="font-weight-bold display-4">0</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script src="pedido.js"></script>
 </body>
 </html>

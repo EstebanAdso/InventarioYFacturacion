@@ -116,7 +116,7 @@ legend {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-#productoModal .modal-header {
+#productoModal .modal-header, #pedidoModal .modal-header {
     background-color: #007bff; /* Color del encabezado */
     color: white;
     border-bottom: none;
@@ -140,7 +140,7 @@ legend {
     
 }
 
-#totalModal .modal-header {
+#totalModal .modal-header, #detalleFacturaModal .modal-header {
     background-color: #17a2b8; /* Color del encabezado */
     color: white;
     border-bottom: none;
@@ -192,6 +192,15 @@ legend {
     background-color: #ffffff; /* Color de fondo para filas pares */
 }
 
+#pedidoTableBody tr:nth-child(odd) {
+    background-color: #f7f7f7; /* Color de fondo para filas impares */
+}
+
+#pedidoTableBody tr:nth-child(even) {
+    background-color: #ffffff; /* Color de fondo para filas pares */
+}
+
+
 #clienteForm input{
     font-weight: 400;
 }
@@ -199,3 +208,18 @@ legend {
 #facturaForm input{
     font-weight: 400;
 }
+
+.loading {
+    text-align: center;
+    font-size: 18px;
+    color: #555;
+  }
+
+  #facturasContainer {
+    max-height: 80dvh;
+    /* Ajusta la altura máxima según tus necesidades */
+    overflow-y: auto;
+    /* Habilita el desplazamiento vertical */
+    overflow-x: hidden;
+    /* Oculta el desplazamiento horizontal, si no es necesario */
+  }

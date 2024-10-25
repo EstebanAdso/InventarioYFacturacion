@@ -62,13 +62,13 @@ function mostrarSugerencias(clientes) {
 
     clientes.forEach(cliente => {
         const li = document.createElement('li');
-        li.textContent = cliente.nombre;
+        li.textContent = cliente.nombre.toUpperCase();
         li.style.padding = '8px';
         li.style.cursor = 'pointer';
 
         // Al hacer clic en una sugerencia, llenar el campo de nombre del cliente y ocultar las sugerencias
         li.addEventListener('click', () => {
-            document.getElementById('nombreCliente').value = cliente.nombre;
+            document.getElementById('nombreCliente').value = cliente.nombre.toUpperCase();
             document.getElementById('cedulaNit').value = cliente.identificacion;
             document.getElementById('correoCliente').value = cliente.correo;
             document.getElementById('telefonoCliente').value = cliente.telefono;
@@ -88,7 +88,7 @@ function mostrarSugerencias(clientes) {
 let productoSeleccionadoId = null;
 
 function buscarProductos() {
-    const nombreProducto = document.getElementById('nombreProductoManual').value;
+    const nombreProducto = document.getElementById('nombreProductoManual').value.toUpperCase();
     
     if (nombreProducto.length < 2) {
         // Oculta la lista si el texto es menor a 2 caracteres
@@ -113,7 +113,7 @@ function buscarProductos() {
         if (Array.isArray(data)) {
             data.forEach(producto => {
                 const li = document.createElement('li');
-                li.innerHTML = producto.nombre + "<i>"+ "  $" + producto.precioVendido + "</i>" + " || Stock disponible : " + producto.cantidad;
+                li.innerHTML = producto.nombre.toUpperCase() + "<i>"+ " ||  $" + producto.precioVendido + "</i>" + " || Stock disponible : " + producto.cantidad;
                 
                 // Mensaje para depurar el click en cada producto
                 li.onclick = () => {
@@ -166,7 +166,7 @@ function agregarDetalle(detalle) {
 
 
 function guardarFactura() {
-    const nombreCliente = document.getElementById('nombreCliente').value.trim();
+    const nombreCliente = document.getElementById('nombreCliente').value.trim().toUpperCase();
     const cedulaNit = document.getElementById('cedulaNit').value.trim();
     const telefonoCliente = document.getElementById('telefonoCliente').value.trim();
     const correoCliente = document.getElementById('correoCliente').value.trim();
@@ -182,12 +182,12 @@ function guardarFactura() {
             totalFactura += producto.total;
             return `
                 <tr>
-                    <td>${producto.nombre}</td>
+                    <td>${producto.nombre.toUpperCase()}</td>
                     <td>${producto.cantidad}</td>
-                    <td>${producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 2 })}</td>
-                    <td>${producto.garantia || "Excelente calidad"}</td>
+                    <td>${producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
+                    <td>${producto.garantia}</td>
                     <td>${producto.descripcion || "Excelente calidad"}</td>
-                    <td>${producto.total.toLocaleString('es-CO', { minimumFractionDigits: 2 })}</td>
+                    <td>${producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
                 </tr>
             `;
         }).join('');
@@ -265,7 +265,7 @@ function guardarFactura() {
                         ${productosHTML}
                         <tr style="background-color: #f2f2f2;">
                             <td colspan="5" style="text-align: right; padding: 8px;"><strong>Total Factura:</strong></td>
-                            <td style="border: 1px solid #ddd; padding: 8px;">${totalFactura.toLocaleString('es-CO', { minimumFractionDigits: 2 })}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">${totalFactura.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -309,7 +309,12 @@ function guardarFactura() {
     }
 }
 
+const nombreClienteInput = document.getElementById('nombreCliente');
 
+    // Asignar un evento de input para convertir el texto a mayúsculas
+    nombreClienteInput.addEventListener('input', function() {
+        this.value = this.value.toUpperCase(); // Convierte el valor a mayúsculas
+    });
 
 let totalFacturaGlobal = 0; // Variable global para almacenar el total de la factura
 
@@ -341,10 +346,10 @@ function agregarProducto() {
 
         cellNombre.textContent = nombreProducto;
         cellCantidad.textContent = cantidad;
-        cellPrecioUnitario.textContent = precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 2 });
+        cellPrecioUnitario.textContent = precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
         cellGarantia.textContent = garantia;
         cellDescripcion.textContent = descripcion;
-        cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 2 });
+        cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 0 });
 
         productosEnFactura.push({
             id: productoId,
@@ -385,7 +390,7 @@ function agregarProducto() {
 
 // Función para actualizar el total de la factura en el DOM
 function actualizarTotalFactura() {
-    document.getElementById('totalDeFactura').textContent = `TOTAL: $${totalFacturaGlobal.toLocaleString('es-CO', { minimumFractionDigits: 2 })}`;
+    document.getElementById('totalDeFactura').innerHTML = `TOTAL: <span style="color: red;">$${totalFacturaGlobal.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>`;
 }
 
 function limpiarFormularioProducto() {

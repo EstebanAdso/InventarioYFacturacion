@@ -2,7 +2,6 @@ package com.example.backendinventario.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 @Entity
 @Data
 public class Pedido {
@@ -19,16 +18,18 @@ public class Pedido {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
-    private String estado; //default pendiente
+
+    private String estado; // Estado predeterminado: Pendiente
 
     public Pedido() {
         this.estado = "Pendiente";
     }
 
+    // Método para calcular el total antes de guardar o actualizar
     @PrePersist
     @PreUpdate
     private void calcularTotal() {
-        if (this.cantidad != null && this.precioComprado != 0) {
+        if (this.cantidad != null && this.precioComprado > 0) {
             this.total = this.cantidad * this.precioComprado;
         } else {
             this.total = 0;

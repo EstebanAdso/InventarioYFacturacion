@@ -1,105 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ventas</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css"> <!-- Asegúrate de tener tu archivo de estilos CSS -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ventas</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css"> <!-- Asegúrate de tener tu archivo de estilos CSS -->
 </head>
+
 <body>
-    <style>
-        /* Estilos existentes */
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 0;
-            padding: 0;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .loading {
-            text-align: center;
-            font-size: 18px;
-            color: #555;
-        }
-        #facturasContainer {
-            max-height: 100dvh; /* Ajusta la altura máxima según tus necesidades */
-            overflow-y: auto;  /* Habilita el desplazamiento vertical */
-            overflow-x: hidden; /* Oculta el desplazamiento horizontal, si no es necesario */
-        }
+  <header id="nav">
+    <nav>
+      <h6 style="user-select: none;">Gestión Total</h6>
+      <ul>
+        <li><a href="facturacion.html">Facturación</a></li>
+        <li><a href="index.html">Inventario</a></li>
+        <li><a href="#">Ventas</a></li>
+        <li><a href="Pedidos.html">Pedidos</a></li>
+        <li><a href="herramientas.html">Activos</a></li>
+      </ul>
+    </nav>
+  </header>
 
-    </style>
+  <div class="container">
 
-    <header id="nav">
-        <nav>
-            <h6 style="user-select: none;">Gestión Total</h6>
-            <ul>
-                <li><a href="facturacion.html">Facturación</a></li>
-                <li><a href="index.html">Inventario</a></li>
-                <li><a href="#">Ventas</a></li>
-                <li><a href="Pedidos.html">Pedidos</a></li>
-                <li><a href="herramientas.html">Activos</a></li>
-            </ul>
-        </nav>
-    </header>
-        <h1 style="margin-top: 80px;">Ventas Generadas</h1>
-        <div id="facturasContainer" class="container">
-            <p class="loading">Cargando facturas...</p>
-        </div>
+    <h1 style="margin-top: 80px; text-align: center;">Ventas Generadas</h1>
+    <div id="facturasContainer">
+      <p class="loading">Cargando facturas...</p>
+    </div>
 
-        <!-- Modal para mostrar detalles de la factura -->
-        <div class="modal fade" id="detalleFacturaModal" tabindex="-1" role="dialog" aria-labelledby="detalleFacturaLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="detalleFacturaLabel">Detalles de Factura</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Producto</th>
-                        <th>Descripción</th>
-                        <th>Cantidad</th>
-                        <th>Precio Unitario</th>
-                        <th>Garantía</th>
-                        <th>Total</th>
-                      </tr>
-                    </thead>
-                    <tbody id="detallesFacturaBody">
-                      <!-- Los detalles se insertarán aquí -->
-                    </tbody>
-                  </table>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                </div>
-              </div>
-            </div>
+    <!-- Modal para mostrar detalles de la factura -->
+    <div class="modal fade" id="detalleFacturaModal" tabindex="-1" role="dialog" aria-labelledby="detalleFacturaLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="detalleFacturaLabel">Detalles de Factura</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-          
-    
+          <div class="modal-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Descripción</th>
+                  <th>Cantidad</th>
+                  <th>Precio Unitario</th>
+                  <th>Garantía</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="detallesFacturaBody">
+                <!-- Los detalles se insertarán aquí -->
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="ventas.js"></script>
+
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="ventas.js"></script>
 </body>
+
 </html>
