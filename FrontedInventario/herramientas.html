@@ -13,13 +13,105 @@
             <h6 style="user-select: none;">Gestión Total</h6>
             <ul>
                 <li><a href="facturacion.html">Facturación</a></li>
-                <li><a href="#">Inventario</a></li>
+                <li><a href="index.html">Inventario</a></li>
                 <li><a href="ventas.html">Ventas</a></li>
                 <li><a href="Pedidos.html">Pedidos</a></li>
-                <li><a href="herramientas.html">Activos</a></li>
+                <li><a href="#" class="selected">Activos</a></li>
+                <li><a href="clientes.html">Clientes</a></li>
             </ul>
         </nav>        
     </header>
 
+    <div class="container">
+        <h1 class="text-center" style="user-select: none;">Inventario de Activos</h1>
+
+        <div class="d-flex justify-content-end mb-3">
+          <div class="mr-4">
+              <button class="btn btn-dark" id="agregarActivo" data-toggle="modal" data-target="#activoModal">Agregar Activo</button>
+          </div> 
+          <div class="mr-4">
+            <button class="btn btn-info" id="totalActivo" data-toggle="modal" data-target="#totalModal">Ver Total</button>
+        </div> 
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="col-md-3">Nombre del Activo</th>
+                            <th class="col-md-2">Precio de Compra</th>
+                            <th class="col-md-2">Cantidad</th>
+                            <th class="col-md-2">Total</th>
+                            <th class="col-md-1">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activoTableBody">
+                        <!-- Aquí se llenará la tabla con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="activoModal" tabindex="-1" aria-labelledby="activoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" id="modal-activo">
+                        <h5 class="modal-title" id="activoModalLabel">Agregar Activo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="activoForm">
+                            <input type="hidden" id="activoId">
+                            <div class="form-group">
+                                <label for="nombreactivo">Nombre del activo</label>
+                                <input type="text" autocomplete="off" class="form-control" id="nombreactivo"  required>
+                            </div>
+                            <div class="form-group">
+                                <label for="precioCompradoactivo">Precio Comprado</label>
+                                <input type="text" autocomplete="off" class="form-control" id="precioCompradoactivo" pattern="^[0-9,.]+$" title="Ingrese un número válido">
+                            </div>
+                            <div class="form-group">
+                                <label for="cantidadactivo">Cantidad</label>
+                                <input type="number" autocomplete="off" class="form-control" value="" id="cantidadactivo" required>
+                            </div>
+                            <button type="submit" class="btn btn-dark">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="totalModal" tabindex="-1" aria-labelledby="totalModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="totalModalLabel">Total de Activos</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 class="mt-4 text-primary">Total Global</h4>
+                        <p id="totalGlobal" class="font-weight-bold display-4">$0</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script src="activo.js"></script>
 </body>
 </html>

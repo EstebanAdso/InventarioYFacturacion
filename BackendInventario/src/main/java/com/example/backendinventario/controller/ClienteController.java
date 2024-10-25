@@ -1,6 +1,7 @@
 package com.example.backendinventario.controller;
 
 import com.example.backendinventario.entities.Cliente;
+import com.example.backendinventario.entities.ClienteTopDto;
 import com.example.backendinventario.repositories.ClienteRepository;
 import com.example.backendinventario.services.ClienteServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,27 @@ public class ClienteController {
                 .filter(cliente -> cliente.getNombre().toLowerCase().contains(query.toLowerCase()))
                 .collect(Collectors.toList());
     }
+
+    @PutMapping("{id}")
+    public Cliente actualizar(@PathVariable Long id, @RequestBody Cliente clienteActualizado) {
+        Cliente clienteExistente = clienteServices.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        clienteExistente.setNombre(clienteActualizado.getNombre());
+        clienteExistente.setIdentificacion(clienteActualizado.getIdentificacion());
+        clienteExistente.setTelefono(clienteActualizado.getTelefono());
+        clienteExistente.setDireccion(clienteActualizado.getDireccion());
+        clienteExistente.setCorreo(clienteActualizado.getCorreo());
+        return clienteServices.save(clienteExistente);
+    }
+
+
+
+        @GetMapping("/top")
+        public ResponseEntity<List<ClienteTopDto>> obtenerClientesTop() {
+            List<ClienteTopDto> clientesTop = clienteServices.obtenerClientesTop();
+            return ResponseEntity.ok(clientesTop);
+        }
+
 
 }

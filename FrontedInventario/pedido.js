@@ -62,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(response => {
                 if (response.ok) {
-                    alert('Pedido eliminado correctamente.');
                     cargarPedidos(); // Refrescar lista de pedidos
                     cargarTotalGlobal()
                     cargarCategorias()

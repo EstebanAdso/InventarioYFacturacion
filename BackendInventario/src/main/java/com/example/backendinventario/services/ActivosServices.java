@@ -1,6 +1,7 @@
 package com.example.backendinventario.services;
 
 import com.example.backendinventario.entities.Activos;
+import com.example.backendinventario.entities.Pedido;
 import com.example.backendinventario.repositories.ActivosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,5 +28,10 @@ public class ActivosServices {
 
     public void deleteById(Long id) {
         activosRepository.deleteById(id);
+    }
+
+    public double totalGlobal() {
+        List<Activos> activos = activosRepository.findAll();
+        return activos.stream().mapToDouble(Activos::getTotal).sum();
     }
 }

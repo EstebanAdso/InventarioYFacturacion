@@ -15,8 +15,9 @@
                 <li><a href="facturacion.html">Facturación</a></li>
                 <li><a href="index.html">Inventario</a></li>
                 <li><a href="ventas.html">Ventas</a></li>
-                <li><a href="#">Pedidos</a></li>
+                <li><a href="#" class="selected">Pedidos</a></li>
                 <li><a href="herramientas.html">Activos</a></li>
+                <li><a href="clientes.html">Clientes</a></li>
             </ul>
         </nav>        
     </header>
@@ -25,14 +26,10 @@
         <h1 class="text-center" style="user-select: none;">Inventario de Pedidos</h1>
 
         <div class="d-flex justify-content-end mb-3">
-            <!-- Formulario de búsqueda -->
-          <form id="searchForm" class="col-md-8" >
-              <input type="text" id="searchPedido" autocomplete="off" placeholder="Buscar por nombre">
-          </form>
-          <div class="mr-2">
+          <div class="mr-4">
               <button class="btn btn-primary" id="agregarPedido" data-toggle="modal" data-target="#pedidoModal">Agregar Pedido</button>
           </div> 
-          <div class="mr-2">
+          <div class="mr-4">
             <button class="btn btn-info" id="totalPedido" data-toggle="modal" data-target="#totalModal">Ver Total</button>
         </div> 
         </div>
@@ -42,7 +39,7 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th class="col-md-2">Nombre</th>
+                            <th class="col-md-2">Nombre del Pedido</th>
                             <th class="col-md-1">$Comprado</th>
                             <th class="col-md-1">$Vendido</th>
                             <th class="col-md-1">Cantidad</th>

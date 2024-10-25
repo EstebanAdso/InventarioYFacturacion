@@ -209,7 +209,7 @@ function guardarFactura() {
                 cantidad: producto.cantidad,
                 precioUnitario: producto.precioUnitario,
                 garantia: producto.garantia || "1",
-                descripcion: producto.descripcion || "Excelente calidad",
+                descripcion: producto.descripcion ?? "verificado", // Valor por defecto
             })),
         };
 
@@ -408,7 +408,7 @@ function obtenerProductosSeleccionados() {
         cantidad: producto.cantidad,
         precioUnitario: producto.precioUnitario,
         garantia: producto.garantia,
-        descripcion: producto.descripcion,
+        descripcion: producto.descripcion || null,
         total: producto.total
     }));
 }

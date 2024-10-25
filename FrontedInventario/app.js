@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Error al guardar el producto.');
             }
 
+            alert("pedido guardado con Exito")
             $('#productoModal').modal('hide');
             limpiarFormulario();
             cargarProductosPorCategoria();  // Recargar productos en la categoría seleccionada
@@ -379,7 +380,7 @@ async function eliminarProducto(id) {
             if (!response.ok) {
                 throw new Error('Error al desactivar el producto.');
             }
-
+            alert("pedido desactivado satisfactoriamente")
             cargarProductos();
             cargarTotalPorCategoria();
         } catch (error) {

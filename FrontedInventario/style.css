@@ -56,11 +56,18 @@ nav ul li{
 nav ul li a{
     color: #ddd;
     user-select: none;
+    font-size: 18px;
 }
 
 nav ul li a:hover{
     text-decoration: none;
     color: #aaa;
+}
+
+header nav ul li a.selected {
+    background-color: #4488ee; 
+    color: white;
+    outline: 4px solid #4488ee; /* Outline de 4px del mismo color */
 }
 
 #searchForm input{
@@ -116,13 +123,13 @@ legend {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-#productoModal .modal-header, #pedidoModal .modal-header {
+#productoModal .modal-header, #pedidoModal .modal-header, #clientesTopModal .modal-header {
     background-color: #007bff; /* Color del encabezado */
     color: white;
     border-bottom: none;
 }
 
-#categoriaModal .modal-header {
+#categoriaModal .modal-header, #activoModal .modal-header, #clienteModal .modal-header {
     background-color: #252627; /* Color del encabezado */
     color: white;
     border-bottom: none;
@@ -215,7 +222,7 @@ legend {
     color: #555;
   }
 
-  #facturasContainer {
+  #facturasContainer , #clientesContainer {
     max-height: 80dvh;
     /* Ajusta la altura máxima según tus necesidades */
     overflow-y: auto;
@@ -223,3 +230,11 @@ legend {
     overflow-x: hidden;
     /* Oculta el desplazamiento horizontal, si no es necesario */
   }
+
+  /* Clase para el elemento seleccionado */
+.selected {
+    background-color: #4488ee;
+    color: white; /* Opcional: cambia el color del texto para resaltar */
+    font-weight: bold; /* Opcional: añade un estilo de negrita para resaltar */
+    border-radius: 4px; /* Opcional: añade bordes redondeados */
+}

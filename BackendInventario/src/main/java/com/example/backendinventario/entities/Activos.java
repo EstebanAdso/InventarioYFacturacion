@@ -14,9 +14,17 @@ public class Activos {
     private String nombre;
     private float precio;
     private LocalDate fecha; // Agregamos el campo de fecha
+    private Integer cantidad;
+    private float total;
 
     @PrePersist
-    protected void onCreate() {
-        this.fecha = LocalDate.now(); // Al agregar el producto, se captura la fecha actual automáticamente
+    @PreUpdate
+    private void calcularTotal() {
+        this.fecha = LocalDate.now(); // actualizar fecha
+        if (this.cantidad != null && this.precio != 0) {
+            this.total = this.cantidad * this.precio;
+        } else {
+            this.total = 0;
+        }
     }
 }
