@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facturación</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css"> <!-- Asegúrate de tener tu archivo de estilos CSS -->
+    <link rel="stylesheet" href="../css/style.css"> <!-- Asegúrate de tener tu archivo de estilos CSS -->
 </head>
 <body>
 
@@ -82,19 +82,21 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label for="descripcionFactura">Descripción:</label>
-                        <textarea class="form-control" autocomplete="off" id="descripcionFactura" rows="1"></textarea>
+                        <textarea class="form-control" autocomplete="off" id="descripcionFactura" rows="1">Buena calidad</textarea>
                     </div>
                 </div>
                
                 <div class="form-row">
                     <div class="form-group col-md-4">
+                        <label for="precioUnitarioManual">Precio Unitario:</label>
+                        <input type="text" autocomplete="off"  class="form-control" id="precioUnitarioManual">
+                    </div>
+
+                    <div class="form-group col-md-4">
                         <label for="cantidadProductoManual">Cantidad:</label>
                         <input type="number" autocomplete="off" class="form-control" id="cantidadProductoManual" value="1">
                     </div>
-                    <div class="form-group col-md-4">
-                        <label for="precioUnitarioManual">Precio Unitario:</label>
-                        <input type="text" autocomplete="off" class="form-control" id="precioUnitarioManual">
-                    </div>
+                    
                     <div class="form-group col-md-4">
                         <label for="garantiaProducto">Garantía (en meses):</label>
                         <input type="number" autocomplete="off" class="form-control" id="garantiaProducto" value="1">
@@ -130,10 +132,12 @@
         </div>
     
         <!-- Botones para guardar y cancelar -->
-        <div class="mt-4">
-            <button type="button" class="btn btn-success" onclick="guardarFactura()">Guardar Factura</button>
+        <div class="mt-4" style="text-align: center">
+            <button type="button" style="width: 300px;" class="btn btn-success" onclick="imprimirPos()">Imprimir Pos</button>
+            <button type="button" class="btn btn-outline-danger" onclick="guardarFactura()">Guardar Factura PDF</button>
             <button type="button" class="btn btn-dark" onclick="limpiarFormulario()">Cancelar</button>
         </div>
+        
     </div>
     
 
@@ -143,6 +147,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
-    <script src="facturacion.js"></script>
+    <script src="../js/facturacion.js"></script>
 </body>
 </html>

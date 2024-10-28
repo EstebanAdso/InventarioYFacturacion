@@ -238,3 +238,32 @@ legend {
     font-weight: bold; /* Opcional: añade un estilo de negrita para resaltar */
     border-radius: 4px; /* Opcional: añade bordes redondeados */
 }
+
+
+.hover-effect:hover {
+    color: black; /* Cambia a negro cuando el usuario coloca el cursor encima */
+    background-color: lightgray; /* Ejemplo de fondo */
+}
+
+.form-control {
+    color: #000; /* Negro fuerte */
+    background-color: #fff; /* Fondo blanco */
+}
+
+/* Estilo para el placeholder */
+.form-control::placeholder {
+    color: #aaa; /* Gris suave */
+    opacity: 1; /* Asegura que el color se muestre */
+}
+
+/* Opcional: Estilo para el textarea */
+#descripcionFactura {
+    color: #000; /* Negro fuerte */
+    background-color: #fff; /* Fondo blanco */
+}
+
+/* Estilo para el border de los inputs en foco */
+.form-control:focus {
+    border-color: #1116; /* Cambia el color del borde al foco */
+    box-shadow: 0 0 5px rgba(17, 22, 22, 0.5); /* Efecto de sombra en foco */
+}

@@ -107,4 +107,6 @@ public class ProductoController {
     public List<Producto> buscarPorNombre(@PathVariable String nombre) {
         return productoService.buscarPorNombre(nombre); // Implementa este método en tu servicio
     }
+
+
 }

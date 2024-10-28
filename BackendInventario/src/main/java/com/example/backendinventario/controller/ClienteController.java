@@ -60,13 +60,6 @@ public class ClienteController {
     }
 
 
-    @GetMapping("/suggestions")
-    public List<Cliente> getSuggestions(@RequestParam String query) {
-        return clienteRepository.findAll()
-                .stream()
-                .filter(cliente -> cliente.getNombre().toLowerCase().contains(query.toLowerCase()))
-                .collect(Collectors.toList());
-    }
 
     @PutMapping("{id}")
     public Cliente actualizar(@PathVariable Long id, @RequestBody Cliente clienteActualizado) {
@@ -88,6 +81,15 @@ public class ClienteController {
             List<ClienteTopDto> clientesTop = clienteServices.obtenerClientesTop();
             return ResponseEntity.ok(clientesTop);
         }
+
+    @GetMapping("/suggestions")
+    public List<Cliente> getSuggestions(@RequestParam String query) {
+        return clienteRepository.findAll()
+                .stream()
+                .filter(cliente -> cliente.getNombre().toLowerCase().contains(query.toLowerCase()) ||
+                        cliente.getIdentificacion().contains(query))
+                .collect(Collectors.toList());
+    }
 
 
 }
