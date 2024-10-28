@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const precioCompradoInput = document.getElementById('precioCompradoactivo');
     const cantidadInput = document.getElementById('cantidadactivo');
     const limpiarButton = document.querySelector('button[type="button"]');
+    let modificarTexto = document.getElementById('activoModalLabel')
 
     limpiarButton.addEventListener('click', limpiarFormulario);
 

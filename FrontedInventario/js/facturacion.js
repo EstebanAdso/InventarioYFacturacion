@@ -252,10 +252,14 @@ function guardarFactura() {
                     <img src="../css/pc.png" alt="" style="width: 100px; height: auto;">
                     <h2>CompuServices Soft</h2>
                     <p>Servicio técnico de computadores y celulares,<br> venta de computadores y periféricos</p>
-                    <p>NIT: 1193030552-4</p>
-                    <p>Ubicación: Pasto, Centro comercial la 16, local 138</p>
+                    <div> 
+                        <p style="margin: 0 0 4px 0;"><b>NIT:</b> 1193030552-4</p>
+                        <p style="margin: 0 0 4px 0;"><b>Celular:</b> 3242264795</p>
+                        <p style="margin: 0;"><b>Ubicación:</b> Pasto, Centro comercial la 16, local 138</p>
+                    </div>
                 </div>
-                <div>
+
+
                     <p><strong>Cliente:</strong> ${nombreCliente}</p>
                     <p><strong>Cédula o NIT:</strong> ${cedulaNit}</p>
                     ${telefonoCliente ? `<p><strong>Teléfono:</strong> ${telefonoCliente}</p>` : ''}
@@ -403,6 +407,7 @@ function imprimirPos() {
                         Servicio técnico de computadores y celulares,<br>
                         Venta de computadores y periféricos<br>
                         <b>NIT:</b> 1193030552-4<br>
+                        <b>Celular:</b> 3242264795<br>
                         <b>Ubicación:</b> Pasto, Centro comercial la 16, local 138
                     </p>
                     <p><strong>Fecha:</strong> ${fechaActual}</p>
@@ -472,6 +477,9 @@ function imprimirPos() {
         alert('Por favor, completa todos los campos requeridos.');
     }
 }
+
+const inputs = document.querySelectorAll('.form-control');
+
 
 
 function formatNumber(number) {

@@ -135,13 +135,13 @@ legend {
     border-bottom: none;
 }
 
-#headerOscuro {
+.headerOscuro {
     background-color: #252627; /* Color del encabezado */
     color: white;
     border-bottom: none;
 }
 
-#categoriaModal button {
+#categoriaModal button, #clienteModal button, #activoModal button {
     background-color: #252627; /* Color del encabezado */
     color: white;
     

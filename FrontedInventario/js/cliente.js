@@ -7,13 +7,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const telefonoCliente = document.getElementById('telefonoCliente');
     const direccionCliente = document.getElementById('direccionCliente');
     const correoCliente = document.getElementById('correoCliente');
-
+    let modificarTexto = document.getElementById('clienteModalLabel')
    
 
     cargarclientes();
 
     
     function cargarclientes() {
+
+        let botonModificador = document.getElementById('agregarcliente');
+
+        botonModificador.addEventListener('click', function() {
+            modificarTexto.textContent = 'Agregar Cliente';
+            limpiarFormulario()
+        });
         fetch(apiUrl)
             .then(response => response.json())
             .then(clientes => {
@@ -60,8 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function limpiarFormulario() {
-        clienteForm.reset();
-        document.getElementById('clienteId').value = '';
+        clienteForm.reset()
     }
 
     clienteForm.addEventListener('submit', function (event) {
@@ -99,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!response.ok) {
                 throw new Error('Error al cargar el cliente para editar.');
             }
-
             modificarTexto = document.getElementById('clienteModalLabel');
             modificarTexto.textContent = 'Editar cliente';
 
