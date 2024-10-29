@@ -1,0 +1,9 @@
+npm install electron --save-dev
+
+npm start
+
+npm install electron-packager --save-dev
+
+npx electron-packager . frontedinventario --platform=win32 --arch=x64 --out=dist
+
+npm run build
