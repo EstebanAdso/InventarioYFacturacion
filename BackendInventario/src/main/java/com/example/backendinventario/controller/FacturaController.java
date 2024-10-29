@@ -57,7 +57,6 @@ public class FacturaController {
             if (facturaDTO.getDireccion() != null && !facturaDTO.getDireccion().equals(cliente.getDireccion())) {
                 cliente.setDireccion(facturaDTO.getDireccion());
             }
-
             // Guardar el cliente actualizado
             clienteService.save(cliente);
         } else {
@@ -95,6 +94,7 @@ public class FacturaController {
                 detalleFactura.setPrecioUnitario(det.getPrecioUnitario());
                 detalleFactura.setGarantia(det.getGarantia());
                 detalleFactura.setNombreProducto(productoActualizado.getNombre());
+                detalleFactura.setPc(det.getPc());
 
                 detalles.add(detalleFactura);
 

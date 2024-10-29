@@ -94,6 +94,7 @@ public class FacturaService {
                     dto.setPrecioUnitario(detalle.getPrecioUnitario());
                     dto.setGarantia(detalle.getGarantia());
                     dto.setNombreProducto(detalle.getNombreProducto());
+                    dto.setPc(detalle.getPc());
                     return dto;
                 })
                 .collect(Collectors.toList());

@@ -10,4 +10,5 @@ public class DetalleDTO {
     private float precioUnitario;
     private String garantia;
     private String nombreProducto;
+    private float pc;
 }

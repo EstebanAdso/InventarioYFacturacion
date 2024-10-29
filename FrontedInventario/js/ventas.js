@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <td>${factura.serial}</td>
                                         <td>${factura.cliente ? factura.cliente.nombre : 'Cliente no disponible'}</td>
                                         <td>${factura.cliente ? factura.cliente.identificacion : 'N/A'}</td>
-                                        <td>${new Date(factura.fechaEmision).toLocaleDateString()}</td>
-                                        <td>${factura.total.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
+                                        <td>${new Date(factura.fechaEmision).toLocaleString()}</td>
+                                        <td style="color: #48e; font-weight: bold">${factura.total.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
                                         <td>
                                             <button class="btn btn-info btn-ver-detalles" data-id="${factura.id}">
                                                 Ver detalles
@@ -75,9 +75,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${detalle.nombreProducto}</td>
                             <td>${detalle.descripcion}</td>
                             <td>${detalle.cantidad}</td>
-                            <td>${detalle.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
                             <td>${detalle.garantia}</td>
-                            <td>${(detalle.cantidad * detalle.precioUnitario).toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
+                            <td>${detalle.pc.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
+                            <td>${detalle.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>  
+                            <td style="color: #48e; font-weight: bold">${(detalle.cantidad * detalle.precioUnitario).toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
                         </tr>
                     `;
                     detallesBody.innerHTML += fila;

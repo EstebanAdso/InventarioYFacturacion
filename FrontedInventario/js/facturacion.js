@@ -164,6 +164,7 @@ document.getElementById('nombreProductoManual').addEventListener('input', buscar
 function seleccionarProducto(producto) {
     document.getElementById('nombreProductoManual').value = producto.nombre;
     document.getElementById('precioUnitarioManual').value = producto.precioVendido;
+    document.getElementById('PCProducto').value = producto.precioComprado;
     document.getElementById('sugerenciasProductos').style.display = 'none';
 }
 
@@ -184,7 +185,7 @@ function guardarFactura() {
     const telefonoCliente = document.getElementById('telefonoCliente').value.trim();
     const correoCliente = document.getElementById('correoCliente').value.trim();
     const direccionCliente = document.getElementById('direccionCliente').value.trim();
-    const productos = obtenerProductosSeleccionados(); // Aquí se obtienen los productos seleccionados
+    const productos = obtenerProductosSeleccionados();
     totalFacturaGlobal = 0;
 
     if (nombreCliente && cedulaNit && productos.length > 0) {
@@ -198,8 +199,8 @@ function guardarFactura() {
                     <td>${producto.nombre.toUpperCase()}</td>
                     <td>${producto.cantidad}</td>
                     <td>${producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
-                    <td>${producto.garantia}</td>
-                    <td>${producto.descripcion.toUpperCase() || "Excelente calidad"}</td>
+                    <td>${producto.garantia} Mes</td>
+                    <td>${producto.descripcion || "Excelente calidad"}</td>
                     <td>${producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
                 </tr>
             `;
@@ -221,7 +222,8 @@ function guardarFactura() {
                 cantidad: producto.cantidad,
                 precioUnitario: producto.precioUnitario,
                 garantia: producto.garantia || "1",
-                descripcion: producto.descripcion ?? "verificado",
+                descripcion: producto.descripcion || "",
+                pc: producto.pc || null,
             })),
         };
 
@@ -347,9 +349,9 @@ function imprimirPos() {
         const productosHTML = productos.map(producto => {
             totalFactura += producto.total;
             return `
-              <tr style=" font-size: 12px; font-family: monospace;">
+              <tr style=" font-size: 10px; font-family: monospace;">
                <td style="padding: 2px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">
-                  ${producto.nombre.toUpperCase()} - ${producto.descripcion || 'Sin descripción'}
+                  ${producto.nombre.toUpperCase()} - ${producto.descripcion || ''}
                 </td>
                 <td style="padding: 2px 0; text-align: center; max-width: 10mm;">${producto.cantidad}</td>
                 <td style="padding: 2px 0; text-align: center; max-width: 15mm;">${producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
@@ -359,7 +361,7 @@ function imprimirPos() {
             `;
         }).join('');
 
-        const fechaActual = new Date().toLocaleDateString('es-CO');
+        const fechaActual = new Date().toLocaleString('es-CO');
 
         const factura = {
             clienteNombre: nombreCliente,
@@ -374,7 +376,8 @@ function imprimirPos() {
                 cantidad: producto.cantidad,
                 precioUnitario: producto.precioUnitario,
                 garantia: producto.garantia + " Mes." || "1",
-                descripcion: producto.descripcion ?? "verificado",
+                descripcion: producto.descripcion || "",
+                pc: producto.pc,
             })),
         };
 
@@ -398,9 +401,9 @@ function imprimirPos() {
                 console.log('Factura guardada exitosamente:', data);
 
                 const facturaHTML = `
-                 <div style="width: 80mm; font-size: 12px; font-family: monospace;">
+                 <div style="width: 65mm; font-size: 10px; font-family: monospace;">
                     <div style="text-align: center;">
-                        <img src="../css/pc.png" alt="" style="width: 100px; height: auto;">
+                        <img src="../css/pc.png" alt="" style="width: 80px; height: auto; margin-top: 0">
                     </div>
                     <h2 style="text-align: center;">CompuServices Soft</h2>
                     <p style="text-align: center;">
@@ -416,14 +419,14 @@ function imprimirPos() {
                     ${telefonoCliente ? `<p><strong>Teléfono:</strong> ${telefonoCliente}</p>` : ''}
                     ${correoCliente ? `<p><strong>Correo:</strong> ${correoCliente}</p>` : ''}
                     ${direccionCliente ? `<p><strong>Dirección:</strong> ${direccionCliente}</p>` : ''}
-                    
-                    <table style="width: 100%; margin-top: 10px;">
+                    <hr>
+                    <table style="width: 100%; margin-top: 10px; font-size: 10px">
                         <thead>
                             <tr>
                                 <th style="padding: 4px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">Producto</th>
-                                <th style="text-align: center; max-width: 10mm;">Cant</th>
-                                <th style="text-align: center; max-width: 15mm;">Valor</th>
-                                <th style="text-align: center; max-width: 15mm;">Garantia</th>
+                                <th style="text-align: center; max-width: 10mm;">Ct.</th>
+                                <th style="text-align: center; max-width: 15mm;">Pre.</th>
+                                <th style="text-align: center; max-width: 15mm;">Garant.</th>
                                 <th style="text-align: center;">Total</th>
                             </tr>
                         </thead>
@@ -435,9 +438,10 @@ function imprimirPos() {
                             </tr>
                         </tbody>
                    </table>
-
-                    <p style="margin-top: 10px; font-size: 10px;">
-                        <b>Nota:</b> La garantía cubre únicamente defectos de fabricación y no aplica en caso de insatisfacción personal, errores en la selección del producto, o daños causados por un mal uso. Para validar la garantía, es indispensable conservar todos los accesorios, empaques originales y documentación proporcionada en el momento de la compra.
+                   <hr>
+                    <p style="margin-top: 10px; font-size: 11px; text-align: center;"><b>******* Gracias por su Compra *******</b></p>
+                    <p style="margin-top: 2px; font-size: 10px; text-align: justify;">
+                        <b>Nota:</b> La garantía cubre únicamente defectos de fabricación y no aplica en caso de insatisfacción personal, errores en la selección del producto, o daños causados por un mal uso. Para validar la garantía, es indispensable conservar todos los accesorios, empaques originales y documentación proporcionada en el momento de la compra, como también no dañar los sellos de garantia.
                     </p>
                 </div>
             `;
@@ -500,9 +504,11 @@ function agregarProducto() {
     const descripcion = document.getElementById('descripcionFactura').value.trim();
     const cantidad = parseInt(document.getElementById('cantidadProductoManual').value.trim());
     const precioUnitario = parseFloat(document.getElementById('precioUnitarioManual').value.replace(/\./g, ''));
+    const pc = parseFloat(document.getElementById('PCProducto').value.replace(/\./g, ''));
     const garantia = parseInt(document.getElementById('garantiaProducto').value.trim());
 
-    if (nombreProducto && descripcion && !isNaN(cantidad) && !isNaN(precioUnitario) && !isNaN(garantia)) {
+    // Asegurarse de que precioComprado también esté validado
+    if (nombreProducto && !isNaN(cantidad) && !isNaN(precioUnitario) && !isNaN(garantia) && !isNaN(pc)) {
         const productoId = productoSeleccionadoId || null;
         const totalProducto = cantidad * precioUnitario;
 
@@ -520,6 +526,7 @@ function agregarProducto() {
         const cellDescripcion = newRow.insertCell(5);
         const cellTotal = newRow.insertCell(6);
         const cellAcciones = newRow.insertCell(7);
+        const cellPc = newRow.insertCell(8); // Celda para precio comprado
 
         cellNombre.textContent = nombreProducto;
         cellCantidad.textContent = cantidad;
@@ -527,6 +534,7 @@ function agregarProducto() {
         cellGarantia.textContent = garantia;
         cellDescripcion.textContent = descripcion;
         cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+        cellPc.textContent = pc.toLocaleString('es-CO', { minimumFractionDigits: 0 }); // Formatear precio comprado
 
         productosEnFactura.push({
             id: productoId,
@@ -534,8 +542,9 @@ function agregarProducto() {
             cantidad: cantidad,
             precioUnitario: precioUnitario,
             garantia: garantia,
-            descripcion: descripcion,
-            total: totalProducto
+            descripcion: descripcion || "",
+            total: totalProducto,
+            pc: pc
         });
 
         // Actualizar el total de la factura
@@ -574,10 +583,11 @@ function actualizarTotalFactura() {
 
 function limpiarFormularioProducto() {
     document.getElementById('nombreProductoManual').value = '';
-    document.getElementById('descripcionFactura').value = 'Buena calidad';
+    document.getElementById('descripcionFactura').value = '';
     document.getElementById('cantidadProductoManual').value = '1';
     document.getElementById('precioUnitarioManual').value = '';
     document.getElementById('garantiaProducto').value = '1';
+    document.getElementById('PCProducto').value = '';
 }
 
 function obtenerProductosSeleccionados() {
@@ -588,13 +598,15 @@ function obtenerProductosSeleccionados() {
         precioUnitario: producto.precioUnitario,
         garantia: producto.garantia,
         descripcion: producto.descripcion || null,
-        total: producto.total
+        total: producto.total,
+        pc: producto.pc
     }));
 }
 function limpiarFormulario() {
     document.getElementById('nombreCliente').value = '';
     document.getElementById('cedulaNit').value = '';
     document.getElementById('telefonoCliente').value = '';
+    document.getElementById('PCProducto').value = '';
     document.getElementById('correoCliente').value = '';
     document.getElementById('direccionCliente').value = '';
     document.getElementById('nombreProductoManual').value = '';
