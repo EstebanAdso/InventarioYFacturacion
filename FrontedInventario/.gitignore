@@ -11,4 +11,8 @@ node_modules/
 /Postman/
 
 # Ignorar el archivo de documentación
-/Documentacion.rtf
+/Documentacion.rtf/
+
+/dist/
+
+/BackendInventario-0.0.1-SNAPSHOT.jar/

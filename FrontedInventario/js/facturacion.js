@@ -518,7 +518,7 @@ function agregarProducto() {
         const cellId = newRow.insertCell(0);
         cellId.textContent = productoId || 'N/A';
         cellId.style.display = 'none';
-
+        
         const cellNombre = newRow.insertCell(1);
         const cellCantidad = newRow.insertCell(2);
         const cellPrecioUnitario = newRow.insertCell(3);
@@ -527,14 +527,15 @@ function agregarProducto() {
         const cellTotal = newRow.insertCell(6);
         const cellAcciones = newRow.insertCell(7);
         const cellPc = newRow.insertCell(8); // Celda para precio comprado
-
+        cellPc.style.display = 'none';
+       
         cellNombre.textContent = nombreProducto;
         cellCantidad.textContent = cantidad;
         cellPrecioUnitario.textContent = precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
         cellGarantia.textContent = garantia;
         cellDescripcion.textContent = descripcion;
         cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-        cellPc.textContent = pc.toLocaleString('es-CO', { minimumFractionDigits: 0 }); // Formatear precio comprado
+       
 
         productosEnFactura.push({
             id: productoId,
