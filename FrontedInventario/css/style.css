@@ -267,3 +267,21 @@ legend {
     border-color: #1116; /* Cambia el color del borde al foco */
     box-shadow: 0 0 5px rgba(17, 22, 22, 0.5); /* Efecto de sombra en foco */
 }
+
+#notificacion {
+    position: fixed;
+    top: 50px;
+    right: 10px;
+    z-index: 1050;
+    min-width: 250px;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+#notificacion .close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #000;
+    cursor: pointer;
+}

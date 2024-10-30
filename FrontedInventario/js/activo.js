@@ -74,8 +74,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (response.ok) {
                     cargaractivos();
                     cargarTotalGlobal();
+                    mostrarMensaje('success', 'Activo eliminado con exito.');
                 } else {
-                    alert('Error al eliminar el activo.');
+                    mostrarMensaje('error', 'Error al eliminar el activo.');
                 }
             })
             .catch(error => console.error('Error al eliminar el activo:', error));
@@ -136,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch(`${apiUrl}/${id}`);
             if (!response.ok) {
-                throw new Error('Error al cargar el activo para editar.');
+                mostrarMensaje('error', 'Error al cargar el activo para editar');
             }
 
             modificarTexto = document.getElementById('activoModalLabel');
@@ -147,10 +148,35 @@ document.addEventListener('DOMContentLoaded', function () {
             nombreInput.value = activo.nombre;
             precioCompradoInput.value = activo.precio; // Usar precio directo
             cantidadInput.value = activo.cantidad;
-
             $('#activoModal').modal('show');
         } catch (error) {
-            console.error('Error:', error);
+            mostrarMensaje('error', 'Error al editar el Activo');
         }
     }
 });
+
+
+function mostrarMensaje(tipo, texto) {
+    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
+    const mensajeTexto = document.getElementById('mensajeTexto');
+
+    mensajeTexto.innerText = texto;
+
+    if (tipo === 'error') {
+        mensajeNotificacion.className = 'alert alert-danger alert-dismissible fade show';
+    } else if (tipo === 'success') {
+        mensajeNotificacion.className = 'alert alert-success alert-dismissible fade show';
+    }
+
+    mensajeNotificacion.style.display = 'block';
+
+    // Ocultar el mensaje después de 5 segundos
+    setTimeout(() => {
+        mensajeNotificacion.style.display = 'none';
+    }, 5000);
+}
+
+function cerrarMensaje() {
+    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
+    mensajeNotificacion.style.display = 'none';
+}

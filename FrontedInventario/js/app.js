@@ -53,10 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (!response.ok) {
-                throw new Error('Error al guardar el producto.');
+                mostrarMensaje('error', 'Error al guardar el producto.');
             }
 
-            alert("pedido guardado con Exito")
+            mostrarMensaje('success', id ? 'Producto actualizado satisfactoriamente.' : 'Producto agregado satisfactoriamente.');
             $('#productoModal').modal('hide');
             limpiarFormulario();
             cargarProductosPorCategoria();  // Recargar productos en la categoría seleccionada
@@ -95,8 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (!response.ok) {
-                throw new Error('Error al guardar la categoria.');
+                mostrarMensaje('error', 'Error al agregar la categoría.');
             }
+            mostrarMensaje('success', id ? 'Categoría actualizada satisfactoriamente.' : 'Categoría agregada satisfactoriamente.');
 
             $('#categoriaModal').modal('hide');
             limpiarFormulario();
@@ -105,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cargarTotalGlobal();
             cargarCategorias();
         } catch (error) {
-            console.error('Error:', error);
+            mostrarMensaje('error', 'Error al intentar conectar con el servidor.'); // Mensaje de error genérico
         }
     });
 
@@ -198,12 +199,11 @@ async function editarProducto(id) {
     try {
         const response = await fetch(`${apiUrl}/${id}`);
         if (!response.ok) {
-            throw new Error('Error al cargar el producto para editar.');
+            mostrarMensaje('error', 'Error al cargar el producto para editar.');
         }
 
         modificarTexto = document.getElementById('productoModalLabel')
         modificarTexto.textContent = 'Editar Producto'
-
         const producto = await response.json();
         document.getElementById('productoId').value = producto.id;
         document.getElementById('nombre').value = producto.nombre;
@@ -227,7 +227,7 @@ async function cargarProductos(categoriaId = filtroCategoriaSeleccionada) {
         }
         const response = await fetch(url);
         if (!response.ok) {
-            throw new Error('Error al cargar los productos.');
+            mostrarMensaje('error', 'Error al cargar los productos.');
         }
 
         const data = await response.json();
@@ -327,7 +327,7 @@ async function cargarProductosInactivos() {
         const url = `${apiUrl}/inactivos?page=${currentPage}&size=${pageSize}`;
         const response = await fetch(url);
         if (!response.ok) {
-            throw new Error('Error al cargar los productos inactivos.');
+            mostrarMensaje('error', 'Error al cargar los productos inactivos.');
         }
 
         const data = await response.json();
@@ -356,7 +356,7 @@ async function buscarProductosPorNombre(nombre) {
     try {
         const response = await fetch(`${apiUrl}/nombre/${nombre}?page=${currentPage}&size=${pageSize}`);
         if (!response.ok) {
-            throw new Error('Error al buscar productos por nombre.');
+            mostrarMensaje('error', 'Error al buscar productos por nombre.');
         }
 
         const data = await response.json();
@@ -378,9 +378,9 @@ async function eliminarProducto(id) {
             });
 
             if (!response.ok) {
-                throw new Error('Error al desactivar el producto.');
+                mostrarMensaje('error', 'Error al desactivar el producto.');
             }
-            alert("pedido desactivado satisfactoriamente")
+            mostrarMensaje('success', 'Producto desactivado satisfactoriamente.');
             cargarProductos();
             cargarTotalPorCategoria();
         } catch (error) {
@@ -392,7 +392,7 @@ async function cargarTotalGlobal() {
     try {
         const response = await fetch(`${apiUrl}/totalGlobal`);
         if (!response.ok) {
-            throw new Error('Error al cargar el total global.');
+            mostrarMensaje('error', 'Error al cargar el total global.');
         }
 
         const totalGlobal = await response.json();
@@ -407,7 +407,7 @@ async function cargarTotalPorCategoria() {
     try {
         const response = await fetch(`${apiUrl}/totalPorCategoria`);
         if (!response.ok) {
-            throw new Error('Error al cargar los totales por categoría.');
+            mostrarMensaje('error', 'Error al cargar el total de la categoria.');
         }
 
         const totales = await response.json();
@@ -436,3 +436,27 @@ function limpiarFormulario() {
 }
 
 
+function mostrarMensaje(tipo, texto) {
+    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
+    const mensajeTexto = document.getElementById('mensajeTexto');
+
+    mensajeTexto.innerText = texto;
+
+    if (tipo === 'error') {
+        mensajeNotificacion.className = 'alert alert-danger alert-dismissible fade show';
+    } else if (tipo === 'success') {
+        mensajeNotificacion.className = 'alert alert-success alert-dismissible fade show';
+    }
+
+    mensajeNotificacion.style.display = 'block';
+
+    // Ocultar el mensaje después de 5 segundos
+    setTimeout(() => {
+        mensajeNotificacion.style.display = 'none';
+    }, 5000);
+}
+
+function cerrarMensaje() {
+    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
+    mensajeNotificacion.style.display = 'none';
+}

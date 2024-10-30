@@ -65,8 +65,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     cargarPedidos(); // Refrescar lista de pedidos
                     cargarTotalGlobal()
                     cargarCategorias()
+                    mostrarMensaje('success', 'Pedido eliminado.');
                 } else {
-                    alert('Error al eliminar el pedido.');
+                    mostrarMensaje('error', 'Error al eliminar el producto.');
                 }
             })
             .catch(error => console.error('Error al eliminar el pedido:', error));
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch(`http://localhost:8082/pedido/${id}/recibir`, { method: 'PUT' })
             .then(response => response.json())
             .then(() => {
-                alert('Producto recibido y movido a inventario.');
+                mostrarMensaje('success', 'Producto recibido y movido a inventario.');
                 cargarPedidos(); // Refrescar la lista de pedidos
                 cargarTotalGlobal()
             });
@@ -118,7 +119,12 @@ document.addEventListener('DOMContentLoaded', function () {
             limpiarFormulario();
             cargarPedidos(); // Refrescar lista de pedidos
             cargarTotalGlobal();
+            mostrarMensaje('success', 'pedido agregado');
             $('#pedidoModal').modal('hide'); // Ocultar el modal al guardar o actualizar
+            
+        }).catch(error => {
+            console.error('Error:', error);
+            mostrarMensaje('error', 'Error al guardar el pedido.'); // Mensaje de error
         });
     });
 
@@ -133,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch(`${apiUrl}/totalGlobal`);
             if (!response.ok) {
-                throw new Error('Error al cargar el total global.');
+                mostrarMensaje('error', 'Error al cargar el total global.');
             }
     
             const totalGlobal = await response.json();
@@ -163,3 +169,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
     cargarCategorias();
 });
+
+
+function mostrarMensaje(tipo, texto) {
+    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
+    const mensajeTexto = document.getElementById('mensajeTexto');
+
+    mensajeTexto.innerText = texto;
+
+    if (tipo === 'error') {
+        mensajeNotificacion.className = 'alert alert-danger alert-dismissible fade show';
+    } else if (tipo === 'success') {
+        mensajeNotificacion.className = 'alert alert-success alert-dismissible fade show';
+    }
+
+    mensajeNotificacion.style.display = 'block';
+
+    // Ocultar el mensaje después de 5 segundos
+    setTimeout(() => {
+        mensajeNotificacion.style.display = 'none';
+    }, 5000);
+}
+
+function cerrarMensaje() {
+    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
+    mensajeNotificacion.style.display = 'none';
+}

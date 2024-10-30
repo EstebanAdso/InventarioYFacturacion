@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(() => {
             limpiarFormulario();
             cargarclientes();
+            mostrarMensaje('success', 'Cliente agregado / editado con exito.');
             $('#clienteModal').modal('hide');
         });
     });
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch(`${apiUrl}/${id}`);
             if (!response.ok) {
-                throw new Error('Error al cargar el cliente para editar.');
+                mostrarMensaje('error', 'Error cargar el cliente pare editar.');
             }
             modificarTexto = document.getElementById('clienteModalLabel');
             modificarTexto.textContent = 'Editar cliente';
@@ -130,7 +131,7 @@ document.getElementById('revisarClientesTop').addEventListener('click', async ()
     try {
         const response = await fetch('http://localhost:8082/cliente/top'); // Cambia el puerto si es necesario
         if (!response.ok) {
-            throw new Error('Error al obtener los clientes top');
+            mostrarMensaje('error', 'Error al obtener clientes top.');
         }
         const clientesTop = await response.json();
         
@@ -152,7 +153,7 @@ document.getElementById('revisarClientesTop').addEventListener('click', async ()
         $('#clientesTopModal').modal('show');
     } catch (error) {
         console.error(error);
-        alert('Error al obtener los clientes top');
+        mostrarMensaje('error', 'Error al obtener clientes top.');
     }
 });
 
@@ -160,5 +161,30 @@ function formatNumber(number) {
     return number.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
 
-
 });
+
+
+function mostrarMensaje(tipo, texto) {
+    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
+    const mensajeTexto = document.getElementById('mensajeTexto');
+
+    mensajeTexto.innerText = texto;
+
+    if (tipo === 'error') {
+        mensajeNotificacion.className = 'alert alert-danger alert-dismissible fade show';
+    } else if (tipo === 'success') {
+        mensajeNotificacion.className = 'alert alert-success alert-dismissible fade show';
+    }
+
+    mensajeNotificacion.style.display = 'block';
+
+    // Ocultar el mensaje después de 5 segundos
+    setTimeout(() => {
+        mensajeNotificacion.style.display = 'none';
+    }, 5000);
+}
+
+function cerrarMensaje() {
+    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
+    mensajeNotificacion.style.display = 'none';
+}

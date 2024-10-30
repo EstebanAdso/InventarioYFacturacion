@@ -27,6 +27,15 @@
 
     <div class="container">
         <h1 class="text-center" style="user-select: none;">Facturación</h1>
+
+         <!-- Contenedor de mensaje de error -->
+        <div id="mensajeError" class="alert alert-danger alert-dismissible fade show" style="display: none;">
+            <span id="mensajeTexto">Por favor, completa los campos requeridos.</span>
+            <button type="button" class="close" aria-label="Close" onclick="cerrarMensajeError()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        
     
         <!-- Fieldset para datos del cliente -->
         <fieldset style="border: 2px solid #1116; border-radius: 10px; padding: 10px;">

@@ -112,7 +112,7 @@ function buscarProductos() {
     fetch(`${apiProducto}/buscar/${nombreProducto}`)
         .then(response => {
             if (!response.ok) {
-                throw new Error('Error en la red');
+                mostrarMensajeError('Error en la red');
             }
             return response.json();
         })
@@ -238,8 +238,7 @@ function guardarFactura() {
             .then(response => {
                 if (!response.ok) {
                     return response.text().then(text => {
-                        alert(`Error: ${text}`);
-                        throw new Error(text);
+                        mostrarMensajeError(`Error: ${text}`);
                     });
                 }
                 return response.json();
@@ -329,7 +328,7 @@ function guardarFactura() {
                 console.error('Error al guardar la factura:', error);
             });
     } else {
-        alert('Por favor, completa todos los campos requeridos.');
+        mostrarMensajeError('Por favor, completa todos los campos requeridos de la factura.');
     }
 }
 
@@ -390,8 +389,7 @@ function imprimirPos() {
             .then(response => {
                 if (!response.ok) {
                     return response.text().then(text => {
-                        alert(`Error: ${text}`);
-                        throw new Error(text);
+                        mostrarMensajeError(`Error: ${text}`);
                     });
                 }
                 return response.json();
@@ -411,6 +409,7 @@ function imprimirPos() {
                         <b>NIT:</b> 1193030552-4<br>
                         <b>Celular:</b> 3242264795<br>
                         <b>Ubicación:</b> Pasto, Centro comercial la 16, local 138
+                        <br>NO RESPONSABLES DE IVA
                     </p>
                     <p><strong>Fecha:</strong> ${fechaActual}</p>
                     <p><strong>Cliente:</strong> ${nombreCliente}</p>
@@ -442,6 +441,7 @@ function imprimirPos() {
                     <p style="margin-top: 2px; font-size: 10px; text-align: justify;">
                         <b>Nota:</b> La garantía cubre únicamente defectos de fabricación y no aplica en caso de insatisfacción personal, errores en la selección del producto, o daños causados por un mal uso. Para validar la garantía, es indispensable conservar todos los accesorios, empaques originales y documentación proporcionada en el momento de la compra, como también no dañar los sellos de garantía.
                     </p>
+                    <p  style="margin-top: 0px; font-size: 10px; text-align: justify">&copy;Sistema de facturación POST, Gestion de clientes inventario, realizado por estebanadso@gmail.com / 3242264795<p/>
                 </div>
             `;
 
@@ -459,8 +459,8 @@ function imprimirPos() {
                             }
                             body { 
                                 font-family: monospace; 
-                                margin: 0; /* Eliminar márgenes del body */
-                                padding: 0; /* Eliminar padding del body */
+                                margin: 0; 
+                                padding: 0; 
                             }
                             table { 
                                 width: 100%; 
@@ -495,7 +495,7 @@ function imprimirPos() {
                 console.error('Error al guardar la factura:', error);
             });
     } else {
-        alert('Por favor, completa todos los campos requeridos.');
+        mostrarMensajeError('Por favor, completa todos los campos requeridos de la factura.');
     }
 }
 
@@ -591,7 +591,7 @@ function agregarProducto() {
         productoSeleccionadoId = null;
         limpiarFormularioProducto();
     } else {
-        alert('Por favor, complete todos los campos correctamente.');
+        mostrarMensajeError('Por favor, completa todos los campos requeridos de la factura.');
     }
 }
 
@@ -638,3 +638,24 @@ function limpiarFormulario() {
     productosEnFactura = [];
 }
 
+
+function mostrarMensajeError(mensaje) {
+    const mensajeError = document.getElementById('mensajeError');
+    const mensajeTexto = document.getElementById('mensajeTexto');
+
+    // Asigna el mensaje recibido como parámetro
+    mensajeTexto.textContent = mensaje;
+
+    // Muestra el contenedor de error
+    mensajeError.style.display = 'block';
+
+    // Ocultar automáticamente después de 5 segundos
+    setTimeout(() => {
+        cerrarMensajeError();
+    }, 5000);
+}
+
+function cerrarMensajeError() {
+    const mensajeError = document.getElementById('mensajeError');
+    mensajeError.style.display = 'none';
+}
