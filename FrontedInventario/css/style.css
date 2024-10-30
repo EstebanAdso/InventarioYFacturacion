@@ -76,20 +76,13 @@ header nav ul li a.selected {
     border-radius: 7px;
 }
 
-  /* Altura fija para las filas de la tabla */
-  #productoTableBody tr {
-    height: 50px; /* Ajusta la altura según prefieras */
-}
 
-#productoTableBodt{
-    height: 3000px;
-}
 
 /* Altura fija para las celdas */
 #productoTableBody td {
-    white-space: nowrap;  /* Evita que el texto se divida en varias líneas */
-    text-overflow: ellipsis; /* Añade puntos suspensivos si el texto es muy largo */
-    overflow: hidden; /* Oculta el desbordamiento del texto */
+    white-space: nowrap;  
+    text-overflow: ellipsis; 
+    overflow: hidden;
 }
 
 /* Ajustar el contenedor de la tabla */
@@ -268,22 +261,57 @@ legend {
     box-shadow: 0 0 5px rgba(17, 22, 22, 0.5); /* Efecto de sombra en foco */
 }
 
-#notificacion {
-    position: fixed;
-    top: 50px;
-    right: 10px;
-    z-index: 1050;
-    min-width: 250px;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-#notificacion .close {
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    color: #000;
-    cursor: pointer;
+
+
+.disabled-style {
+    opacity: 0.4;
+    cursor: not-allowed;
+    color: #e7e7e7; /* Cambia el color del texto */
+    background-color: #e0e0e0; /* Color de fondo para botones desactivados */
+    border-color: #d0d0d0; /* Color del borde */
 }
 
 
+@media (max-width: 1920px) {
+    #productoTableBody td {
+        padding: 6px;
+    }
+
+    #searchForm input{
+        padding: 4px;
+    }
+    
+    #agregarProducto, #agregarCategoria, #verTotal, #toggleProductosBtn{
+        padding: 4px;
+        margin: 0;
+    }
+
+    fieldset {
+        padding: 5px;
+    }
+    
+    legend {
+        padding:2px;
+    }
+
+    #clienteForm{
+        padding: 0 10px 0 10px;
+        margin: 0;
+        height: 240px;
+    }
+
+    #facturaForm{
+        padding: 0 10px 0 10px;
+        height: 345px;
+    }
+
+    #tituloFacturacion{
+        display: none;
+    }
+    
+    #filtradorDeCategoria{
+        margin: 0;
+    }
+
+   
+}

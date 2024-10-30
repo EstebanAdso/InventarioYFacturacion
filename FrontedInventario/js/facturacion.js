@@ -29,9 +29,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+// Función para cargar los datos de cliente desde localStorage al cargar la página
+window.addEventListener('load', () => {
+    const nombreCliente = localStorage.getItem('nombreCliente');
+    const cedulaNit = localStorage.getItem('cedulaNit');
+    const correoCliente = localStorage.getItem('correoCliente');
+    const telefonoCliente = localStorage.getItem('telefonoCliente');
+    const direccionCliente = localStorage.getItem('direccionCliente');
 
-document.getElementById('nombreCliente').addEventListener('input', () => {
-    const query = document.getElementById('nombreCliente').value.trim();
+    // Solo asignar si el valor no es null o undefined
+    if (nombreCliente !== null && nombreCliente !== "null") document.getElementById('nombreCliente').value = nombreCliente;
+    if (cedulaNit !== null && cedulaNit !== "null") document.getElementById('cedulaNit').value = cedulaNit;
+    if (correoCliente !== null && correoCliente !== "null") document.getElementById('correoCliente').value = correoCliente;
+    if (telefonoCliente !== null && telefonoCliente !== "null") document.getElementById('telefonoCliente').value = telefonoCliente;
+    if (direccionCliente !== null && direccionCliente !== "null") document.getElementById('direccionCliente').value = direccionCliente;
+
+       // Limpiar datos de cliente en `localStorage` después de 2 minutos
+       setTimeout(() => {
+        localStorage.removeItem('nombreCliente');
+        localStorage.removeItem('cedulaNit');
+        localStorage.removeItem('correoCliente');
+        localStorage.removeItem('telefonoCliente');
+        localStorage.removeItem('direccionCliente');
+        console.log('Datos de cliente eliminados de localStorage después de 2 minutos.');
+    }, 2 * 60 * 1000); // 2 minutos en milisegundos
+});
+
+// Escucha de cambios en los campos del formulario para almacenar en localStorage
+document.getElementById('nombreCliente').addEventListener('input', (e) => {
+    const query = e.target.value.trim();
+    localStorage.setItem('nombreCliente', query ? query : "");
+    
     if (query.length > 1) {
         obtenerSugerencias(query);
     } else {
@@ -39,8 +67,31 @@ document.getElementById('nombreCliente').addEventListener('input', () => {
     }
 });
 
+document.getElementById('cedulaNit').addEventListener('input', (e) => {
+    const query = e.target.value.trim();
+    localStorage.setItem('cedulaNit', query ? query : "");
+    
+    if (query.length > 1) {
+        obtenerSugerencias(query);
+    } else {
+        document.getElementById('sugerenciasClientes').style.display = 'none';
+    }
+});
+
+document.getElementById('correoCliente').addEventListener('input', (e) => {
+    localStorage.setItem('correoCliente', e.target.value.trim() ? e.target.value.trim() : "");
+});
+
+document.getElementById('telefonoCliente').addEventListener('input', (e) => {
+    localStorage.setItem('telefonoCliente', e.target.value.trim() ? e.target.value.trim() : "");
+});
+
+document.getElementById('direccionCliente').addEventListener('input', (e) => {
+    localStorage.setItem('direccionCliente', e.target.value.trim() ? e.target.value.trim() : "");
+});
 
 
+// Función para obtener sugerencias
 function obtenerSugerencias(query) {
     fetch(`${apiClient}/suggestions?query=${encodeURIComponent(query)}`)
         .then(response => response.json())
@@ -52,6 +103,7 @@ function obtenerSugerencias(query) {
         });
 }
 
+// Función para mostrar sugerencias
 function mostrarSugerencias(clientes) {
     const sugerenciasDiv = document.getElementById('sugerenciasClientes');
     sugerenciasDiv.innerHTML = '';
@@ -68,13 +120,20 @@ function mostrarSugerencias(clientes) {
         li.style.cursor = 'pointer';
         li.classList.add('hover-effect');
 
-        // Al hacer clic en una sugerencia, llenar el campo de nombre del cliente y ocultar las sugerencias
         li.addEventListener('click', () => {
             document.getElementById('nombreCliente').value = cliente.nombre.toUpperCase();
             document.getElementById('cedulaNit').value = cliente.identificacion;
             document.getElementById('correoCliente').value = cliente.correo;
             document.getElementById('telefonoCliente').value = cliente.telefono;
             document.getElementById('direccionCliente').value = cliente.direccion;
+
+            // Guardar datos seleccionados en localStorage
+            localStorage.setItem('nombreCliente', cliente.nombre);
+            localStorage.setItem('cedulaNit', cliente.identificacion);
+            localStorage.setItem('correoCliente', cliente.correo);
+            localStorage.setItem('telefonoCliente', cliente.telefono);
+            localStorage.setItem('direccionCliente', cliente.direccion);
+
             sugerenciasDiv.style.display = 'none';
         });
 
@@ -84,19 +143,9 @@ function mostrarSugerencias(clientes) {
     sugerenciasDiv.style.display = 'block';
 }
 
-document.getElementById('cedulaNit').addEventListener('input', () => {
-    const query = document.getElementById('cedulaNit').value.trim();
-    if (query.length > 1) {
-        obtenerSugerencias(query);
-    } else {
-        document.getElementById('sugerenciasClientes').style.display = 'none';
-    }
-});
-
 
 
 // Función para buscar productos y mostrar sugerencias
-
 let productoSeleccionadoId = null;
 
 function buscarProductos() {
@@ -320,6 +369,12 @@ function guardarFactura() {
                 ventanaImpresion.document.close();
 
                 ventanaImpresion.onload = function () {
+                    localStorage.removeItem('nombreCliente');
+                    localStorage.removeItem('cedulaNit');
+                    localStorage.removeItem('correoCliente');
+                    localStorage.removeItem('telefonoCliente');
+                    localStorage.removeItem('direccionCliente');
+                    localStorage.removeItem('productosEnFactura');
                     ventanaImpresion.focus();
                     ventanaImpresion.print();
                 };
@@ -398,51 +453,53 @@ function imprimirPos() {
                 console.log('Factura guardada exitosamente:', data);
 
                 const facturaHTML = `
-                 <div style="width: 70mm; font-size: 11px; font-family: monospace;">
-                    <div style="text-align: center;">
-                        <img src="../css/pc.png" alt="" style="width: 80px; height: auto; margin-top: 0">
+                    <div style="width: 70mm; font-size: 11px; font-family: monospace;">
+                        <div style="text-align: center;">
+                            <img src="../css/pc.png" alt="" style="width: 80px; height: auto; margin-top: 0">
+                        </div>
+                        <h2 style="text-align: center;">CompuServices Soft</h2>
+                        <p style="text-align: center;">
+                            <b>Servicio técnico de computadores y celulares,
+                            Venta de computadores y periféricos</b><br>
+                            <div style="text-align : left">
+                            <b>NIT:</b> 1193030552-4<br>
+                            <b>Celular:</b> 3242264795<br>
+                            <b>Ubicación:</b> Pasto, Centro comercial la 16, local 138
+                            <br>NO RESPONSABLES DE IVA
+                            </div>
+                        </p>
+                        <p><strong>Fecha:</strong> ${fechaActual}</p>
+                        <p><strong>Cliente:</strong> ${nombreCliente}</p>
+                        <p><strong>Cédula/NIT:</strong> ${cedulaNit}</p>
+                        ${telefonoCliente ? `<p><strong>Teléfono:</strong> ${telefonoCliente}</p>` : ''}
+                        ${correoCliente ? `<p><strong>Correo:</strong> ${correoCliente}</p>` : ''}
+                        ${direccionCliente ? `<p><strong>Dirección:</strong> ${direccionCliente}</p>` : ''}
+                        <hr style="border: 1px solid #000;">
+                        <table style="width: 100%; margin-top: 10px; font-size: 11px">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 4px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">Producto</th>
+                                    <th style="text-align: center; max-width: 10mm;">Ct.</th>
+                                    <th style="text-align: center; max-width: 15mm;">Pre.</th>
+                                    <th style="text-align: center; max-width: 15mm;">Garant.</th>
+                                    <th style="text-align: center;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${productosHTML}
+                                <tr style="font-weight: bold;">
+                                    <td colspan="4" style="text-align: right; padding-top: 8px;">Total:</td>
+                                    <td style="text-align: center; padding-top: 8px;">${totalFactura.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr style="border: 1px solid #000;">
+                        <p style="margin-top: 10px; font-size: 11px; text-align: center;"><b>****** Gracias por su Compra ******</b></p>
+                        <p style="margin-top: 2px; font-size: 10px; text-align: justify;">
+                            <b>Nota:</b> La garantía cubre únicamente defectos de fabricación y no aplica en caso de insatisfacción personal, errores en la selección del producto, o daños causados por un mal uso. Para validar la garantía, es indispensable conservar todos los accesorios, empaques originales y documentación proporcionada en el momento de la compra, como también no dañar los sellos de garantía.
+                        </p>
+                        <p style="margin-top: 0px; font-size: 10px; text-align: justify;">&copy;Sistema de facturación POST y PDF, gestión de clientes inventario y pedidos, realizado por estebanadso@gmail.com / 3242264795</p>
                     </div>
-                    <h2 style="text-align: center;">CompuServices Soft</h2>
-                    <p style="text-align: center;">
-                        Servicio técnico de computadores y celulares,<br>
-                        Venta de computadores y periféricos<br>
-                        <b>NIT:</b> 1193030552-4<br>
-                        <b>Celular:</b> 3242264795<br>
-                        <b>Ubicación:</b> Pasto, Centro comercial la 16, local 138
-                        <br>NO RESPONSABLES DE IVA
-                    </p>
-                    <p><strong>Fecha:</strong> ${fechaActual}</p>
-                    <p><strong>Cliente:</strong> ${nombreCliente}</p>
-                    <p><strong>Cédula/NIT:</strong> ${cedulaNit}</p>
-                    ${telefonoCliente ? `<p><strong>Teléfono:</strong> ${telefonoCliente}</p>` : ''}
-                    ${correoCliente ? `<p><strong>Correo:</strong> ${correoCliente}</p>` : ''}
-                    ${direccionCliente ? `<p><strong>Dirección:</strong> ${direccionCliente}</p>` : ''}
-                    <hr>
-                    <table style="width: 100%; margin-top: 10px; font-size: 11px">
-                        <thead>
-                            <tr>
-                                <th style="padding: 4px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">Producto</th>
-                                <th style="text-align: center; max-width: 10mm;">Ct.</th>
-                                <th style="text-align: center; max-width: 15mm;">Pre.</th>
-                                <th style="text-align: center; max-width: 15mm;">Garant.</th>
-                                <th style="text-align: center;">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${productosHTML}
-                            <tr style="font-weight: bold;">
-                                <td colspan="4" style="text-align: right; padding-top: 8px;">Total:</td>
-                                <td style="text-align: center; padding-top: 8px;">${totalFactura.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
-                            </tr>
-                        </tbody>
-                   </table>
-                   <hr>
-                    <p style="margin-top: 10px; font-size: 11px; text-align: center;"><b>******* Gracias por su Compra *******</b></p>
-                    <p style="margin-top: 2px; font-size: 10px; text-align: justify;">
-                        <b>Nota:</b> La garantía cubre únicamente defectos de fabricación y no aplica en caso de insatisfacción personal, errores en la selección del producto, o daños causados por un mal uso. Para validar la garantía, es indispensable conservar todos los accesorios, empaques originales y documentación proporcionada en el momento de la compra, como también no dañar los sellos de garantía.
-                    </p>
-                    <p  style="margin-top: 0px; font-size: 10px; text-align: justify">&copy;Sistema de facturación POST, Gestion de clientes inventario, realizado por estebanadso@gmail.com / 3242264795<p/>
-                </div>
             `;
 
                 limpiarFormularioProducto();
@@ -450,45 +507,52 @@ function imprimirPos() {
 
                 const ventanaImpresion = window.open('', '', 'height=800,width=300');
                 ventanaImpresion.document.write(`
-                <html>
-                    <head>
-                        <title>Factura POS</title>
-                        <style>
-                            @page {
-                                margin: 0; /* Eliminar márgenes */
-                            }
-                            body { 
-                                font-family: monospace; 
-                                margin: 0; 
-                                padding: 0; 
-                            }
-                            table { 
-                                width: 100%; 
-                                border-collapse: collapse; 
-                            }
-                            th, td { 
-                                padding: 4px 0; 
-                                text-align: right; 
-                            }
-                            th { 
-                                text-align: center; 
-                            }
-                            h2, h3, h4 { 
-                                text-align: center; 
-                                margin: 4px 0; 
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        ${facturaHTML}
-                    </body>
-                </html>
-            `);
+                    <html>
+                        <head>
+                            <title>Factura POS</title>
+                            <style>
+                                @page {
+                                    margin: 0; 
+                                    size: 70mm;
+                                }
+                                body { 
+                                    font-family: monospace; 
+                                    margin: 0; 
+                                    padding: 0; 
+                                }
+                                table { 
+                                    width: 100%; 
+                                    border-collapse: collapse; 
+                                }
+                                th, td { 
+                                    padding: 4px 0; 
+                                    text-align: right; 
+                                }
+                                th { 
+                                    text-align: center; 
+                                }
+                                h2, h3, h4 { 
+                                    text-align: center; 
+                                    margin: 4px 0; 
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            ${facturaHTML}
+                        </body>
+                    </html>
+                `);
                 ventanaImpresion.document.close();
 
                 ventanaImpresion.onload = function () {
                     ventanaImpresion.focus();
                     ventanaImpresion.print();
+                    localStorage.removeItem('nombreCliente');
+                    localStorage.removeItem('cedulaNit');
+                    localStorage.removeItem('correoCliente');
+                    localStorage.removeItem('telefonoCliente');
+                    localStorage.removeItem('direccionCliente');
+                    localStorage.removeItem('productosEnFactura');
                 };
             })
             .catch(error => {
@@ -500,10 +564,7 @@ function imprimirPos() {
 }
 
 
-
-
 const inputs = document.querySelectorAll('.form-control');
-
 
 
 function formatNumber(number) {
@@ -567,6 +628,8 @@ function agregarProducto() {
             total: totalProducto,
             pc: pc
         });
+
+        localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
 
         // Actualizar el total de la factura
         totalFacturaGlobal += totalProducto;
@@ -635,6 +698,12 @@ function limpiarFormulario() {
     document.getElementById('precioUnitarioManual').value = '';
     document.getElementById('garantiaProducto').value = '1';
     document.getElementById('productosTabla').getElementsByTagName('tbody')[0].innerHTML = '';
+    localStorage.removeItem('nombreCliente');
+    localStorage.removeItem('cedulaNit');
+    localStorage.removeItem('correoCliente');
+    localStorage.removeItem('telefonoCliente');
+    localStorage.removeItem('direccionCliente');
+    localStorage.removeItem('productosEnFactura');
     productosEnFactura = [];
 }
 
@@ -659,3 +728,66 @@ function cerrarMensajeError() {
     const mensajeError = document.getElementById('mensajeError');
     mensajeError.style.display = 'none';
 }
+
+
+window.addEventListener('load', () => {
+    const storedProducts = localStorage.getItem('productosEnFactura');
+    if (storedProducts) {
+        productosEnFactura = JSON.parse(storedProducts);
+        
+        productosEnFactura.forEach(producto => {
+            const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
+            const newRow = tbody.insertRow();
+
+            // Agregar cada celda de la misma forma que en agregarProducto
+            const cellId = newRow.insertCell(0);
+            cellId.textContent = producto.id || 'N/A';
+            cellId.style.display = 'none';
+
+            const cellNombre = newRow.insertCell(1);
+            const cellCantidad = newRow.insertCell(2);
+            const cellPrecioUnitario = newRow.insertCell(3);
+            const cellGarantia = newRow.insertCell(4);
+            const cellDescripcion = newRow.insertCell(5);
+            const cellTotal = newRow.insertCell(6);
+            const cellAcciones = newRow.insertCell(7);
+
+            cellNombre.textContent = producto.nombre;
+            cellCantidad.textContent = producto.cantidad;
+            cellPrecioUnitario.textContent = producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+            cellGarantia.textContent = producto.garantia;
+            cellDescripcion.textContent = producto.descripcion;
+            cellTotal.textContent = producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Eliminar';
+            deleteBtn.className = 'btn btn-danger btn-sm';
+            deleteBtn.addEventListener('click', () => {
+                const row = deleteBtn.closest('tr');
+                const index = row.rowIndex - 1;
+                tbody.deleteRow(index);
+
+                // Restar el total del producto eliminado
+                totalFacturaGlobal -= productosEnFactura[index].total;
+                productosEnFactura.splice(index, 1);
+
+                // Actualizar en localStorage
+                localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
+
+                actualizarTotalFactura();
+            });
+            cellAcciones.appendChild(deleteBtn);
+
+            // Agregar el precio de cada producto al total
+            totalFacturaGlobal += producto.total;
+        });
+
+        // Actualizar total de factura en el DOM
+        actualizarTotalFactura();
+
+        setTimeout(() => {
+            localStorage.removeItem('productosEnFactura');
+            console.log('Productos en factura eliminados de localStorage después de 2 minutos.');
+        }, 2 * 60 * 1000); // 2 minutos en milisegundos
+    }
+});

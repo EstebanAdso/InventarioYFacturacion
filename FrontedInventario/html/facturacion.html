@@ -26,7 +26,7 @@
 
 
     <div class="container">
-        <h1 class="text-center" style="user-select: none;">Facturación</h1>
+        <h1 class="text-center" id="tituloFacturacion" style="user-select: none;">Facturación</h1>
 
          <!-- Contenedor de mensaje de error -->
         <div id="mensajeError" class="alert alert-danger alert-dismissible fade show" style="display: none;">
@@ -38,7 +38,7 @@
         
     
         <!-- Fieldset para datos del cliente -->
-        <fieldset style="border: 2px solid #1116; border-radius: 10px; padding: 10px;">
+        <fieldset style="border: 2px solid #1116; border-radius: 10px;">
             <legend>Datos del Cliente</legend>
             <!-- Formulario de datos del cliente -->
             <form id="clienteForm" class="mb-4">
@@ -47,7 +47,8 @@
                     <div class="form-group col-md-6">
                         <label for="nombreCliente">Nombre del Cliente:</label>
                         <input type="text" class="form-control" id="nombreCliente" autocomplete="off" placeholder="Obligatorio" required>
-                        <ul id="sugerenciasClientes" style="border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
+                        <ul id="sugerenciasClientes" style="
+                        position: absolute;border: 1px solid #ddd;display: none;list-style: none;padding: 0;margin: 0;max-height: 150px;overflow-y: auto;background-color: white;width: 100%;z-index: 1;"></ul>
                     </div>
     
                     <!-- Campo Cédula o NIT -->
@@ -88,7 +89,7 @@
                     <div class="form-group col-md-6">
                         <label for="nombreProductoManual">Nombre del Producto:</label>
                         <input type="text" class="form-control" autocomplete="off" id="nombreProductoManual">
-                        <ul id="sugerenciasProductos" style="border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
+                        <ul id="sugerenciasProductos" style="position: absolute;border: 1px solid #ddd;display: none;list-style: none;padding: 0;margin: 0;max-height: 150px;overflow-y: auto;background-color: white;width: 100%;z-index: 1;"></ul>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="PCProducto">P.C</label>

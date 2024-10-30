@@ -6,8 +6,13 @@ let currentPage = 0;
 let pageSize = 14;
 let totalPages = 0;
 let filtroCategoriaSeleccionada = null;
-let mostrandoInactivos = false; // Variable para controlar el estado actual (activos/inactivos)
+let mostrandoInactivos = false; 
 let modificarTexto = document.getElementById('productoModalLabel')
+const botonAgregarProducto = document.getElementById('agregarProducto')
+const botonAgregarCategoria = document.getElementById('agregarCategoria')
+const botonVerTotal = document.getElementById('verTotal')
+const buscador = document.getElementById('searchInput')
+const titulo = document.getElementById('titulo')
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarProductos();
@@ -148,22 +153,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function toggleProductos() {
         const toggleBtn = document.getElementById('toggleProductosBtn');
-
-        currentPage = 0;  // Reiniciar la paginación cuando cambies entre activos/inactivos
+    
+        currentPage = 0; // Reiniciar la paginación cuando cambies entre activos/inactivos
+    
         if (mostrandoInactivos) {
-            cargarProductos();  // Cargar productos activos
+            cargarProductos(); // Cargar productos activos
             toggleBtn.textContent = 'Productos Inactivos';
             toggleBtn.classList.remove('btn-success');
             toggleBtn.classList.add('btn-warning');
+    
+            // Habilitar los botones y el buscador
+            botonAgregarCategoria.removeAttribute('disabled');
+            botonAgregarProducto.removeAttribute('disabled');
+            botonVerTotal.removeAttribute('disabled');
+            buscador.removeAttribute('disabled');
+            filtroCategoria.removeAttribute('disabled')
+    
+            // Quitar clase de estilo desactivado
+            botonAgregarCategoria.classList.remove('disabled-style');
+            botonAgregarProducto.classList.remove('disabled-style');
+            botonVerTotal.classList.remove('disabled-style');
+            buscador.classList.remove('disabled-style');
+            filtroCategoria.classList.remove('disabled-style')
+            titulo.textContent = 'Inventario de Productos'
             mostrandoInactivos = false;
         } else {
-            cargarProductosInactivos();  // Cargar productos inactivos
+            cargarProductosInactivos(); // Cargar productos inactivos
             toggleBtn.textContent = 'Productos Activos';
             toggleBtn.classList.remove('btn-warning');
             toggleBtn.classList.add('btn-success');
+    
+            // Deshabilitar los botones y el buscador
+            botonAgregarCategoria.setAttribute('disabled', 'disabled');
+            botonAgregarProducto.setAttribute('disabled', 'disabled');
+            botonVerTotal.setAttribute('disabled', 'disabled');
+            buscador.setAttribute('disabled', 'disabled');
+            filtroCategoria.setAttribute('disabled', 'disabled');
+    
+            // Agregar clase de estilo desactivado
+            botonAgregarCategoria.classList.add('disabled-style');
+            botonAgregarProducto.classList.add('disabled-style');
+            botonVerTotal.classList.add('disabled-style');
+            buscador.classList.add('disabled-style');
+            filtroCategoria.classList.add('disabled-style');
+            titulo.textContent = 'Inventario de Productos Inactivos'
             mostrandoInactivos = true;
         }
     }
+    
+    
     async function cargarCategorias() {
         try {
             const response = await fetch(apiCategoria); // Ajusta la URL si es necesario
@@ -200,10 +238,11 @@ async function editarProducto(id) {
         const response = await fetch(`${apiUrl}/${id}`);
         if (!response.ok) {
             mostrarMensaje('error', 'Error al cargar el producto para editar.');
+            return;
         }
 
-        modificarTexto = document.getElementById('productoModalLabel')
-        modificarTexto.textContent = 'Editar Producto'
+        modificarTexto = document.getElementById('productoModalLabel');
+        modificarTexto.textContent = 'Editar Producto';
         const producto = await response.json();
         document.getElementById('productoId').value = producto.id;
         document.getElementById('nombre').value = producto.nombre;
@@ -212,12 +251,21 @@ async function editarProducto(id) {
         document.getElementById('cantidad').value = producto.cantidad;
         document.getElementById('categoria').value = producto.categoria.id;
 
+        // Mostrar el modal para editar el producto
         $('#productoModal').modal('show');
+
+        // Recargar la lista correcta solo si se cierra el modal
+        $('#productoModal').on('hidden.bs.modal', async () => {
+            if (mostrandoInactivos) {
+                await cargarProductosInactivos(); // Cargar inactivos
+            } else {
+                await cargarProductos(); // Cargar activos
+            }
+        });
     } catch (error) {
         console.error('Error:', error);
     }
 }
-
 
 async function cargarProductos(categoriaId = filtroCategoriaSeleccionada) {
     try {
