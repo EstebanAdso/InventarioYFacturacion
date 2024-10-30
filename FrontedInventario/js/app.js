@@ -256,11 +256,12 @@ function mostrarProductosEnTabla(productos) {
             <td>${formatNumber(producto.total)}</td>
             <td>${producto.estado === 'activo' ? 'Activo' : 'Inactivo'}</td> <!-- Mostrar el estado -->
             <td>
-                <button class="btn btn-dark btn-sm"  id="botonEditar" onclick="editarProducto(${producto.id})">Editar</button>
+                <button class="btn btn-dark btn-sm" id="botonEditar" onclick="editarProducto(${producto.id})">Editar</button>
                 ${producto.estado === 'activo' 
                     ? `<button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})">Agotar</button>` 
                     : ''} <!-- Ocultar botón Agotar si está inactivo -->
             </td>
+
         `;
         tbody.appendChild(tr);
     });
@@ -371,7 +372,12 @@ async function buscarProductosPorNombre(nombre) {
 }
 
 async function eliminarProducto(id) {
-    if (confirm('¿Está seguro de que desea desactivar este producto?')) {
+    // Mostrar el modal de Bootstrap
+    $('#confirmModal-eliminar').modal('show');
+
+    // Esperar a que el usuario haga clic en el botón "Sí"
+    $('#confirmBtn-eliminar').off('click').on('click', async function() {
+        $('#confirmModal-eliminar').modal('hide'); // Cerrar el modal
         try {
             const response = await fetch(`${apiUrl}/${id}`, {
                 method: 'DELETE'
@@ -379,15 +385,18 @@ async function eliminarProducto(id) {
 
             if (!response.ok) {
                 mostrarMensaje('error', 'Error al desactivar el producto.');
+            } else {
+                mostrarMensaje('success', 'Producto desactivado satisfactoriamente.');
+                cargarProductos(); // Función para recargar la lista de productos
+                cargarTotalPorCategoria(); // Función para recargar el total por categoría
             }
-            mostrarMensaje('success', 'Producto desactivado satisfactoriamente.');
-            cargarProductos();
-            cargarTotalPorCategoria();
         } catch (error) {
             console.error('Error:', error);
         }
-    }
+    });
 }
+
+
 async function cargarTotalGlobal() {
     try {
         const response = await fetch(`${apiUrl}/totalGlobal`);

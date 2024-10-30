@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${formatNumber(pedido.precioComprado * pedido.cantidad)}</td>
                              <td>
                                 <div style="display: flex; gap: 5px;">
-                                    <button class="btn btn-danger btn-sm eliminarPedidoBtn" data-id="${pedido.id}">Eliminar</button>
+                                    <button class="btn btn-danger btn-sm eliminarPedidoBtn" data-id="${pedido.id}" onclick="eliminarPedido(event)">Eliminar</button>
                                     <button class="btn btn-success btn-sm recibirPedidoBtn" data-id="${pedido.id}">Recibido</button>
                                 </div>
                             </td>
@@ -52,27 +52,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
     }
+    let pedidoIdToDelete = null;
 
-    // Función para eliminar un pedido
     function eliminarPedido(event) {
-        const id = event.target.dataset.id; // Obtener el ID del pedido desde el botón
-        if (confirm("¿Estás seguro de que quieres eliminar este pedido?")) {
-            fetch(`http://localhost:8082/pedido/${id}`, {
-                method: 'DELETE'
-            })
+        // Obtener el ID del pedido desde el botón
+        pedidoIdToDelete = event.target.dataset.id; // Almacenar el ID en una variable global
+        $('#confirmModal-eliminar-pedido').modal('show'); // Mostrar el modal
+    }
+
+    // Evento de clic para el botón de confirmación
+    $('#confirmBtn-eliminar-pedido').on('click', function () {
+        // Cerrar el modal
+        $('#confirmModal-eliminar-pedido').modal('hide');
+
+        // Realizar la solicitud DELETE usando el ID almacenado
+        fetch(`http://localhost:8082/pedido/${pedidoIdToDelete}`, {
+            method: 'DELETE'
+        })
             .then(response => {
                 if (response.ok) {
                     cargarPedidos(); // Refrescar lista de pedidos
-                    cargarTotalGlobal()
-                    cargarCategorias()
+                    cargarTotalGlobal(); // Actualizar el total global
+                    cargarCategorias(); // Cargar categorías, si es necesario
                     mostrarMensaje('success', 'Pedido eliminado.');
                 } else {
-                    mostrarMensaje('error', 'Error al eliminar el producto.');
+                    mostrarMensaje('error', 'Error al eliminar el pedido.');
                 }
             })
             .catch(error => console.error('Error al eliminar el pedido:', error));
-        }
-    }
+    });
 
     // Función para recibir un pedido (mover a inventario y eliminar el pedido)
     function recibirPedido(event) {
@@ -114,18 +122,18 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(pedidoData)
         })
-        .then(response => response.json())
-        .then(() => {
-            limpiarFormulario();
-            cargarPedidos(); // Refrescar lista de pedidos
-            cargarTotalGlobal();
-            mostrarMensaje('success', 'pedido agregado');
-            $('#pedidoModal').modal('hide'); // Ocultar el modal al guardar o actualizar
-            
-        }).catch(error => {
-            console.error('Error:', error);
-            mostrarMensaje('error', 'Error al guardar el pedido.'); // Mensaje de error
-        });
+            .then(response => response.json())
+            .then(() => {
+                limpiarFormulario();
+                cargarPedidos(); // Refrescar lista de pedidos
+                cargarTotalGlobal();
+                mostrarMensaje('success', 'pedido agregado');
+                $('#pedidoModal').modal('hide'); // Ocultar el modal al guardar o actualizar
+
+            }).catch(error => {
+                console.error('Error:', error);
+                mostrarMensaje('error', 'Error al guardar el pedido.'); // Mensaje de error
+            });
     });
 
     // Función para formatear los números como moneda colombiana
@@ -141,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!response.ok) {
                 mostrarMensaje('error', 'Error al cargar el total global.');
             }
-    
+
             const totalGlobal = await response.json();
             document.getElementById('totalGlobal').textContent = formatNumber(totalGlobal);
         } catch (error) {

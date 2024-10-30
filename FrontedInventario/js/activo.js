@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <td>${formatNumber(activo.precio * activo.cantidad)}</td>
                                 <td>
                                     <div style="display: flex; gap: 5px;">
-                                        <button class="btn btn-dark btn-sm eliminaractivoBtn" data-id="${activo.id}">Eliminar</button>
+                                        <button class="btn btn-dark btn-sm eliminaractivoBtn" data-id="${activo.id}" onclick="eliminaractivo(event)">Eliminar</button>
                                         <button class="btn btn-success btn-sm editaractivoBtn" data-id="${activo.id}">Editar</button>
                                     </div>
                                 </td>
@@ -64,24 +64,36 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error("Error en la solicitud fetch:", error));
     }
 
-    function eliminaractivo(event) {
-        const id = event.target.dataset.id;
-        if (confirm("¿Estás seguro de que quieres eliminar este activo?")) {
-            fetch(`${apiUrl}/${id}`, {
-                method: 'DELETE'
-            })
-            .then(response => {
-                if (response.ok) {
-                    cargaractivos();
-                    cargarTotalGlobal();
-                    mostrarMensaje('success', 'Activo eliminado con exito.');
-                } else {
-                    mostrarMensaje('error', 'Error al eliminar el activo.');
-                }
-            })
-            .catch(error => console.error('Error al eliminar el activo:', error));
+   // Variable para almacenar el ID del activo a eliminar
+let activoIdToDelete = null;
+
+function eliminaractivo(event) {
+    // Obtener el ID del activo desde el botón
+    activoIdToDelete = event.target.dataset.id; // Almacenar el ID en una variable global
+    $('#confirmModal-eliminar-activo').modal('show'); // Mostrar el modal
+}
+
+// Evento de clic para el botón de confirmación
+$('#confirmBtn-eliminar-activo').on('click', function() {
+    // Cerrar el modal
+    $('#confirmModal-eliminar-activo').modal('hide');
+
+    // Realizar la solicitud DELETE usando el ID almacenado
+    fetch(`${apiUrl}/${activoIdToDelete}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            cargaractivos(); // Refrescar lista de activos
+            cargarTotalGlobal(); // Actualizar el total global
+            mostrarMensaje('success', 'Activo eliminado con éxito.');
+        } else {
+            mostrarMensaje('error', 'Error al eliminar el activo.');
         }
-    }
+    })
+    .catch(error => console.error('Error al eliminar el activo:', error));
+});
+
 
     function limpiarFormulario() {
         activoForm.reset();
