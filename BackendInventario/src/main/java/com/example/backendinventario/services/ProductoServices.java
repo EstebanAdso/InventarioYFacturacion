@@ -79,7 +79,7 @@ public class ProductoServices {
         // Verificar si hay suficiente cantidad
         if (producto.getCantidad() < cantidadComprada) {
             throw new Exception("No hay suficiente stock del producto " + producto.getNombre() +
-                    "La cantidad del producto es de: " + producto.getCantidad());
+                    " La cantidad del producto es de: " + producto.getCantidad());
         }
 
         // Actualizar la cantidad del inventario

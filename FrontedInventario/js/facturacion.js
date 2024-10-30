@@ -44,8 +44,8 @@ window.addEventListener('load', () => {
     if (telefonoCliente !== null && telefonoCliente !== "null") document.getElementById('telefonoCliente').value = telefonoCliente;
     if (direccionCliente !== null && direccionCliente !== "null") document.getElementById('direccionCliente').value = direccionCliente;
 
-       // Limpiar datos de cliente en `localStorage` después de 2 minutos
-       setTimeout(() => {
+    // Limpiar datos de cliente en `localStorage` después de 2 minutos
+    setTimeout(() => {
         localStorage.removeItem('nombreCliente');
         localStorage.removeItem('cedulaNit');
         localStorage.removeItem('correoCliente');
@@ -59,7 +59,7 @@ window.addEventListener('load', () => {
 document.getElementById('nombreCliente').addEventListener('input', (e) => {
     const query = e.target.value.trim();
     localStorage.setItem('nombreCliente', query ? query : "");
-    
+
     if (query.length > 1) {
         obtenerSugerencias(query);
     } else {
@@ -70,7 +70,7 @@ document.getElementById('nombreCliente').addEventListener('input', (e) => {
 document.getElementById('cedulaNit').addEventListener('input', (e) => {
     const query = e.target.value.trim();
     localStorage.setItem('cedulaNit', query ? query : "");
-    
+
     if (query.length > 1) {
         obtenerSugerencias(query);
     } else {
@@ -145,9 +145,9 @@ function mostrarSugerencias(clientes) {
 
 
 
-// Función para buscar productos y mostrar sugerencias
 let productoSeleccionadoId = null;
 
+// Función para buscar productos y mostrar sugerencias
 function buscarProductos() {
     const nombreProducto = document.getElementById('nombreProductoManual').value.toUpperCase();
 
@@ -157,7 +157,7 @@ function buscarProductos() {
         return;
     }
 
-    // Actualiza la URL utilizando la variable apiProducto
+    // Llama al endpoint de búsqueda de productos
     fetch(`${apiProducto}/buscar/${nombreProducto}`)
         .then(response => {
             if (!response.ok) {
@@ -166,22 +166,21 @@ function buscarProductos() {
             return response.json();
         })
         .then(data => {
-            console.log('Datos recibidos:', data); // Agrega este log para ver la respuesta
             const sugerencias = document.getElementById('sugerenciasProductos');
             sugerencias.innerHTML = ''; // Limpiar sugerencias anteriores
 
-            // Asegúrate de que 'data' sea un array antes de usar forEach
             if (Array.isArray(data)) {
                 data.forEach(producto => {
                     const li = document.createElement('li');
-                    li.innerHTML = producto.nombre.toUpperCase() + "<i>" + " ||  $" + producto.precioVendido + "</i>" + " || Stock disponible : " + producto.cantidad;
+                    li.innerHTML = producto.nombre.toUpperCase() +
+                        "<i> || $ " + producto.precioVendido + "</i>" +
+                        " || Stock disponible: " + producto.cantidad;
                     li.style.cursor = 'pointer';
                     li.classList.add('hover-effect');
-                    // Mensaje para depurar el click en cada producto
+
+                    // Evento al hacer clic en la sugerencia
                     li.onclick = () => {
-                        console.log('Producto clickeado:', producto); // Para verificar qué producto se ha clickeado
-                        productoSeleccionadoId = producto.id
-                        console.log("id del producto seleccionado:" + productoSeleccionadoId)
+                        productoSeleccionadoId = producto.id;
                         seleccionarProducto(producto); // Llama a la función para mostrar los detalles
                     };
 
@@ -189,22 +188,11 @@ function buscarProductos() {
                 });
                 sugerencias.style.display = data.length ? 'block' : 'none';
             } else {
-                console.error('La respuesta no es un array:', data);
                 sugerencias.style.display = 'none';
             }
         })
         .catch(error => console.error('Error:', error));
 }
-
-function seleccionarProducto(producto) {
-    // Mostrar los detalles en la consola
-    console.log('Producto seleccionado:', producto.nombre);
-    console.log('Precio:', producto.precioVendido);
-    console.log('ID del producto:', producto.id);
-    productoSeleccionadoId = producto.id
-    console.log(productoSeleccionadoId)
-}
-
 
 // Agregar evento para el campo de producto
 document.getElementById('nombreProductoManual').addEventListener('input', buscarProductos);
@@ -215,6 +203,16 @@ function seleccionarProducto(producto) {
     document.getElementById('precioUnitarioManual').value = producto.precioVendido;
     document.getElementById('PCProducto').value = producto.precioComprado;
     document.getElementById('sugerenciasProductos').style.display = 'none';
+
+    productoSeleccionadoId = producto.id;
+
+    // Ajusta el máximo permitido en el campo de cantidad
+    const inputCantidad = document.getElementById('cantidadProductoManual');
+    inputCantidad.max = producto.cantidad; 
+
+    // Mostrar un mensaje al usuario sobre el stock máximo
+    document.getElementById('mensajeMaxCantidad').innerText =
+        `Cantidad máxima disponible: ${producto.cantidad}`;
 }
 
 // Agregar evento para el campo de producto
@@ -293,6 +291,7 @@ function guardarFactura() {
                 return response.json();
             })
             .then(data => {
+                if (!data) return;
                 console.log('Factura guardada exitosamente:', data);
 
                 // Crear el HTML de la factura para visualización
@@ -402,7 +401,7 @@ function imprimirPos() {
         const productosHTML = productos.map(producto => {
             totalFactura += producto.total;
             return `
-              <tr style="font-size: 10px; font-family: monospace;">
+              <tr style="font-size: 10px; font-family: 'Roboto';">
                <td style="padding: 2px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">
                   ${producto.nombre.toUpperCase()} - ${producto.descripcion || ''}
                 </td>
@@ -450,18 +449,19 @@ function imprimirPos() {
                 return response.json();
             })
             .then(data => {
+                if (!data) return;
                 console.log('Factura guardada exitosamente:', data);
 
                 const facturaHTML = `
-                    <div style="width: 70mm; font-size: 11px; font-family: monospace;">
+                    <div style="width: 70mm; font-size: 11px; font-family: 'Roboto';">
                         <div style="text-align: center;">
                             <img src="../css/pc.png" alt="" style="width: 80px; height: auto; margin-top: 0">
                         </div>
                         <h2 style="text-align: center;">CompuServices Soft</h2>
-                        <p style="text-align: center;">
+                        <p style="text-align: center; ">
                             <b>Servicio técnico de computadores y celulares,
                             Venta de computadores y periféricos</b><br>
-                            <div style="text-align : left">
+                            <div style="text-align : left; font-size: 11px;">
                             <b>NIT:</b> 1193030552-4<br>
                             <b>Celular:</b> 3242264795<br>
                             <b>Ubicación:</b> Pasto, Centro comercial la 16, local 138
@@ -495,10 +495,10 @@ function imprimirPos() {
                         </table>
                         <hr style="border: 1px solid #000;">
                         <p style="margin-top: 10px; font-size: 11px; text-align: center;"><b>****** Gracias por su Compra ******</b></p>
-                        <p style="margin-top: 2px; font-size: 10px; text-align: justify;">
+                        <p style="margin-top: 2px; font-size: 11px; text-align: justify;">
                             <b>Nota:</b> La garantía cubre únicamente defectos de fabricación y no aplica en caso de insatisfacción personal, errores en la selección del producto, o daños causados por un mal uso. Para validar la garantía, es indispensable conservar todos los accesorios, empaques originales y documentación proporcionada en el momento de la compra, como también no dañar los sellos de garantía.
                         </p>
-                        <p style="margin-top: 0px; font-size: 10px; text-align: justify;">&copy;Sistema de facturación POST y PDF, gestión de clientes inventario y pedidos, realizado por estebanadso@gmail.com / 3242264795</p>
+                        <p style="margin-top: 0px; font-size: 11px; text-align: justify;">&copy;Sistema de facturación POST y PDF, gestión de clientes inventario y pedidos, realizado por estebanadso@gmail.com / 3242264795</p>
                     </div>
             `;
 
@@ -516,7 +516,7 @@ function imprimirPos() {
                                     size: 70mm;
                                 }
                                 body { 
-                                    font-family: monospace; 
+                                    font-family: 'Roboto'; 
                                     margin: 0; 
                                     padding: 0; 
                                 }
@@ -599,7 +599,7 @@ function agregarProducto() {
         const cellId = newRow.insertCell(0);
         cellId.textContent = productoId || 'N/A';
         cellId.style.display = 'none';
-        
+
         const cellNombre = newRow.insertCell(1);
         const cellCantidad = newRow.insertCell(2);
         const cellPrecioUnitario = newRow.insertCell(3);
@@ -609,14 +609,14 @@ function agregarProducto() {
         const cellAcciones = newRow.insertCell(7);
         const cellPc = newRow.insertCell(8); // Celda para precio comprado
         cellPc.style.display = 'none';
-       
+
         cellNombre.textContent = nombreProducto;
         cellCantidad.textContent = cantidad;
         cellPrecioUnitario.textContent = precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
         cellGarantia.textContent = garantia;
         cellDescripcion.textContent = descripcion;
         cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-       
+
 
         productosEnFactura.push({
             id: productoId,
@@ -672,6 +672,7 @@ function limpiarFormularioProducto() {
     document.getElementById('precioUnitarioManual').value = '';
     document.getElementById('garantiaProducto').value = '1';
     document.getElementById('PCProducto').value = '';
+    document.getElementById('mensajeMaxCantidad').textContent = '';
 }
 
 function obtenerProductosSeleccionados() {
@@ -704,6 +705,8 @@ function limpiarFormulario() {
     localStorage.removeItem('telefonoCliente');
     localStorage.removeItem('direccionCliente');
     localStorage.removeItem('productosEnFactura');
+    document.getElementById('mensajeMaxCantidad').textContent = '';
+    document.getElementById('totalDeFactura').textContent = 'TOTAL:';
     productosEnFactura = [];
 }
 
@@ -734,7 +737,7 @@ window.addEventListener('load', () => {
     const storedProducts = localStorage.getItem('productosEnFactura');
     if (storedProducts) {
         productosEnFactura = JSON.parse(storedProducts);
-        
+
         productosEnFactura.forEach(producto => {
             const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
             const newRow = tbody.insertRow();

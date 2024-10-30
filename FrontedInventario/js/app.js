@@ -220,6 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 filtroCategoriaSelect.appendChild(option);
             });
 
+            categoriaSelect.innerHTML = '<option value="">Selecciona una categoría</option>';
+
             categorias.forEach(categoria => {
                 const option = document.createElement('option');
                 option.value = categoria.id;  // Ajusta según el campo de tu entidad

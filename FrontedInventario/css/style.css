@@ -271,6 +271,15 @@ legend {
     border-color: #d0d0d0; /* Color del borde */
 }
 
+#mensajeError{
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+#botonesDeImpresion{
+    margin: 0;
+    padding-bottom: 50px;
+}
 
 @media (max-width: 1920px) {
     #productoTableBody td {
@@ -288,6 +297,7 @@ legend {
 
     fieldset {
         padding: 5px;
+        margin-top: 80px;
     }
     
     legend {

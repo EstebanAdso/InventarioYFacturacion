@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,14 @@
     <link rel="stylesheet" href="../css/style.css"> <!-- Asegúrate de tener tu archivo de estilos CSS -->
     <link rel="shortcut icon" href="../css/logo.png" type="image/x-icon">
 </head>
+
 <body>
 
     <header id="nav">
         <nav>
             <h6 style="user-select: none;">Gestión Total</h6>
             <ul>
-                <li><a href="#"  class="selected">Facturación</a></li>
+                <li><a href="#" class="selected">Facturación</a></li>
                 <li><a href="index.html">Inventario</a></li>
                 <li><a href="ventas.html">Ventas</a></li>
                 <li><a href="Pedidos.html">Pedidos</a></li>
@@ -28,15 +30,8 @@
     <div class="container">
         <h1 class="text-center" id="tituloFacturacion" style="user-select: none;">Facturación</h1>
 
-         <!-- Contenedor de mensaje de error -->
-        <div id="mensajeError" class="alert alert-danger alert-dismissible fade show" style="display: none;">
-            <span id="mensajeTexto">Por favor, completa los campos requeridos.</span>
-            <button type="button" class="close" aria-label="Close" onclick="cerrarMensajeError()">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        
-    
+
+
         <!-- Fieldset para datos del cliente -->
         <fieldset style="border: 2px solid #1116; border-radius: 10px;">
             <legend>Datos del Cliente</legend>
@@ -46,40 +41,47 @@
                     <!-- Campo Nombre del Cliente -->
                     <div class="form-group col-md-6">
                         <label for="nombreCliente">Nombre del Cliente:</label>
-                        <input type="text" class="form-control" id="nombreCliente" autocomplete="off" placeholder="Obligatorio" required>
-                        <ul id="sugerenciasClientes" style="
-                        position: absolute;border: 1px solid #ddd;display: none;list-style: none;padding: 0;margin: 0;max-height: 150px;overflow-y: auto;background-color: white;width: 100%;z-index: 1;"></ul>
+                        <input type="text" class="form-control" id="nombreCliente" autocomplete="off"
+                            placeholder="Obligatorio" required>
+                        <ul id="sugerenciasClientes"
+                            style="
+                        position: absolute;border: 1px solid #ddd;display: none;list-style: none;padding: 0;margin: 0;max-height: 150px;overflow-y: auto;background-color: white;width: 100%;z-index: 1;">
+                        </ul>
                     </div>
-    
+
                     <!-- Campo Cédula o NIT -->
                     <div class="form-group col-md-6">
                         <label for="cedulaNit">Cédula o NIT:</label>
-                        <input type="text" class="form-control" autocomplete="off" placeholder="Obligatorio" id="cedulaNit" required>
+                        <input type="text" class="form-control" autocomplete="off" placeholder="Obligatorio"
+                            id="cedulaNit" required>
                     </div>
                 </div>
-    
+
                 <div class="form-row">
                     <div class="form-group col-md-12">
                         <label for="correoCliente">Correo Electronico:</label>
-                        <input type="email" class="form-control" autocomplete="off" placeholder="Opcional" id="correoCliente">
+                        <input type="email" class="form-control" autocomplete="off" placeholder="Opcional"
+                            id="correoCliente">
                     </div>
 
                     <!-- Campo Teléfono -->
                     <div class="form-group col-md-6">
                         <label for="telefonoCliente">Teléfono:</label>
-                        <input type="text" class="form-control" autocomplete="off" placeholder="Opcional" id="telefonoCliente">
+                        <input type="text" class="form-control" autocomplete="off" placeholder="Opcional"
+                            id="telefonoCliente">
                     </div>
-    
+
                     <!-- Campo Dirección -->
                     <div class="form-group col-md-6">
                         <label for="direccionCliente">Dirección:</label>
-                        <input type="text" class="form-control" autocomplete="off" placeholder="Opcional" id="direccionCliente">
+                        <input type="text" class="form-control" autocomplete="off" placeholder="Opcional"
+                            id="direccionCliente">
                     </div>
-                    
+
                 </div>
             </form>
         </fieldset>
-    
+
         <!-- Fieldset para datos del producto -->
         <fieldset style="border: 2px solid #1116; padding: 10px; margin-top: 20px; border-radius: 10px;">
             <legend>Datos de Facturación</legend>
@@ -89,40 +91,54 @@
                     <div class="form-group col-md-6">
                         <label for="nombreProductoManual">Nombre del Producto:</label>
                         <input type="text" class="form-control" autocomplete="off" id="nombreProductoManual">
-                        <ul id="sugerenciasProductos" style="position: absolute;border: 1px solid #ddd;display: none;list-style: none;padding: 0;margin: 0;max-height: 150px;overflow-y: auto;background-color: white;width: 100%;z-index: 1;"></ul>
+                        <ul id="sugerenciasProductos"
+                            style="position: absolute;border: 1px solid #ddd;display: none;list-style: none;padding: 0;margin: 0;max-height: 150px;overflow-y: auto;background-color: white;width: 100%;z-index: 1;">
+                        </ul>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="PCProducto">P.C</label>
                         <input type="text" class="form-control" autocomplete="off" id="PCProducto">
                     </div>
                 </div>
-               
+
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="precioUnitarioManual">Precio Unitario:</label>
-                        <input type="text" autocomplete="off"  class="form-control" id="precioUnitarioManual">
+                        <input type="text" autocomplete="off" class="form-control" id="precioUnitarioManual">
                     </div>
 
                     <div class="form-group col-md-4">
                         <label for="cantidadProductoManual">Cantidad:</label>
-                        <input type="number" autocomplete="off" class="form-control" id="cantidadProductoManual" value="1">
+                        <input type="number" autocomplete="off" class="form-control" id="cantidadProductoManual"
+                            value="1" min="1">
+                            <p id="mensajeMaxCantidad" style="color: red; display: block; position: absolute; top: 90%; left: 0; margin-top: 4px;"></p>
                     </div>
-                    
+
                     <div class="form-group col-md-4">
                         <label for="garantiaProducto">Garantía (en meses):</label>
                         <input type="number" autocomplete="off" class="form-control" id="garantiaProducto" value="1">
                     </div>
                     <div class="form-group col-md-12">
                         <label for="descripcionFactura">Descripción:</label>
-                        <textarea class="form-control" autocomplete="off" id="descripcionFactura" placeholder="Opcional" rows="1"></textarea>
+                        <textarea class="form-control" autocomplete="off" id="descripcionFactura" placeholder="Opcional"
+                            rows="1"></textarea>
                     </div>
                 </div>
-                
-    
+
+
                 <button type="button" class="btn btn-primary" onclick="agregarProducto()">Agregar Producto</button>
             </form>
         </fieldset>
-    
+
+        <!-- Contenedor de mensaje de error -->
+        <div id="mensajeError" class="alert alert-danger alert-dismissible fade show" style="display: none;">
+            <span id="mensajeTexto">Por favor, completa los campos requeridos.</span>
+            <button type="button" class="close" aria-label="Close" onclick="cerrarMensajeError()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+
         <!-- Tabla de productos seleccionados -->
         <div class="mt-4">
             <h5>Productos Seleccionados</h5>
@@ -145,23 +161,25 @@
             </table>
             <h6 id="totalDeFactura">TOTAL: <span style="color: red;">$0.00</span></h6>
         </div>
-    
+
         <!-- Botones para guardar y cancelar -->
-        <div class="mt-4" style="text-align: center">
-            <button type="button" style="width: 300px;" class="btn btn-success" onclick="imprimirPos()">Imprimir Pos</button>
+        <div class="mt-4" style="text-align: center" id="botonesDeImpresion">
+            <button type="button" style="width: 300px;" class="btn btn-success" onclick="imprimirPos()">Imprimir
+                Pos</button>
             <button type="button" class="btn btn-outline-danger" onclick="guardarFactura()">Guardar Factura PDF</button>
             <button type="button" class="btn btn-dark" onclick="limpiarFormulario()">Cancelar</button>
         </div>
-        
-    </div>
-    
 
-   
-    
+    </div>
+
+
+
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
     <script src="../js/facturacion.js"></script>
 </body>
+
 </html>
