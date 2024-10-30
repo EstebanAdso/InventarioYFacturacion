@@ -333,7 +333,6 @@ function guardarFactura() {
     }
 }
 
-
 function imprimirPos() {
     const nombreCliente = document.getElementById('nombreCliente').value.trim().toUpperCase();
     const cedulaNit = document.getElementById('cedulaNit').value.trim();
@@ -349,13 +348,13 @@ function imprimirPos() {
         const productosHTML = productos.map(producto => {
             totalFactura += producto.total;
             return `
-              <tr style=" font-size: 10px; font-family: monospace;">
+              <tr style="font-size: 10px; font-family: monospace;">
                <td style="padding: 2px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">
                   ${producto.nombre.toUpperCase()} - ${producto.descripcion || ''}
                 </td>
                 <td style="padding: 2px 0; text-align: center; max-width: 10mm;">${producto.cantidad}</td>
                 <td style="padding: 2px 0; text-align: center; max-width: 15mm;">${producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
-                <td style="padding: 2px 0; text-align: center; max-width: 15mm;">${producto.garantia}Mes</td>
+                <td style="padding: 2px 0; text-align: center; max-width: 15mm;">${producto.garantia} Mes</td>
                 <td style="padding: 2px 0; text-align: center;">${producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
             </tr>
             `;
@@ -401,7 +400,7 @@ function imprimirPos() {
                 console.log('Factura guardada exitosamente:', data);
 
                 const facturaHTML = `
-                 <div style="width: 65mm; font-size: 10px; font-family: monospace;">
+                 <div style="width: 70mm; font-size: 11px; font-family: monospace;">
                     <div style="text-align: center;">
                         <img src="../css/pc.png" alt="" style="width: 80px; height: auto; margin-top: 0">
                     </div>
@@ -420,7 +419,7 @@ function imprimirPos() {
                     ${correoCliente ? `<p><strong>Correo:</strong> ${correoCliente}</p>` : ''}
                     ${direccionCliente ? `<p><strong>Dirección:</strong> ${direccionCliente}</p>` : ''}
                     <hr>
-                    <table style="width: 100%; margin-top: 10px; font-size: 10px">
+                    <table style="width: 100%; margin-top: 10px; font-size: 11px">
                         <thead>
                             <tr>
                                 <th style="padding: 4px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">Producto</th>
@@ -441,7 +440,7 @@ function imprimirPos() {
                    <hr>
                     <p style="margin-top: 10px; font-size: 11px; text-align: center;"><b>******* Gracias por su Compra *******</b></p>
                     <p style="margin-top: 2px; font-size: 10px; text-align: justify;">
-                        <b>Nota:</b> La garantía cubre únicamente defectos de fabricación y no aplica en caso de insatisfacción personal, errores en la selección del producto, o daños causados por un mal uso. Para validar la garantía, es indispensable conservar todos los accesorios, empaques originales y documentación proporcionada en el momento de la compra, como también no dañar los sellos de garantia.
+                        <b>Nota:</b> La garantía cubre únicamente defectos de fabricación y no aplica en caso de insatisfacción personal, errores en la selección del producto, o daños causados por un mal uso. Para validar la garantía, es indispensable conservar todos los accesorios, empaques originales y documentación proporcionada en el momento de la compra, como también no dañar los sellos de garantía.
                     </p>
                 </div>
             `;
@@ -455,11 +454,29 @@ function imprimirPos() {
                     <head>
                         <title>Factura POS</title>
                         <style>
-                            body { font-family: monospace; }
-                            table { width: 100%; border-collapse: collapse; }
-                            th, td { padding: 4px 0; text-align: right; }
-                            th { text-align: center; }
-                            h2, h3, h4 { text-align: center; margin: 4px 0; }
+                            @page {
+                                margin: 0; /* Eliminar márgenes */
+                            }
+                            body { 
+                                font-family: monospace; 
+                                margin: 0; /* Eliminar márgenes del body */
+                                padding: 0; /* Eliminar padding del body */
+                            }
+                            table { 
+                                width: 100%; 
+                                border-collapse: collapse; 
+                            }
+                            th, td { 
+                                padding: 4px 0; 
+                                text-align: right; 
+                            }
+                            th { 
+                                text-align: center; 
+                            }
+                            h2, h3, h4 { 
+                                text-align: center; 
+                                margin: 4px 0; 
+                            }
                         </style>
                     </head>
                     <body>
@@ -481,6 +498,9 @@ function imprimirPos() {
         alert('Por favor, completa todos los campos requeridos.');
     }
 }
+
+
+
 
 const inputs = document.querySelectorAll('.form-control');
 

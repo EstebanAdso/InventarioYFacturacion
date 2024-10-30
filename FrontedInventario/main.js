@@ -1,11 +1,11 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1920,
+    height: 1080,
   });
 
   win.loadFile('html/index.html'); // Cambia a la ruta de tu archivo HTML de inicio
@@ -15,16 +15,18 @@ function createWindow() {
 function runJar() {
   const jarPath = path.join(__dirname, 'BackendInventario-0.0.1-SNAPSHOT.jar'); // Ruta del JAR en la misma carpeta
 
-  exec(`java -jar "${jarPath}"`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error al ejecutar el JAR: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.error(`Error de salida: ${stderr}`);
-      return;
-    }
-    console.log(`Salida del JAR: ${stdout}`);
+  const jarProcess = spawn('java', ['-jar', jarPath]);
+
+  jarProcess.stdout.on('data', (data) => {
+    console.log(`Salida del JAR: ${data}`);
+  });
+
+  jarProcess.stderr.on('data', (data) => {
+    console.error(`Error de salida: ${data}`);
+  });
+
+  jarProcess.on('close', (code) => {
+    console.log(`Proceso del JAR finalizado con código ${code}`);
   });
 }
 
