@@ -52,7 +52,9 @@ window.addEventListener('load', () => {
         localStorage.removeItem('telefonoCliente');
         localStorage.removeItem('direccionCliente');
         console.log('Datos de cliente eliminados de localStorage después de 2 minutos.');
-    }, 2 * 60 * 1000); // 2 minutos en milisegundos
+        limpiarFormulario();
+        limpiarFormularioProducto();
+    }, 8 * 60 * 1000); 
 });
 
 // Escucha de cambios en los campos del formulario para almacenar en localStorage
@@ -173,8 +175,8 @@ function buscarProductos() {
                 data.forEach(producto => {
                     const li = document.createElement('li');
                     li.innerHTML = producto.nombre.toUpperCase() +
-                        "<i> || $ " + producto.precioVendido + "</i>" +
-                        " || Stock disponible: " + producto.cantidad;
+                       "<i> || P.C <span style='color: red;'>$ " + producto.precioComprado + "</span></i>" +
+                        "<i> || P.V $ " + producto.precioVendido + "</i>";
                     li.style.cursor = 'pointer';
                     li.classList.add('hover-effect');
 
@@ -200,8 +202,8 @@ document.getElementById('nombreProductoManual').addEventListener('input', buscar
 // Función para seleccionar un producto de la lista de sugerencias
 function seleccionarProducto(producto) {
     document.getElementById('nombreProductoManual').value = producto.nombre;
-    document.getElementById('precioUnitarioManual').value = producto.precioVendido;
-    document.getElementById('PCProducto').value = producto.precioComprado;
+    document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioVendido);
+    document.getElementById('PCProducto').value = formatNumber(producto.precioComprado);
     document.getElementById('sugerenciasProductos').style.display = 'none';
 
     productoSeleccionadoId = producto.id;
@@ -225,8 +227,27 @@ function agregarDetalle(detalle) {
     detalles.push(detalle); // Agrega detalles a la lista
 }
 
+function mostrarConfirmacionProducto(callbackAceptar) {
+    const mensajeConfirmacion = document.getElementById('mensajeConfirmacion');
+    const btnAceptar = document.getElementById('btnAceptar');
 
-function guardarFactura() {
+    // Configura el botón Aceptar para ejecutar la acción especificada en el callback
+    btnAceptar.onclick = () => {
+        cerrarConfirmacion();
+        callbackAceptar();
+    };
+
+    mensajeConfirmacion.style.display = 'block';
+}
+
+function cerrarConfirmacion() {
+    const mensajeConfirmacion = document.getElementById('mensajeConfirmacion');
+    mensajeConfirmacion.style.display = 'none';
+}
+
+
+
+function guardarFactura(omitVerification = false) {
     const nombreCliente = document.getElementById('nombreCliente').value.trim().toUpperCase();
     const cedulaNit = document.getElementById('cedulaNit').value.trim();
     const telefonoCliente = document.getElementById('telefonoCliente').value.trim();
@@ -234,6 +255,12 @@ function guardarFactura() {
     const direccionCliente = document.getElementById('direccionCliente').value.trim();
     const productos = obtenerProductosSeleccionados();
     totalFacturaGlobal = 0;
+    const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
+
+    if (!omitVerification && nombreProducto.length > 0) {
+        mostrarConfirmacionProducto(() => guardarFactura(true)); // Pasa guardarFactura como callback
+        return;
+    }
 
     if (nombreCliente && cedulaNit && productos.length > 0) {
         // Calcular el total de la factura
@@ -386,14 +413,21 @@ function guardarFactura() {
     }
 }
 
-function imprimirPos() {
+
+function imprimirPos(omitVerification = false) {
     const nombreCliente = document.getElementById('nombreCliente').value.trim().toUpperCase();
     const cedulaNit = document.getElementById('cedulaNit').value.trim();
     const telefonoCliente = document.getElementById('telefonoCliente').value.trim();
     const correoCliente = document.getElementById('correoCliente').value.trim();
     const direccionCliente = document.getElementById('direccionCliente').value.trim();
     const productos = obtenerProductosSeleccionados();
+    const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
     totalFacturaGlobal = 0;
+
+    if (!omitVerification && nombreProducto.length > 0) {
+        mostrarConfirmacionProducto(() => imprimirPos(true)); // Pasa imprimirPos como callback
+        return;
+    }
 
     if (nombreCliente && cedulaNit && productos.length > 0) {
         let totalFactura = 0;
@@ -401,7 +435,7 @@ function imprimirPos() {
         const productosHTML = productos.map(producto => {
             totalFactura += producto.total;
             return `
-              <tr style="font-size: 10px; font-family: 'Roboto';">
+              <tr style="font-size: 12px; font-family: 'Roboto';">
                <td style="padding: 2px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">
                   ${producto.nombre.toUpperCase()} - ${producto.descripcion || ''}
                 </td>
@@ -453,7 +487,7 @@ function imprimirPos() {
                 console.log('Factura guardada exitosamente:', data);
 
                 const facturaHTML = `
-                    <div style="width: 70mm; font-size: 11px; font-family: 'Roboto';">
+                    <div style="width: 68mm; font-size: 12px; font-family: 'Roboto';">
                         <div style="text-align: center;">
                             <img src="../css/pc.png" alt="" style="width: 80px; height: auto; margin-top: 0">
                         </div>
@@ -461,7 +495,7 @@ function imprimirPos() {
                         <p style="text-align: center; ">
                             <b>Servicio técnico de computadores y celulares,
                             Venta de computadores y periféricos</b><br>
-                            <div style="text-align : left; font-size: 11px;">
+                            <div style="text-align : left; font-size: 12px;">
                             <b>NIT:</b> 1193030552-4<br>
                             <b>Celular:</b> 3242264795<br>
                             <b>Ubicación:</b> Pasto, Centro comercial la 16, local 138
@@ -475,7 +509,7 @@ function imprimirPos() {
                         ${correoCliente ? `<p><strong>Correo:</strong> ${correoCliente}</p>` : ''}
                         ${direccionCliente ? `<p><strong>Dirección:</strong> ${direccionCliente}</p>` : ''}
                         <hr style="border: 1px solid #000;">
-                        <table style="width: 100%; margin-top: 10px; font-size: 11px">
+                        <table style="width: 100%; margin-top: 10px; font-size: 12px">
                             <thead>
                                 <tr>
                                     <th style="padding: 4px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">Producto</th>
@@ -494,18 +528,18 @@ function imprimirPos() {
                             </tbody>
                         </table>
                         <hr style="border: 1px solid #000;">
-                        <p style="margin-top: 10px; font-size: 11px; text-align: center;"><b>****** Gracias por su Compra ******</b></p>
-                        <p style="margin-top: 2px; font-size: 11px; text-align: justify;">
-                            <b>Nota:</b> La garantía cubre únicamente defectos de fabricación y no aplica en caso de insatisfacción personal, errores en la selección del producto, o daños causados por un mal uso. Para validar la garantía, es indispensable conservar todos los accesorios, empaques originales y documentación proporcionada en el momento de la compra, como también no dañar los sellos de garantía.
+                        <p style="margin-top: 10px; font-size: 12px; text-align: center;"><b>****** Gracias por su Compra ******</b></p>
+                        <p style="margin-top: 2px; font-size: 12px; text-align: justify;">
+                            <b>Nota:</b> La garantía cubre únicamente defectos de fabricación y no aplica en caso de insatisfacción personal, errores en la selección del producto, o daños causados por un mal uso. Para validar la garantía, es indispensable conservar todos los accesorios, empaques originales y documentación proporcionada en el momento de la compra, como también no dañar los sellos de garantía este proceso puede demorar hasta 15 dias habiles.
                         </p>
-                        <p style="margin-top: 0px; font-size: 11px; text-align: justify;">&copy;Sistema de facturación POST y PDF, gestión de clientes inventario y pedidos, realizado por estebanadso@gmail.com / 3242264795</p>
+                        <p style="margin-top: 0px; font-size: 12px; text-align: justify;">&copy;Sistema de facturación POST y PDF, gestión de clientes inventario y pedidos, realizado por estebanadso@gmail.com / 3242264795</p>
                     </div>
             `;
 
                 limpiarFormularioProducto();
                 limpiarFormulario();
 
-                const ventanaImpresion = window.open('', '', 'height=800,width=300');
+                const ventanaImpresion = window.open('', '', 'height=900,width=300');
                 ventanaImpresion.document.write(`
                     <html>
                         <head>
@@ -513,7 +547,7 @@ function imprimirPos() {
                             <style>
                                 @page {
                                     margin: 0; 
-                                    size: 70mm;
+                                    padding: 0
                                 }
                                 body { 
                                     font-family: 'Roboto'; 
@@ -670,7 +704,7 @@ function limpiarFormularioProducto() {
     document.getElementById('descripcionFactura').value = '';
     document.getElementById('cantidadProductoManual').value = '1';
     document.getElementById('precioUnitarioManual').value = '';
-    document.getElementById('garantiaProducto').value = '1';
+    document.getElementById('garantiaProducto').value = '';
     document.getElementById('PCProducto').value = '';
     document.getElementById('mensajeMaxCantidad').textContent = '';
 }
@@ -697,7 +731,7 @@ function limpiarFormulario() {
     document.getElementById('nombreProductoManual').value = '';
     document.getElementById('cantidadProductoManual').value = '1';
     document.getElementById('precioUnitarioManual').value = '';
-    document.getElementById('garantiaProducto').value = '1';
+    document.getElementById('garantiaProducto').value = '';
     document.getElementById('productosTabla').getElementsByTagName('tbody')[0].innerHTML = '';
     localStorage.removeItem('nombreCliente');
     localStorage.removeItem('cedulaNit');
@@ -790,7 +824,9 @@ window.addEventListener('load', () => {
 
         setTimeout(() => {
             localStorage.removeItem('productosEnFactura');
+            limpiarFormulario()
+            limpiarFormularioProducto()
             console.log('Productos en factura eliminados de localStorage después de 2 minutos.');
-        }, 2 * 60 * 1000); // 2 minutos en milisegundos
+        }, 8 * 60 * 1000); // 2 minutos en milisegundos
     }
 });

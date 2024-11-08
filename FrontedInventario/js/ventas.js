@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id='ventasfactura'>
                                 ${facturas.map(factura => `
                                     <tr>
                                         <td>${factura.serial}</td>

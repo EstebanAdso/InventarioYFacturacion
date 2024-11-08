@@ -68,60 +68,79 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function limpiarFormulario() {
         clienteForm.reset()
+        document.getElementById('clienteId').value = ''; // Limpia el campo de clienteId
     }
 
     clienteForm.addEventListener('submit', function (event) {
         event.preventDefault();
-
+    
         const clienteData = {
-            nombre: nombreCliente.value,
-            identificacion : identificacionCliente.value,
-            telefono : telefonoCliente.value,
-            direccion : direccionCliente.value,
-            correo : correoCliente.value
+            nombre: nombreCliente.value.trim() === '' ? null : nombreCliente.value,
+            identificacion: identificacionCliente.value.trim() === '' ? null : identificacionCliente.value,
+            telefono: telefonoCliente.value.trim() === '' ? null : telefonoCliente.value,
+            direccion: direccionCliente.value.trim() === '' ? null : direccionCliente.value,
+            correo: correoCliente.value.trim() === '' ? null : correoCliente.value
         };
-
+    
         const idcliente = document.getElementById('clienteId').value;
         const url = idcliente ? `${apiUrl}/${idcliente}` : apiUrl;
         const method = idcliente ? 'PUT' : 'POST';
-
+    
         fetch(url, {
             method: method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(clienteData)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || "Error al procesar la solicitud.");
+                });
+            }
+            return response.json();
+        })
         .then(() => {
             limpiarFormulario();
             cargarclientes();
-            mostrarMensaje('success', 'Cliente agregado / editado con exito.');
+            mostrarMensaje('success', 'Cliente agregado / editado con éxito.');
             $('#clienteModal').modal('hide');
+        })
+        .catch(error => {
+            console.error("Error en la solicitud:", error);
+            if (error.message.includes('Duplicate entry')) {
+                mostrarMensaje('error', 'Error: La identificación del cliente ya existe.');
+            } else {
+                mostrarMensaje('error', 'Ocurrió un error al guardar el cliente es posible que algun campo este duplicado.');
+            }
         });
     });
-
+    
     
     async function editarcliente(id) {
         try {
             const response = await fetch(`${apiUrl}/${id}`);
             if (!response.ok) {
-                mostrarMensaje('error', 'Error cargar el cliente pare editar.');
+                mostrarMensaje('error', 'Error al cargar el cliente para editar.');
+                return;
             }
+    
             modificarTexto = document.getElementById('clienteModalLabel');
             modificarTexto.textContent = 'Editar cliente';
-
+    
             const cliente = await response.json();
             document.getElementById('clienteId').value = cliente.id;
-            nombreCliente.value = cliente.nombre;
-            identificacionCliente.value = cliente.identificacion; // Usar precio directo
-            telefonoCliente.value = cliente.telefono;
-            correoCliente.value = cliente.correo;
-            direccionCliente.value = cliente.direccion;
-
+            nombreCliente.value = cliente.nombre || '';
+            identificacionCliente.value = cliente.identificacion || '';
+            telefonoCliente.value = cliente.telefono ?? null; // Si está vacío, se asigna null
+            correoCliente.value = cliente.correo ?? null; // Si está vacío, se asigna null
+            direccionCliente.value = cliente.direccion ?? null; // Si está vacío, se asigna null
+    
             $('#clienteModal').modal('show');
         } catch (error) {
             console.error('Error:', error);
         }
     }
+    
 
 
   // cliente.js

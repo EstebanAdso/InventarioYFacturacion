@@ -1,25 +1,14 @@
 
 .container {
     margin-top: 80px;
-    height: 1000px;
 }
 
 
-.text-right {
-    margin-bottom: 20px;
-}
-.form-group {
-    margin-bottom: 20px;
-}
-.table {
-    margin-bottom: 20px;
-}
-.col-md-4 {
-    padding: 20px;
-}
+
 .modal-dialog {
     max-width: 800px;
 }
+
 header {
     position: fixed;
     background-color: #343a40;
@@ -281,9 +270,26 @@ legend {
     padding-bottom: 50px;
 }
 
+#productosTabla tbody tr:nth-child(odd) td {
+    background-color: #f0f8ff; /* Color claro */
+}
+
+#productosTabla tbody tr:nth-child(even) td {
+    background-color: #f2ffed; /* Otro color claro */
+}
+
+#productosTabla tbody td {
+    padding: 7px;
+}
+
+#contenedorPrincipalFacturacion{
+    width: 65%;
+}
+
+
 @media (max-width: 1920px) {
     #productoTableBody td {
-        padding: 6px;
+        padding: 4px;
     }
 
     #searchForm input{
@@ -295,33 +301,33 @@ legend {
         margin: 0;
     }
 
-    fieldset {
-        padding: 5px;
-        margin-top: 80px;
-    }
-    
-    legend {
-        padding:2px;
-    }
-
-    #clienteForm{
-        padding: 0 10px 0 10px;
-        margin: 0;
-        height: 240px;
-    }
-
-    #facturaForm{
-        padding: 0 10px 0 10px;
-        height: 345px;
-    }
-
-    #tituloFacturacion{
-        display: none;
-    }
     
     #filtradorDeCategoria{
         margin: 0;
     }
 
+    #productosTabla tbody td{
+        padding: 7px;
+    }
+
+    #contenedorPrincipalFacturacion{
+        width: 85%;
+    }
+
+    #contenedorPrincipalFacturacion fieldset{
+       padding: 2px;
+    }
+
+    #contenedorPrincipalFacturacion #clienteForm{
+        padding: 0;
+        margin: 0;
+     }
+
+     #ventasfactura td{
+        padding: 3px;
+     }
    
+     #clienteTableBody td{
+        padding: 6px;
+     }
 }
