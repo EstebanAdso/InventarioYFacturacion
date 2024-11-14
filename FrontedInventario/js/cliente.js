@@ -7,11 +7,62 @@ document.addEventListener('DOMContentLoaded', function () {
     const telefonoCliente = document.getElementById('telefonoCliente');
     const direccionCliente = document.getElementById('direccionCliente');
     const correoCliente = document.getElementById('correoCliente');
+    const buscador = document.getElementById('searchInput')
     let modificarTexto = document.getElementById('clienteModalLabel')
    
 
     cargarclientes();
 
+    buscador.addEventListener('input', async () => {
+        const nombre = document.getElementById('searchInput').value;
+        currentPage = 0;
+        if (nombre === '') {
+            cargarclientes();
+        } else {
+            buscarProductosPorNombre(nombre)
+        }
+    });
+
+    async function buscarProductosPorNombre(nombre) {
+        try {
+            const response = await fetch(`${apiUrl}/buscar/${nombre}`);
+            if (!response.ok) {
+                mostrarMensaje('error', 'Error al buscar productos por nombre.');
+                return;
+            }
+            const clientes = await response.json();
+            clienteTableBody.innerHTML = '';
+            clientes.forEach(cliente => {
+                const row = `
+                    <tr>
+                        <td>${cliente.id}</td>
+                        <td>${cliente.nombre.toUpperCase()}</td>
+                        <td>${cliente.identificacion}</td>
+                        <td>${cliente.telefono || ""}</td>
+                        <td>${cliente.direccion || ""}</td>
+                        <td>${cliente.correo || ""}</td>
+                        <td>
+                            <div">
+                                <button class="btn btn-success btn-sm editarclienteBtn" data-id="${cliente.id}">Editar</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                clienteTableBody.insertAdjacentHTML('beforeend', row);
+            });
+    
+            // Asigna eventos a los botones de edición
+            document.querySelectorAll('.editarclienteBtn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const id = btn.getAttribute('data-id');
+                    editarcliente(id);
+                });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+    
     
     function cargarclientes() {
 

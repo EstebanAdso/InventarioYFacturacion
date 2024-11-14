@@ -6,7 +6,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
     "build": "electron-packager . frontedinventario --platform=win32 --arch=x64 --out=dist --overwrite --extra-resource=BackendInventario-0.0.1-SNAPSHOT.jar"
-
   },
   "keywords": [],
   "author": "",
@@ -14,6 +13,7 @@
   "description": "",
   "dependencies": {
     "express": "^4.19.2",
+    "jspdf": "^2.5.2",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.14"
   },

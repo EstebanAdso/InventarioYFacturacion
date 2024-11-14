@@ -3,32 +3,21 @@ const apiProducto = 'http://localhost:8082/producto'
 
 let productosFiltrados = [];
 let productosEnFactura = [];
+let totalFacturaGlobal = 0; 
+let productoSeleccionadoId = null;
+let detalles = []; 
 
 document.addEventListener('DOMContentLoaded', () => {
-
-
     const agregarProductoBtn = document.getElementById('agregarProductoBtn');
-    if (agregarProductoBtn) {
-        agregarProductoBtn.addEventListener('click', () => {
-            agregarProducto();
-        });
-    }
+    if (agregarProductoBtn) agregarProductoBtn.addEventListener('click', agregarProducto);
 
     const guardarFacturaBtn = document.getElementById('guardarFacturaBtn');
-    if (guardarFacturaBtn) {
-        guardarFacturaBtn.addEventListener('click', () => {
-            guardarFactura();
-        });
-    }
+    if (guardarFacturaBtn) guardarFacturaBtn.addEventListener('click', guardarFactura);
 
     const limpiarFormularioBtn = document.getElementById('limpiarFormularioBtn');
-    if (limpiarFormularioBtn) {
-        limpiarFormularioBtn.addEventListener('click', () => {
-            limpiarFormulario();
-        });
-    }
-
+    if (limpiarFormularioBtn) limpiarFormularioBtn.addEventListener('click', limpiarFormulario);
 });
+
 // Función para cargar los datos de cliente desde localStorage al cargar la página
 window.addEventListener('load', () => {
     const nombreCliente = localStorage.getItem('nombreCliente');
@@ -53,8 +42,71 @@ window.addEventListener('load', () => {
         localStorage.removeItem('direccionCliente');
         console.log('Datos de cliente eliminados de localStorage después de 2 minutos.');
         limpiarFormulario();
-        limpiarFormularioProducto();
     }, 8 * 60 * 1000); 
+});
+
+window.addEventListener('load', () => {
+    const storedProducts = localStorage.getItem('productosEnFactura');
+    if (storedProducts) {
+        productosEnFactura = JSON.parse(storedProducts);
+
+        productosEnFactura.forEach(producto => {
+            const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
+            const newRow = tbody.insertRow();
+
+            // Agregar cada celda de la misma forma que en agregarProducto
+            const cellId = newRow.insertCell(0);
+            cellId.textContent = producto.id || 'N/A';
+            cellId.style.display = 'none';
+
+            const cellNombre = newRow.insertCell(1);
+            const cellCantidad = newRow.insertCell(2);
+            const cellPrecioUnitario = newRow.insertCell(3);
+            const cellGarantia = newRow.insertCell(4);
+            const cellDescripcion = newRow.insertCell(5);
+            const cellTotal = newRow.insertCell(6);
+            const cellAcciones = newRow.insertCell(7);
+
+            cellNombre.textContent = producto.nombre;
+            cellCantidad.textContent = producto.cantidad;
+            cellPrecioUnitario.textContent = producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+            cellGarantia.textContent = producto.garantia;
+            cellDescripcion.textContent = producto.descripcion;
+            cellTotal.textContent = producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Eliminar';
+            deleteBtn.className = 'btn btn-danger btn-sm';
+            deleteBtn.addEventListener('click', () => {
+                const row = deleteBtn.closest('tr');
+                const index = row.rowIndex - 1;
+                tbody.deleteRow(index);
+
+                // Restar el total del producto eliminado
+                totalFacturaGlobal -= productosEnFactura[index].total;
+                productosEnFactura.splice(index, 1);
+
+                // Actualizar en localStorage
+                localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
+
+                actualizarTotalFactura();
+            });
+            cellAcciones.appendChild(deleteBtn);
+
+            // Agregar el precio de cada producto al total
+            totalFacturaGlobal += producto.total;
+        });
+
+        // Actualizar total de factura en el DOM
+        actualizarTotalFactura();
+
+        setTimeout(() => {
+            localStorage.removeItem('productosEnFactura');
+            limpiarFormulario()
+            limpiarFormularioProducto()
+            console.log('Productos en factura eliminados de localStorage después de 2 minutos.');
+        }, 8 * 60 * 1000); // 8 minutos en milisegundos
+    }
 });
 
 // Escucha de cambios en los campos del formulario para almacenar en localStorage
@@ -141,13 +193,9 @@ function mostrarSugerencias(clientes) {
 
         sugerenciasDiv.appendChild(li);
     });
-
     sugerenciasDiv.style.display = 'block';
 }
 
-
-
-let productoSeleccionadoId = null;
 
 // Función para buscar productos y mostrar sugerencias
 function buscarProductos() {
@@ -220,8 +268,6 @@ function seleccionarProducto(producto) {
 // Agregar evento para el campo de producto
 document.getElementById('nombreProductoManual').addEventListener('input', buscarProductos);
 
-let detalles = []; // Inicializar la variable como un arreglo vacío
-
 // Función para agregar detalles
 function agregarDetalle(detalle) {
     detalles.push(detalle); // Agrega detalles a la lista
@@ -246,16 +292,121 @@ function cerrarConfirmacion() {
 }
 
 
+function agregarProducto() {
+    const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
+    const descripcion = document.getElementById('descripcionFactura').value.trim();
+    const cantidad = parseInt(document.getElementById('cantidadProductoManual').value.trim());
+    const precioUnitario = parseFloat(document.getElementById('precioUnitarioManual').value.replace(/\./g, ''));
+    const pc = parseFloat(document.getElementById('PCProducto').value.replace(/\./g, ''));
+    const garantia = parseInt(document.getElementById('garantiaProducto').value.trim());
 
-function guardarFactura(omitVerification = false) {
+    // Asegurarse de que precioComprado también esté validado
+    if (nombreProducto && !isNaN(cantidad) && !isNaN(precioUnitario) && !isNaN(garantia) && !isNaN(pc)) {
+        const productoId = productoSeleccionadoId || null;
+        const totalProducto = cantidad * precioUnitario;
+
+        const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
+        const newRow = tbody.insertRow();
+
+        const cellId = newRow.insertCell(0);
+        cellId.textContent = productoId || 'N/A';
+        cellId.style.display = 'none';
+
+        const cellNombre = newRow.insertCell(1);
+        const cellCantidad = newRow.insertCell(2);
+        const cellPrecioUnitario = newRow.insertCell(3);
+        const cellGarantia = newRow.insertCell(4);
+        const cellDescripcion = newRow.insertCell(5);
+        const cellTotal = newRow.insertCell(6);
+        const cellAcciones = newRow.insertCell(7);
+        const cellPc = newRow.insertCell(8); // Celda para precio comprado
+        cellPc.style.display = 'none';
+
+        cellNombre.textContent = nombreProducto;
+        cellCantidad.textContent = cantidad;
+        cellPrecioUnitario.textContent = precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+        cellGarantia.textContent = garantia;
+        cellDescripcion.textContent = descripcion;
+        cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+
+
+        productosEnFactura.push({
+            id: productoId,
+            nombre: nombreProducto,
+            cantidad: cantidad,
+            precioUnitario: precioUnitario,
+            garantia: garantia,
+            descripcion: descripcion || "",
+            total: totalProducto,
+            pc: pc
+        });
+
+        localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
+
+        // Actualizar el total de la factura
+        totalFacturaGlobal += totalProducto;
+        actualizarTotalFactura();
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Eliminar';
+        deleteBtn.className = 'btn btn-danger btn-sm';
+        deleteBtn.addEventListener('click', () => {
+            const row = deleteBtn.closest('tr');
+            const index = row.rowIndex - 1;
+            tbody.deleteRow(index);
+
+            // Restar el total del producto eliminado
+            totalFacturaGlobal -= productosEnFactura[index].total;
+            productosEnFactura.splice(index, 1); // Eliminar el producto del array
+
+            actualizarTotalFactura();
+        });
+        cellAcciones.appendChild(deleteBtn);
+
+        productoSeleccionadoId = null;
+        limpiarFormularioProducto();
+    } else {
+        mostrarMensajeError('Por favor, completa todos los campos requeridos de la factura.');
+    }
+}
+
+
+function obtenerProductosSeleccionados() {
+    return productosEnFactura.map(producto => ({
+        id: producto.id,
+        nombre: producto.nombre,
+        cantidad: producto.cantidad,
+        precioUnitario: producto.precioUnitario,
+        garantia: producto.garantia,
+        descripcion: producto.descripcion || null,
+        total: producto.total,
+        pc: producto.pc
+    }));
+}
+
+function obtenerDatosFactura() {
     const nombreCliente = document.getElementById('nombreCliente').value.trim().toUpperCase();
     const cedulaNit = document.getElementById('cedulaNit').value.trim();
     const telefonoCliente = document.getElementById('telefonoCliente').value.trim();
     const correoCliente = document.getElementById('correoCliente').value.trim();
     const direccionCliente = document.getElementById('direccionCliente').value.trim();
     const productos = obtenerProductosSeleccionados();
-    totalFacturaGlobal = 0;
     const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
+    
+    return {
+        nombreCliente,
+        cedulaNit,
+        telefonoCliente,
+        correoCliente,
+        direccionCliente,
+        productos,
+        nombreProducto
+    };
+}
+
+function guardarFactura(omitVerification = false) {
+    const { nombreCliente, cedulaNit, telefonoCliente, correoCliente, direccionCliente, productos, nombreProducto } = obtenerDatosFactura();
+    totalFacturaGlobal = 0;
 
     if (!omitVerification && nombreProducto.length > 0) {
         mostrarConfirmacionProducto(() => guardarFactura(true)); // Pasa guardarFactura como callback
@@ -323,7 +474,6 @@ function guardarFactura(omitVerification = false) {
 
                 // Crear el HTML de la factura para visualización
                 const facturaHTML = `
-                <h1 style="text-align: center;">Factura de Venta</h1>
                 <div style="text-align: center; margin-bottom: 20px;">
                     <img src="../css/pc.png" alt="" style="width: 100px; height: auto;">
                     <h2>CompuServices Soft</h2>
@@ -369,9 +519,7 @@ function guardarFactura(omitVerification = false) {
                 </p>
             `;
 
-                limpiarFormularioProducto();
                 limpiarFormulario();
-
 
                 // Abrir la ventana de previsualización de factura
                 const ventanaImpresion = window.open('', '', 'height=1200,width=1600');
@@ -415,13 +563,7 @@ function guardarFactura(omitVerification = false) {
 
 
 function imprimirPos(omitVerification = false) {
-    const nombreCliente = document.getElementById('nombreCliente').value.trim().toUpperCase();
-    const cedulaNit = document.getElementById('cedulaNit').value.trim();
-    const telefonoCliente = document.getElementById('telefonoCliente').value.trim();
-    const correoCliente = document.getElementById('correoCliente').value.trim();
-    const direccionCliente = document.getElementById('direccionCliente').value.trim();
-    const productos = obtenerProductosSeleccionados();
-    const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
+    const { nombreCliente, cedulaNit, telefonoCliente, correoCliente, direccionCliente, productos, nombreProducto } = obtenerDatosFactura();
     totalFacturaGlobal = 0;
 
     if (!omitVerification && nombreProducto.length > 0) {
@@ -536,7 +678,6 @@ function imprimirPos(omitVerification = false) {
                     </div>
             `;
 
-                limpiarFormularioProducto();
                 limpiarFormulario();
 
                 const ventanaImpresion = window.open('', '', 'height=900,width=300');
@@ -597,152 +738,19 @@ function imprimirPos(omitVerification = false) {
     }
 }
 
-
-const inputs = document.querySelectorAll('.form-control');
-
-
-function formatNumber(number) {
-    return number.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-}
-
 const nombreClienteInput = document.getElementById('nombreCliente');
-
 // Asignar un evento de input para convertir el texto a mayúsculas
-nombreClienteInput.addEventListener('input', function () {
-    this.value = this.value.toUpperCase(); // Convierte el valor a mayúsculas
+nombreClienteInput.addEventListener('input', function (e) {
+    const cursorPos = nombreClienteInput.selectionStart;  // Posición actual del cursor
+    const textBefore = nombreClienteInput.value.slice(0, cursorPos);  // Parte antes del cursor
+    const textAfter = nombreClienteInput.value.slice(cursorPos);  // Parte después del cursor
+
+    // Actualiza el valor del campo convirtiendo todo a mayúsculas
+    this.value = textBefore.toUpperCase() + textAfter;
+    
+    // Restablecer la posición del cursor
+    nombreClienteInput.selectionStart = nombreClienteInput.selectionEnd = cursorPos;
 });
-
-let totalFacturaGlobal = 0; // Variable global para almacenar el total de la factura
-
-function agregarProducto() {
-    const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
-    const descripcion = document.getElementById('descripcionFactura').value.trim();
-    const cantidad = parseInt(document.getElementById('cantidadProductoManual').value.trim());
-    const precioUnitario = parseFloat(document.getElementById('precioUnitarioManual').value.replace(/\./g, ''));
-    const pc = parseFloat(document.getElementById('PCProducto').value.replace(/\./g, ''));
-    const garantia = parseInt(document.getElementById('garantiaProducto').value.trim());
-
-    // Asegurarse de que precioComprado también esté validado
-    if (nombreProducto && !isNaN(cantidad) && !isNaN(precioUnitario) && !isNaN(garantia) && !isNaN(pc)) {
-        const productoId = productoSeleccionadoId || null;
-        const totalProducto = cantidad * precioUnitario;
-
-        const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
-        const newRow = tbody.insertRow();
-
-        const cellId = newRow.insertCell(0);
-        cellId.textContent = productoId || 'N/A';
-        cellId.style.display = 'none';
-
-        const cellNombre = newRow.insertCell(1);
-        const cellCantidad = newRow.insertCell(2);
-        const cellPrecioUnitario = newRow.insertCell(3);
-        const cellGarantia = newRow.insertCell(4);
-        const cellDescripcion = newRow.insertCell(5);
-        const cellTotal = newRow.insertCell(6);
-        const cellAcciones = newRow.insertCell(7);
-        const cellPc = newRow.insertCell(8); // Celda para precio comprado
-        cellPc.style.display = 'none';
-
-        cellNombre.textContent = nombreProducto;
-        cellCantidad.textContent = cantidad;
-        cellPrecioUnitario.textContent = precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-        cellGarantia.textContent = garantia;
-        cellDescripcion.textContent = descripcion;
-        cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-
-
-        productosEnFactura.push({
-            id: productoId,
-            nombre: nombreProducto,
-            cantidad: cantidad,
-            precioUnitario: precioUnitario,
-            garantia: garantia,
-            descripcion: descripcion || "",
-            total: totalProducto,
-            pc: pc
-        });
-
-        localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
-
-        // Actualizar el total de la factura
-        totalFacturaGlobal += totalProducto;
-        actualizarTotalFactura();
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Eliminar';
-        deleteBtn.className = 'btn btn-danger btn-sm';
-        deleteBtn.addEventListener('click', () => {
-            const row = deleteBtn.closest('tr');
-            const index = row.rowIndex - 1;
-            tbody.deleteRow(index);
-
-            // Restar el total del producto eliminado
-            totalFacturaGlobal -= productosEnFactura[index].total;
-            productosEnFactura.splice(index, 1); // Eliminar el producto del array
-
-            actualizarTotalFactura();
-        });
-        cellAcciones.appendChild(deleteBtn);
-
-        productoSeleccionadoId = null;
-        limpiarFormularioProducto();
-    } else {
-        mostrarMensajeError('Por favor, completa todos los campos requeridos de la factura.');
-    }
-}
-
-
-
-// Función para actualizar el total de la factura en el DOM
-function actualizarTotalFactura() {
-    document.getElementById('totalDeFactura').innerHTML = `TOTAL: <span style="color: red;">$${totalFacturaGlobal.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>`;
-}
-
-function limpiarFormularioProducto() {
-    document.getElementById('nombreProductoManual').value = '';
-    document.getElementById('descripcionFactura').value = '';
-    document.getElementById('cantidadProductoManual').value = '1';
-    document.getElementById('precioUnitarioManual').value = '';
-    document.getElementById('garantiaProducto').value = '';
-    document.getElementById('PCProducto').value = '';
-    document.getElementById('mensajeMaxCantidad').textContent = '';
-}
-
-function obtenerProductosSeleccionados() {
-    return productosEnFactura.map(producto => ({
-        id: producto.id,
-        nombre: producto.nombre,
-        cantidad: producto.cantidad,
-        precioUnitario: producto.precioUnitario,
-        garantia: producto.garantia,
-        descripcion: producto.descripcion || null,
-        total: producto.total,
-        pc: producto.pc
-    }));
-}
-function limpiarFormulario() {
-    document.getElementById('nombreCliente').value = '';
-    document.getElementById('cedulaNit').value = '';
-    document.getElementById('telefonoCliente').value = '';
-    document.getElementById('PCProducto').value = '';
-    document.getElementById('correoCliente').value = '';
-    document.getElementById('direccionCliente').value = '';
-    document.getElementById('nombreProductoManual').value = '';
-    document.getElementById('cantidadProductoManual').value = '1';
-    document.getElementById('precioUnitarioManual').value = '';
-    document.getElementById('garantiaProducto').value = '';
-    document.getElementById('productosTabla').getElementsByTagName('tbody')[0].innerHTML = '';
-    localStorage.removeItem('nombreCliente');
-    localStorage.removeItem('cedulaNit');
-    localStorage.removeItem('correoCliente');
-    localStorage.removeItem('telefonoCliente');
-    localStorage.removeItem('direccionCliente');
-    localStorage.removeItem('productosEnFactura');
-    document.getElementById('mensajeMaxCantidad').textContent = '';
-    document.getElementById('totalDeFactura').textContent = 'TOTAL:';
-    productosEnFactura = [];
-}
 
 
 function mostrarMensajeError(mensaje) {
@@ -767,66 +775,44 @@ function cerrarMensajeError() {
 }
 
 
-window.addEventListener('load', () => {
-    const storedProducts = localStorage.getItem('productosEnFactura');
-    if (storedProducts) {
-        productosEnFactura = JSON.parse(storedProducts);
+function actualizarTotalFactura() {
+    document.getElementById('totalDeFactura').innerHTML = `TOTAL: <span style="color: red;">$${totalFacturaGlobal.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>`;
+}
 
-        productosEnFactura.forEach(producto => {
-            const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
-            const newRow = tbody.insertRow();
+function formatNumber(number) {
+    return number.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
 
-            // Agregar cada celda de la misma forma que en agregarProducto
-            const cellId = newRow.insertCell(0);
-            cellId.textContent = producto.id || 'N/A';
-            cellId.style.display = 'none';
 
-            const cellNombre = newRow.insertCell(1);
-            const cellCantidad = newRow.insertCell(2);
-            const cellPrecioUnitario = newRow.insertCell(3);
-            const cellGarantia = newRow.insertCell(4);
-            const cellDescripcion = newRow.insertCell(5);
-            const cellTotal = newRow.insertCell(6);
-            const cellAcciones = newRow.insertCell(7);
+function limpiarFormularioProducto() {
+    document.getElementById('nombreProductoManual').value = '';
+    document.getElementById('descripcionFactura').value = '';
+    document.getElementById('cantidadProductoManual').value = '1';
+    document.getElementById('precioUnitarioManual').value = '';
+    document.getElementById('garantiaProducto').value = '';
+    document.getElementById('PCProducto').value = '';
+    document.getElementById('mensajeMaxCantidad').textContent = '';
+}
 
-            cellNombre.textContent = producto.nombre;
-            cellCantidad.textContent = producto.cantidad;
-            cellPrecioUnitario.textContent = producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-            cellGarantia.textContent = producto.garantia;
-            cellDescripcion.textContent = producto.descripcion;
-            cellTotal.textContent = producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'Eliminar';
-            deleteBtn.className = 'btn btn-danger btn-sm';
-            deleteBtn.addEventListener('click', () => {
-                const row = deleteBtn.closest('tr');
-                const index = row.rowIndex - 1;
-                tbody.deleteRow(index);
-
-                // Restar el total del producto eliminado
-                totalFacturaGlobal -= productosEnFactura[index].total;
-                productosEnFactura.splice(index, 1);
-
-                // Actualizar en localStorage
-                localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
-
-                actualizarTotalFactura();
-            });
-            cellAcciones.appendChild(deleteBtn);
-
-            // Agregar el precio de cada producto al total
-            totalFacturaGlobal += producto.total;
-        });
-
-        // Actualizar total de factura en el DOM
-        actualizarTotalFactura();
-
-        setTimeout(() => {
-            localStorage.removeItem('productosEnFactura');
-            limpiarFormulario()
-            limpiarFormularioProducto()
-            console.log('Productos en factura eliminados de localStorage después de 2 minutos.');
-        }, 8 * 60 * 1000); // 2 minutos en milisegundos
-    }
-});
+function limpiarFormulario() {
+    document.getElementById('nombreCliente').value = '';
+    document.getElementById('cedulaNit').value = '';
+    document.getElementById('telefonoCliente').value = '';
+    document.getElementById('PCProducto').value = '';
+    document.getElementById('correoCliente').value = '';
+    document.getElementById('direccionCliente').value = '';
+    document.getElementById('nombreProductoManual').value = '';
+    document.getElementById('cantidadProductoManual').value = '1';
+    document.getElementById('precioUnitarioManual').value = '';
+    document.getElementById('garantiaProducto').value = '';
+    document.getElementById('productosTabla').getElementsByTagName('tbody')[0].innerHTML = '';
+    localStorage.removeItem('nombreCliente');
+    localStorage.removeItem('cedulaNit');
+    localStorage.removeItem('correoCliente');
+    localStorage.removeItem('telefonoCliente');
+    localStorage.removeItem('direccionCliente');
+    localStorage.removeItem('productosEnFactura');
+    document.getElementById('mensajeMaxCantidad').textContent = '';
+    document.getElementById('totalDeFactura').textContent = 'TOTAL:';
+    productosEnFactura = [];
+}

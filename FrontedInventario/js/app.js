@@ -1,7 +1,6 @@
 const apiUrl = 'http://localhost:8082/producto';
 const apiCategoria = 'http://localhost:8082/categoria'
 
-
 let currentPage = 0;
 let pageSize = 14;
 let totalPages = 0;
@@ -121,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cargarProductosPorCategoria();
     });
 
-    document.getElementById('searchInput').addEventListener('input', async () => {
+    buscador.addEventListener('input', async () => {
         const nombre = document.getElementById('searchInput').value;
         currentPage = 0;
         if (nombre === '') {
@@ -304,7 +303,6 @@ function mostrarProductosEnTabla(productos) {
             <td>${producto.cantidad}</td>
             <td>${producto.categoria.nombre}</td>
             <td>${formatNumber(producto.total)}</td>
-            <td>${producto.estado === 'activo' ? 'Activo' : 'Inactivo'}</td> <!-- Mostrar el estado -->
             <td>
                 <button class="btn btn-dark btn-sm" id="botonEditar" onclick="editarProducto(${producto.id})">Editar</button>
                 ${producto.estado === 'activo' 
@@ -316,8 +314,6 @@ function mostrarProductosEnTabla(productos) {
         tbody.appendChild(tr);
     });
 }
-
-
 
 
 function actualizarPaginacion() {

@@ -2,6 +2,7 @@ package com.example.backendinventario.services;
 
 import com.example.backendinventario.entities.Cliente;
 import com.example.backendinventario.entities.ClienteTopDto;
+import com.example.backendinventario.entities.Producto;
 import com.example.backendinventario.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ClienteServices {
@@ -54,4 +56,11 @@ public class ClienteServices {
     public Optional<Cliente> findByIdentificacion(String identificacion) {
         return clienteRepository.findByIdentificacion(identificacion);
     }
+
+    public List<Cliente> buscarPorNombre(String nombre) {
+        // Obtén todos los productos que contienen el nombre especificado
+        List<Cliente> clientes = clienteRepository.findByNombreContainingIgnoreCase(nombre);
+        return clientes;
+    }
+
 }
