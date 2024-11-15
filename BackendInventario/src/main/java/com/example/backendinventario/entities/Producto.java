@@ -14,6 +14,8 @@ public class Producto {
     private float precioVendido;
     private Integer cantidad;
     private float total;
+   private String descripcion;
+
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
@@ -22,6 +24,7 @@ public class Producto {
 
     public Producto() {
         this.estado = "activo"; // Por defecto, el producto se considera activo al crearse
+        this.descripcion = null;
     }
 
     @PrePersist

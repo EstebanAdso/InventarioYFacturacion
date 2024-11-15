@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="shortcut icon" href="../css/logo.png" type="image/x-icon">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
 
@@ -15,18 +14,18 @@
         <nav>
             <h6 style="user-select: none;">Gestión Total</h6>
             <ul>
-                <li><a href="facturacion.html"><i class='bx bx-library' ></i></a></li>
-                <li><a href="#" class="selected"><i class='bx bxs-store'></i></a></li>
-                <li><a href="ventas.html"><i class='bx bx-money-withdraw' ></i></a></li>
-                <li><a href="Pedidos.html"><i class='bx bxs-plane' ></i></a></li>
-                <li><a href="herramientas.html"><i class='bx bxs-bank' ></i></a></li>
-                <li><a href="clientes.html"><i class='bx bxs-user' ></i></a></li>
-                <li><a href="configuracion.html"><i class='bx bxs-cog' ></i></a></li>
+                <li><a href="facturacion.html"><img src="../css/logos/library-regular-24.png" alt=""></a></li>
+                <li><a href="#" class="selected"><img src="../css/logos/store-regular-24.png" alt=""></a></li>
+                <li><a href="ventas.html"><img src="../css/logos/money-withdraw-regular-24.png" alt=""></a></li>
+                <li><a href="Pedidos.html"><img src="../css/logos/plane-solid-24.png" alt=""></a></li>
+                <li><a href="herramientas.html"><img src="../css/logos/bank-solid-24.png" alt=""></a></li>
+                <li><a href="clientes.html"><img src="../css/logos/user-solid-24.png" alt=""></a></li>
+                <li><a href="configuracion.html"><img src="../css/logos/cog-solid-24.png" alt=""></a></li>
             </ul>
         </nav>        
     </header>
 
-    <div class="container"> 
+    <div class="container-fluid" id="contenedorInventario"> 
         <h1 class="text-center" id="titulo" style="user-select: none;">Inventario de Productos</h1>
         <!-- Botones en línea -->
         <div id="mensajeNotificacion" class="alert alert-dismissible fade show" style="display: none;">
@@ -71,7 +70,7 @@
                     <thead>
                         <tr>
                             <th class="col-md-3">Nombre del Producto</th>
-                            <th class="col-md-1">$Comprado</th>
+                            <th class="col-md-1">P.C</th>
                             <th class="col-md-1">$Vendido</th>
                             <th class="col-md-1">Cantidad</th>
                             <th class="col-md-1">Categoría</th>
@@ -169,6 +168,10 @@
                             <input type="number" autocomplete="off" class="form-control" value="" id="cantidad" required>
                         </div>
                         <div class="form-group">
+                            <label for="descripcion">Descripción</label>
+                            <textarea class="form-control" id="descripcion" rows="2" placeholder="Agregue una descripción del producto (Opcional)"></textarea>
+                        </div>
+                        <div class="form-group">
                             <label for="categoria">Categoría</label>
                             <select class="form-control" id="categoria" required >
                                <!-- Las opciones de categorías se llenarán dinámicamente -->
@@ -201,6 +204,26 @@
                         
                         <button type="submit" class="btn btn-dark">Guardar</button>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Ver informacion-->
+    <div class="modal fade" id="verInfoModal" tabindex="-1" aria-labelledby="verInfoModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="verInfoModal">Informacion del Producto Seleccionado</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="verInformacionModal"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>

@@ -28,13 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('productoForm').addEventListener('submit', async (event) => {
         event.preventDefault();
         const id = document.getElementById('productoId').value;
-        const nombre = document.getElementById('nombre').value.toUpperCase();
+        const nombre = document.getElementById('nombre').value.toUpperCase().trim();
         const precioComprado = parseInt(document.getElementById('precioComprado').value.replace(/\./g, ''));
         const precioVendido = parseInt(document.getElementById('precioVendido').value.replace(/\./g, ''));
         const cantidad = document.getElementById('cantidad').value;
         const categoriaId = document.getElementById('categoria').value;
+        const descripcion = document.getElementById('descripcion').value.trim();
 
-        const producto = { nombre, precioComprado, precioVendido, cantidad, categoria: { id: categoriaId }, total: precioComprado * cantidad };
+        const producto = { nombre, precioComprado, precioVendido, cantidad, categoria: { id: categoriaId }, total: precioComprado * cantidad, descripcion };
 
         try {
             let response;
@@ -69,6 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error:', error);
         }
+
+        
     });
 
     document.getElementById('categoriaForm').addEventListener('submit', async (event) => {
@@ -199,7 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrandoInactivos = true;
         }
     }
+
     
+
     
     async function cargarCategorias() {
         try {
@@ -251,6 +256,7 @@ async function editarProducto(id) {
         document.getElementById('precioVendido').value = formatNumber(producto.precioVendido);
         document.getElementById('cantidad').value = producto.cantidad;
         document.getElementById('categoria').value = producto.categoria.id;
+        document.getElementById('descripcion').value = producto.descripcion.trim();
 
         // Mostrar el modal para editar el producto
         $('#productoModal').modal('show');
@@ -303,10 +309,11 @@ function mostrarProductosEnTabla(productos) {
             <td>${producto.cantidad}</td>
             <td>${producto.categoria.nombre}</td>
             <td>${formatNumber(producto.total)}</td>
-            <td>
-                <button class="btn btn-dark btn-sm" id="botonEditar" onclick="editarProducto(${producto.id})">Editar</button>
+            <td class="text-center">
+                <button class="btn btn-info btn-sm" id="botonInformacion" onclick="verInformacion(${producto.id})"><img src="../css/logos/info-circle-regular-24.png" alt="Informacion"></button>
+                <button class="btn btn-dark btn-sm" id="botonEditar" onclick="editarProducto(${producto.id})"><img src="../css/logos/edit-alt-solid-24.png" alt="Editar"></button>
                 ${producto.estado === 'activo' 
-                    ? `<button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})">Agotar</button>` 
+                    ? `<button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})"><img src="../css/logos/eliminar-papelera.png" width="24px" class="invert-img" alt="Agotar"></button>` 
                     : ''} <!-- Ocultar botón Agotar si está inactivo -->
             </td>
 
@@ -314,6 +321,35 @@ function mostrarProductosEnTabla(productos) {
         tbody.appendChild(tr);
     });
 }
+
+async function verInformacion(productoId) {
+    try {
+        // Realizamos una solicitud para obtener el producto por su ID
+        const response = await fetch(`${apiUrl}/${productoId}`);
+        if (!response.ok) {
+            throw new Error('No se pudo obtener la información del producto.');
+        }
+
+        const producto = await response.json();
+
+        // Construimos la información a mostrar en el modal
+        const modalInfo = `
+            <strong>Nombre:</strong> ${producto.nombre.toUpperCase()}<br>
+            <strong>Descripción:</strong> ${producto.descripcion ? producto.descripcion : 'No hay descripcion para este producto.'}
+        `;
+
+        // Mostramos la información en el modal
+        const modalContent = document.getElementById('verInformacionModal');
+        modalContent.innerHTML = modalInfo;
+
+        // Abrimos el modal
+        $('#verInfoModal').modal('show');
+    } catch (error) {
+        console.error('Error al mostrar la información del producto:', error);
+        mostrarMensaje('error', 'No se pudo cargar la información del producto.');
+    }
+}
+
 
 
 function actualizarPaginacion() {
@@ -416,6 +452,10 @@ async function buscarProductosPorNombre(nombre) {
         console.error('Error:', error);
     }
 }
+
+
+
+
 
 async function eliminarProducto(id) {
     // Mostrar el modal de Bootstrap

@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(facturas => {
                 if (facturas.length > 0) {
                     // Crear el HTML de la tabla
-                    facturas.sort((a, b) => b.serial - a.serial);
+                    facturas.sort((a, b) => new Date(b.fechaEmision) - new Date(a.fechaEmision));
                     const tablaFacturas = `
                         <table class="table table-striped">
                             <thead>

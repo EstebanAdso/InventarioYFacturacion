@@ -72,6 +72,7 @@ public class ProductoController {
         productoExistente.setPrecioVendido(productoActualizado.getPrecioVendido());
         productoExistente.setCantidad(productoActualizado.getCantidad());
         productoExistente.setCategoria(productoActualizado.getCategoria());
+        productoExistente.setDescripcion(productoActualizado.getDescripcion());
 
         return productoService.save(productoExistente);
     }

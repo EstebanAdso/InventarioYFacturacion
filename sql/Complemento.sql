@@ -1,7 +1,5 @@
 -- ------------MEJORAS POR REALIZAR
--- 1. Barra de Busqueda para categoria y clientes
 -- 2. mejorar la busqueda de sugerencia de productos.
--- 3. descripcion en mayuscula
 -- 4. Anular Facturas -- opcion para las del dia actual
 -- 5. Al guardar factura pdf simplemente se descargue la factura pero se  registre igualmente la venta en la bd
 -- 6. Job diario para guardar los backups en el local
@@ -10,3 +8,4 @@
 -- 9. Personalizar los datos de la factura
 -- 10. Alerta de inventario bajo.
 -- 11. Auditoria de ediciones y eliminaciones
+-- 12. Mensajes de error individuales en facturación.

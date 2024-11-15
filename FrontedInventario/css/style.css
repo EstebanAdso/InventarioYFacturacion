@@ -10,7 +10,7 @@ header {
     position: fixed;
     background-color: #343a40;
     width: 100%;
-    height: 60px;
+    height: 55px;
     z-index: 1;
     top: 0;
 }
@@ -37,11 +37,16 @@ header nav ul {
 }
 
 header nav ul li a{
-    margin-left: 40px;
+    margin-left: 20px;
     color: #ddd;
     user-select: none;
-    font-size: 1.5em;
     text-align: center;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
 }
 
 nav ul li a:hover{
@@ -52,7 +57,7 @@ nav ul li a:hover{
 header nav ul li a.selected {
     background-color: #4488ee; 
     color: white;
-    outline: 4px solid #4488ee; /* Outline de 4px del mismo color */
+    border-radius: 20px;
 }
 
 #searchForm input{
@@ -101,7 +106,7 @@ legend {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-#productoModal .modal-header, #pedidoModal .modal-header, #clientesTopModal .modal-header {
+#productoModal .modal-header, #pedidoModal .modal-header, #clientesTopModal .modal-header{
     background-color: #007bff; /* Color del encabezado */
     color: white;
     border-bottom: none;
@@ -125,7 +130,7 @@ legend {
     
 }
 
-#totalModal .modal-header, #detalleFacturaModal .modal-header {
+#totalModal .modal-header, #detalleFacturaModal .modal-header, #verInfoModal .modal-header {
     background-color: #17a2b8; /* Color del encabezado */
     color: white;
     border-bottom: none;
@@ -277,9 +282,25 @@ legend {
     width: 65%;
 }
 
+#contenedorInventario{
+    width: 50%;
+    margin-top: 80px;
+    min-width: 1400px;
+}
+
+#productoTableBody td {
+    padding: 6px;
+}
+
 #pagination li a{
     margin: 0 5px 0 5px;
 }
+
+
+.invert-img {
+    filter: invert(1) brightness(2); /* Invierte los colores y aumenta el brillo */
+}
+
 
 @media (max-width: 1920px) {
     #productoTableBody td {
@@ -324,5 +345,7 @@ legend {
      #clienteTableBody td{
         padding: 6px;
      }
+
+    
 
 }

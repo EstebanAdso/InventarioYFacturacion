@@ -358,7 +358,7 @@ function agregarProducto() {
             // Restar el total del producto eliminado
             totalFacturaGlobal -= productosEnFactura[index].total;
             productosEnFactura.splice(index, 1); // Eliminar el producto del array
-
+            
             actualizarTotalFactura();
         });
         cellAcciones.appendChild(deleteBtn);

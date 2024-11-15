@@ -11,10 +11,10 @@ public class Activos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Integer cantidad;
+    private LocalDate fecha; // Agregamos el campo de fecha
     private String nombre;
     private float precio;
-    private LocalDate fecha; // Agregamos el campo de fecha
-    private Integer cantidad;
     private float total;
 
     @PrePersist
