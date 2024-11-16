@@ -104,10 +104,11 @@ public class ProductoController {
         return productoService.totalPorCategoria();
     }
 
-    @GetMapping("/buscar/{nombre}")
-    public List<Producto> buscarPorNombre(@PathVariable String nombre) {
-        return productoService.buscarPorNombre(nombre); // Implementa este método en tu servicio
+    @GetMapping("/buscar")
+    public List<Producto> buscarPorNombre(@RequestParam String query) {
+        return productoService.buscarPorNombre(query);
     }
+
 
 
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,15 +57,24 @@ public class ProductoServices {
         return productoRepository.findByNombreContainingAndEstado(nombre, "activo", pageable);
     }
 
-    public List<Producto> buscarPorNombre(String nombre) {
-        // Obtén todos los productos que contienen el nombre especificado
-        List<Producto> productos = productoRepository.findByNombreContainingIgnoreCase(nombre);
+    public List<Producto> buscarPorNombre(String query) {
+        // Divide la query en palabras clave
+        String[] keywords = query.split("\\s+");
 
-        // Filtra los productos para que solo queden los que están activos
+        // Obtén todos los productos que coincidan con al menos una palabra clave
+        List<Producto> productos = productoRepository.findAll(); // Obtén todos los productos
+
+        // Filtra los productos que contienen todas las palabras clave y están activos
         return productos.stream()
+                .filter(producto -> {
+                    String nombreProducto = producto.getNombre().toLowerCase();
+                    return Arrays.stream(keywords)
+                            .allMatch(keyword -> nombreProducto.contains(keyword.toLowerCase()));
+                })
                 .filter(producto -> !producto.getEstado().equalsIgnoreCase("inactivo"))
                 .collect(Collectors.toList());
     }
+
 
     // Método para actualizar inventario al comprar productos
     public Producto actualizarInventario(Long idProducto, int cantidadComprada) throws Exception {

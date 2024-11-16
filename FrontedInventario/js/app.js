@@ -78,8 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const id = document.getElementById('productoId').value;
         const nombre = document.getElementById('nombreCategoria').value.toUpperCase();
+        const descripcion = document.getElementById('descripcionCategoria').value.toUpperCase();
+        const descripcionGarantia = document.getElementById('descripcionGarantia').value.toUpperCase();
 
-        const categoria = { nombre};
+        const categoria = { nombre, descripcion, descripcionGarantia};
 
         try {
             let response;
@@ -256,7 +258,7 @@ async function editarProducto(id) {
         document.getElementById('precioVendido').value = formatNumber(producto.precioVendido);
         document.getElementById('cantidad').value = producto.cantidad;
         document.getElementById('categoria').value = producto.categoria.id;
-        document.getElementById('descripcion').value = producto.descripcion.trim();
+        document.getElementById('descripcion').value = producto.descripcion;
 
         // Mostrar el modal para editar el producto
         $('#productoModal').modal('show');

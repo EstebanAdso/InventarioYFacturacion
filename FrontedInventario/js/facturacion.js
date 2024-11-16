@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const limpiarFormularioBtn = document.getElementById('limpiarFormularioBtn');
     if (limpiarFormularioBtn) limpiarFormularioBtn.addEventListener('click', limpiarFormulario);
+
 });
 
 // Función para cargar los datos de cliente desde localStorage al cargar la página
@@ -74,12 +75,13 @@ window.addEventListener('load', () => {
             cellDescripcion.textContent = producto.descripcion;
             cellTotal.textContent = producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0 });
 
+            //Boton de Eliminar
             const deleteBtn = document.createElement('button');
             deleteBtn.textContent = 'Eliminar';
             deleteBtn.className = 'btn btn-danger btn-sm';
             deleteBtn.addEventListener('click', () => {
                 const row = deleteBtn.closest('tr');
-                const index = row.rowIndex - 1;
+                const index = Array.from(tbody.rows).indexOf(row);
                 tbody.deleteRow(index);
 
                 // Restar el total del producto eliminado
@@ -199,7 +201,7 @@ function mostrarSugerencias(clientes) {
 
 // Función para buscar productos y mostrar sugerencias
 function buscarProductos() {
-    const nombreProducto = document.getElementById('nombreProductoManual').value.toUpperCase();
+    const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
 
     if (nombreProducto.length < 2) {
         // Oculta la lista si el texto es menor a 2 caracteres
@@ -208,7 +210,7 @@ function buscarProductos() {
     }
 
     // Llama al endpoint de búsqueda de productos
-    fetch(`${apiProducto}/buscar/${nombreProducto}`)
+    fetch(`${apiProducto}/buscar?query=${encodeURIComponent(nombreProducto)}`)
         .then(response => {
             if (!response.ok) {
                 mostrarMensajeError('Error en la red');
@@ -219,7 +221,7 @@ function buscarProductos() {
             const sugerencias = document.getElementById('sugerenciasProductos');
             sugerencias.innerHTML = ''; // Limpiar sugerencias anteriores
 
-            if (Array.isArray(data)) {
+            if (Array.isArray(data) && data.length > 0) {
                 data.forEach(producto => {
                     const li = document.createElement('li');
                     li.innerHTML = producto.nombre.toUpperCase() +
@@ -236,7 +238,7 @@ function buscarProductos() {
 
                     sugerencias.appendChild(li);
                 });
-                sugerencias.style.display = data.length ? 'block' : 'none';
+                sugerencias.style.display = 'block';
             } else {
                 sugerencias.style.display = 'none';
             }
@@ -291,14 +293,20 @@ function cerrarConfirmacion() {
     mensajeConfirmacion.style.display = 'none';
 }
 
-
 function agregarProducto() {
     const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
     const descripcion = document.getElementById('descripcionFactura').value.trim();
-    const cantidad = parseInt(document.getElementById('cantidadProductoManual').value.trim());
+    const cantidad = parseInt(document.getElementById('cantidadProductoManual').value);
+    const cantidadMaxima = parseInt(document.getElementById('cantidadProductoManual').max); // Obtener cantidad máxima
     const precioUnitario = parseFloat(document.getElementById('precioUnitarioManual').value.replace(/\./g, ''));
     const pc = parseFloat(document.getElementById('PCProducto').value.replace(/\./g, ''));
     const garantia = parseInt(document.getElementById('garantiaProducto').value.trim());
+
+       // Validación de la cantidad seleccionada vs. cantidad máxima
+    if (cantidad > cantidadMaxima) {
+      mostrarMensajeError(`La cantidad seleccionada (${cantidad}) supera la cantidad máxima disponible (${cantidadMaxima}).`);
+      return; // Detener la ejecución si la validación falla
+    }
 
     // Asegurarse de que precioComprado también esté validado
     if (nombreProducto && !isNaN(cantidad) && !isNaN(precioUnitario) && !isNaN(garantia) && !isNaN(pc)) {
@@ -328,7 +336,10 @@ function agregarProducto() {
         cellGarantia.textContent = garantia;
         cellDescripcion.textContent = descripcion;
         cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-
+        
+        if(cantidad > 100){
+            console.log("no puedes")
+        }
 
         productosEnFactura.push({
             id: productoId,
@@ -341,6 +352,7 @@ function agregarProducto() {
             pc: pc
         });
 
+        
         localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
 
         // Actualizar el total de la factura
