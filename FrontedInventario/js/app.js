@@ -223,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const option = document.createElement('option');
                 option.value = categoria.nombre;  // Ajusta según el campo de tu entidad
                 option.textContent = categoria.nombre;
+                option.classList.add('option')
                 filtroCategoriaSelect.appendChild(option);
             });
 
@@ -454,9 +455,6 @@ async function buscarProductosPorNombre(nombre) {
         console.error('Error:', error);
     }
 }
-
-
-
 
 
 async function eliminarProducto(id) {

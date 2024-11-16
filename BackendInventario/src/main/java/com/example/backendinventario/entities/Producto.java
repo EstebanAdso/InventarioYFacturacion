@@ -14,7 +14,8 @@ public class Producto {
     private float precioVendido;
     private Integer cantidad;
     private float total;
-   private String descripcion;
+    @Column(length = 6000)
+    private String descripcion;
 
 
     @ManyToOne

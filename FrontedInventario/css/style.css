@@ -1,5 +1,8 @@
 .container {
-    margin-top: 80px;
+    margin-top: 60px;
+}
+h1{
+    font-size: 2em;
 }
 
 .modal-dialog {
@@ -212,15 +215,14 @@ legend {
   /* Clase para el elemento seleccionado */
 .selected {
     background-color: #4488ee;
-    color: white; /* Opcional: cambia el color del texto para resaltar */
-    font-weight: bold; /* Opcional: añade un estilo de negrita para resaltar */
-    border-radius: 4px; /* Opcional: añade bordes redondeados */
+    color: white; 
+    font-weight: bold; 
+    border-radius: 4px; 
 }
 
-
 .hover-effect:hover {
-    color: black; /* Cambia a negro cuando el usuario coloca el cursor encima */
-    background-color: lightgray; /* Ejemplo de fondo */
+    color: black; 
+    background-color: lightgray; 
 }
 
 .form-control {
@@ -284,8 +286,8 @@ legend {
 
 #contenedorInventario{
     width: 50%;
-    margin-top: 80px;
-    min-width: 1400px;
+    margin-top: 60px;
+    min-width: 1300px;
 }
 
 #productoTableBody td {
@@ -296,15 +298,17 @@ legend {
     margin: 0 5px 0 5px;
 }
 
-
 .invert-img {
     filter: invert(1) brightness(2); /* Invierte los colores y aumenta el brillo */
 }
 
-
 @media (max-width: 1920px) {
     #productoTableBody td {
-        padding: 2px;
+        padding: 1px;
+    }
+
+    #pedidoTableBody td{
+        padding: 6px;
     }
 
     #searchForm input{
@@ -339,13 +343,25 @@ legend {
      }
 
      #ventasfactura td{
-        padding: 3px;
+        padding: 2px;
      }
    
      #clienteTableBody td{
-        padding: 6px;
+        padding: 3px;
      }
 
-    
+    #productosPorPagina{
+        padding: 0;
+        margin: 0;
+    }
+    #productosPorPagina label{
+        padding: 0;
+        margin: 0;
+    }
+
+    #pagination{
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
 
 }

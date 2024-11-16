@@ -10,6 +10,8 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
+    @Column(length = 6000)
     private String descripcion;
+    @Column(length = 6000)
     private String descripcionGarantia;
 }
