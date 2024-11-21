@@ -18,7 +18,7 @@
     "nodemailer": "^6.9.14"
   },
   "devDependencies": {
-    "electron": "^33.0.2",
+    "electron": "^33.2.0",
     "electron-packager": "^17.1.2"
   }
 }

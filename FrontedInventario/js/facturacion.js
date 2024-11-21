@@ -41,9 +41,8 @@ window.addEventListener('load', () => {
         localStorage.removeItem('correoCliente');
         localStorage.removeItem('telefonoCliente');
         localStorage.removeItem('direccionCliente');
-        console.log('Datos de cliente eliminados de localStorage después de 2 minutos.');
-        limpiarFormulario();
-    }, 8 * 60 * 1000); 
+        console.log('Datos de cliente eliminados de localStorage después de 20 minutos.');
+    }, 20 * 60 * 1000); 
 });
 
 window.addEventListener('load', () => {
@@ -104,10 +103,8 @@ window.addEventListener('load', () => {
 
         setTimeout(() => {
             localStorage.removeItem('productosEnFactura');
-            limpiarFormulario()
-            limpiarFormularioProducto()
-            console.log('Productos en factura eliminados de localStorage después de 2 minutos.');
-        }, 8 * 60 * 1000); // 8 minutos en milisegundos
+            console.log('Productos en factura eliminados de localStorage después de 20 minutos.');
+        }, 20 * 60 * 1000); // 8 minutos en milisegundos
     }
 });
 
@@ -589,14 +586,14 @@ function imprimirPos(omitVerification = false) {
         const productosHTML = productos.map(producto => {
             totalFactura += producto.total;
             return `
-              <tr style="font-size: 12px; font-family: 'Roboto';">
-               <td style="padding: 2px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">
+              <tr style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000">
+               <td style="padding: 1px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">
                   ${producto.nombre.toUpperCase()} - ${producto.descripcion || ''}
                 </td>
-                <td style="padding: 2px 0; text-align: center; max-width: 10mm;">${producto.cantidad}</td>
-                <td style="padding: 2px 0; text-align: center; max-width: 15mm;">${producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
-                <td style="padding: 2px 0; text-align: center; max-width: 15mm;">${producto.garantia} Mes</td>
-                <td style="padding: 2px 0; text-align: center;">${producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
+                <td style="padding: 1px 0; text-align: center; max-width: 10mm;">${producto.cantidad}</td>
+                <td style="padding: 1px 0; text-align: center; max-width: 15mm;">${producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
+                <td style="padding: 1px 0; text-align: center; max-width: 15mm;">${producto.garantia} Mes</td>
+                <td style="padding: 1px 0; text-align: center;">${producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
             </tr>
             `;
         }).join('');
@@ -641,32 +638,33 @@ function imprimirPos(omitVerification = false) {
                 console.log('Factura guardada exitosamente:', data);
 
                 const facturaHTML = `
-                    <div style="width: 68mm; font-size: 12px; font-family: 'Roboto';">
+                    <div style="width: 68mm; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000">
                         <div style="text-align: center;">
                             <img src="../css/pc.png" alt="" style="width: 80px; height: auto; margin-top: 0">
                         </div>
-                        <h2 style="text-align: center;">CompuServices Soft</h2>
-                        <p style="text-align: center; ">
+                        <h2 style="text-align: center; margin-bottom: 5px">CompuServices Soft</h2>
+                        <p style="text-align: center; margin: 0">
+                            <div style="font-size: 11px; text-align: center">
                             <b>Servicio técnico de computadores y celulares,
-                            Venta de computadores y periféricos</b><br>
-                            <div style="text-align : left; font-size: 12px;">
+                            Venta de computadores y periféricos</b><br></div>
+                            <div style="text-align : left; font-size: 12px; margin-top: 10px">
                             <b>NIT:</b> 1193030552-4<br>
                             <b>Celular:</b> 3242264795<br>
                             <b>Ubicación:</b> Pasto, Centro comercial la 16, local 138
                             <br>NO RESPONSABLES DE IVA
                             </div>
                         </p>
-                        <p><strong>Fecha:</strong> ${fechaActual}</p>
-                        <p><strong>Cliente:</strong> ${nombreCliente}</p>
-                        <p><strong>Cédula/NIT:</strong> ${cedulaNit}</p>
-                        ${telefonoCliente ? `<p><strong>Teléfono:</strong> ${telefonoCliente}</p>` : ''}
-                        ${correoCliente ? `<p><strong>Correo:</strong> ${correoCliente}</p>` : ''}
-                        ${direccionCliente ? `<p><strong>Dirección:</strong> ${direccionCliente}</p>` : ''}
+                        <p style="margin-bottom: 0px"><strong>Fecha:</strong> ${fechaActual}</p>
+                        <p style="margin-bottom: 0px"><strong>Cliente:</strong> ${nombreCliente}</p>
+                        <p style="margin-bottom: 0px"><strong>Cédula/NIT:</strong> ${cedulaNit}</p>
+                        ${telefonoCliente ? `<p style="margin-bottom: 0px"><strong>Teléfono:</strong> ${telefonoCliente}</p>` : ''}
+                        ${correoCliente ? `<p style="margin-bottom: 0px"><strong>Correo:</strong> ${correoCliente}</p>` : ''}
+                        ${direccionCliente ? `<p style="margin-bottom: 0px"><strong>Dirección:</strong> ${direccionCliente}</p>` : ''}
                         <hr style="border: 1px solid #000;">
-                        <table style="width: 100%; margin-top: 10px; font-size: 12px">
+                        <table style="width: 100%; margin-top: 2px; font-size: 12px">
                             <thead>
                                 <tr>
-                                    <th style="padding: 4px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">Producto</th>
+                                    <th style="padding: 2px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">Producto</th>
                                     <th style="text-align: center; max-width: 10mm;">Ct.</th>
                                     <th style="text-align: center; max-width: 15mm;">Pre.</th>
                                     <th style="text-align: center; max-width: 15mm;">Garant.</th>
@@ -676,14 +674,14 @@ function imprimirPos(omitVerification = false) {
                             <tbody>
                                 ${productosHTML}
                                 <tr style="font-weight: bold;">
-                                    <td colspan="4" style="text-align: right; padding-top: 8px;">Total:</td>
-                                    <td style="text-align: center; padding-top: 8px;">${totalFactura.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
+                                    <td colspan="4" style="text-align: right; padding-top: 4px;">Total:</td>
+                                    <td style="text-align: center; padding-top: 4px;">${totalFactura.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
                                 </tr>
                             </tbody>
                         </table>
                         <hr style="border: 1px solid #000;">
-                        <p style="margin-top: 10px; font-size: 12px; text-align: center;"><b>****** Gracias por su Compra ******</b></p>
-                        <p style="margin-top: 2px; font-size: 12px; text-align: justify;">
+                        <p style="margin-top: 5px; font-size: 12px; text-align: center;"><b>****** Gracias por su Compra ******</b></p>
+                        <p style="margin-top: 1px; font-size: 12px; text-align: justify;">
                             <b>Nota:</b> La garantía cubre únicamente defectos de fabricación y no aplica en caso de insatisfacción personal, errores en la selección del producto, o daños causados por un mal uso. Para validar la garantía, es indispensable conservar todos los accesorios, empaques originales y documentación proporcionada en el momento de la compra, como también no dañar los sellos de garantía este proceso puede demorar hasta 15 dias habiles.
                         </p>
                         <p style="margin-top: 0px; font-size: 12px; text-align: justify;">&copy;Sistema de facturación POST y PDF, gestión de clientes inventario y pedidos, realizado por estebanadso@gmail.com / 3242264795</p>
@@ -703,24 +701,34 @@ function imprimirPos(omitVerification = false) {
                                     padding: 0
                                 }
                                 body { 
-                                    font-family: 'Roboto'; 
+                                    font-family: Arial, Helvetica, sans-serif;
                                     margin: 0; 
-                                    padding: 0; 
+                                    padding: 0;
+                                    color: #000 !important;
+                                    -webkit-print-color-adjust: exact; /* Para imprimir colores más precisos */ 
                                 }
                                 table { 
                                     width: 100%; 
                                     border-collapse: collapse; 
+                                    color: #000 !important;
+                                    -webkit-print-color-adjust: exact; /* Para imprimir colores más precisos */ 
                                 }
                                 th, td { 
-                                    padding: 4px 0; 
+                                    padding: 2px 0; 
                                     text-align: right; 
+                                    color: #000 !important;
+                                    -webkit-print-color-adjust: exact; /* Para imprimir colores más precisos */ 
                                 }
                                 th { 
                                     text-align: center; 
+                                    color: #000 !important;
+                                    -webkit-print-color-adjust: exact; /* Para imprimir colores más precisos */ 
                                 }
                                 h2, h3, h4 { 
                                     text-align: center; 
-                                    margin: 4px 0; 
+                                    margin: 2px 0; 
+                                    color: #000 !important;
+                                    -webkit-print-color-adjust: exact; /* Para imprimir colores más precisos */ 
                                 }
                             </style>
                         </head>

@@ -302,6 +302,14 @@ legend {
     filter: invert(1) brightness(2); /* Invierte los colores y aumenta el brillo */
 }
 
+#mensajeError{
+    font-size: 1.2em;
+    color: white;
+    background-color: red;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
 @media (max-width: 1920px) {
     #productoTableBody td {
         padding: 1px;

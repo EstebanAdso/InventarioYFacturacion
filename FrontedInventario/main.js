@@ -8,7 +8,7 @@ function createWindow() {
     height: 1080,
   });
 
-  win.loadFile('html/index.html'); // Cambia a la ruta de tu archivo HTML de inicio
+  win.loadFile('html/facturacion.html'); // Cambia a la ruta de tu archivo HTML de inicio
 }
 
 // Función para ejecutar el archivo JAR
