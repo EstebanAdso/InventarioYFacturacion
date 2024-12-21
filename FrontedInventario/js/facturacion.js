@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const limpiarFormularioBtn = document.getElementById('limpiarFormularioBtn');
     if (limpiarFormularioBtn) limpiarFormularioBtn.addEventListener('click', limpiarFormulario);
-
 });
 
 // Función para cargar los datos de cliente desde localStorage al cargar la página
@@ -93,6 +92,31 @@ window.addEventListener('load', () => {
                 actualizarTotalFactura();
             });
             cellAcciones.appendChild(deleteBtn);
+
+            // Botón de Editar
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Editar';
+            editBtn.className = 'btn btn-warning btn-sm';
+            editBtn.addEventListener('click', () => {
+                const row = editBtn.closest('tr');
+                const index = Array.from(tbody.rows).indexOf(row);
+                const producto = productosEnFactura[index];
+
+                // Rellenar el formulario con los datos del producto a editar
+                document.getElementById('nombreProductoManual').value = producto.nombre;
+                document.getElementById('descripcionFactura').value = producto.descripcion;
+                document.getElementById('cantidadProductoManual').value = producto.cantidad;
+                document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioUnitario);
+                document.getElementById('garantiaProducto').value = producto.garantia;
+                document.getElementById('PCProducto').value = producto.pc;
+
+                // Eliminar el producto de la factura para que se pueda volver a agregar
+                tbody.deleteRow(index);
+                totalFacturaGlobal -= producto.total;
+                productosEnFactura.splice(index, 1);
+                actualizarTotalFactura();
+            });
+            cellAcciones.appendChild(editBtn);
 
             // Agregar el precio de cada producto al total
             totalFacturaGlobal += producto.total;
@@ -222,8 +246,8 @@ function buscarProductos() {
                 data.forEach(producto => {
                     const li = document.createElement('li');
                     li.innerHTML = producto.nombre.toUpperCase() +
-                       "<i> || P.C <span style='color: red;'>$ " + producto.precioComprado + "</span></i>" +
-                        "<i> || P.V $ " + producto.precioVendido + "</i>";
+                       "<i> || P.C <span style='color: red;'>$ " + formatNumber(producto.precioComprado) + "</span></i>" +
+                        "<i> || P.V $ " + formatNumber(producto.precioVendido) + "</i>";
                     li.style.cursor = 'pointer';
                     li.classList.add('hover-effect');
 
@@ -250,7 +274,7 @@ document.getElementById('nombreProductoManual').addEventListener('input', buscar
 function seleccionarProducto(producto) {
     document.getElementById('nombreProductoManual').value = producto.nombre;
     document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioVendido);
-    document.getElementById('PCProducto').value = formatNumber(producto.precioComprado);
+    document.getElementById('PCProducto').value = producto.precioComprado;
     document.getElementById('sugerenciasProductos').style.display = 'none';
 
     productoSeleccionadoId = producto.id;
@@ -371,6 +395,30 @@ function agregarProducto() {
             actualizarTotalFactura();
         });
         cellAcciones.appendChild(deleteBtn);
+
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Editar';
+        editBtn.className = 'btn btn-warning btn-sm';
+        editBtn.addEventListener('click', () => {
+            const row = editBtn.closest('tr');
+            const index = Array.from(tbody.rows).indexOf(row);
+            const producto = productosEnFactura[index];
+
+            // Rellenar el formulario con los datos del producto a editar
+            document.getElementById('nombreProductoManual').value = producto.nombre;
+            document.getElementById('descripcionFactura').value = producto.descripcion;
+            document.getElementById('cantidadProductoManual').value = producto.cantidad;
+            document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioUnitario);
+            document.getElementById('garantiaProducto').value = producto.garantia;
+            document.getElementById('PCProducto').value = producto.pc;
+
+            // Eliminar el producto de la factura para que se pueda volver a agregar
+            tbody.deleteRow(index);
+            totalFacturaGlobal -= producto.total;
+            productosEnFactura.splice(index, 1);
+            actualizarTotalFactura();
+        });
+        cellAcciones.appendChild(editBtn);
 
         productoSeleccionadoId = null;
         limpiarFormularioProducto();

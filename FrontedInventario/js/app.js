@@ -307,7 +307,7 @@ function mostrarProductosEnTabla(productos) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${producto.nombre.toUpperCase()}</td>
-            <td>${formatNumber(producto.precioComprado)}</td>
+            <td>${producto.precioComprado}</td>
             <td>${formatNumber(producto.precioVendido)}</td>
             <td>${producto.cantidad}</td>
             <td>${producto.categoria.nombre}</td>
