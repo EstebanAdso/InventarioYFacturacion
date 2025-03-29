@@ -1,5 +1,7 @@
 # Ignorar la carpeta node_modules en cualquier parte del proyecto
 node_modules/
+node_modules
+BackendInventario-0.0.1-SNAPSHOT.jar
 
 # Ignorar la carpeta de backend copia
 /BackendInventario - copia/
