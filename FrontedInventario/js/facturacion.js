@@ -3,9 +3,9 @@ const apiProducto = 'http://localhost:8082/producto'
 
 let productosFiltrados = [];
 let productosEnFactura = [];
-let totalFacturaGlobal = 0; 
+let totalFacturaGlobal = 0;
 let productoSeleccionadoId = null;
-let detalles = []; 
+let detalles = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     const agregarProductoBtn = document.getElementById('agregarProductoBtn');
@@ -41,7 +41,7 @@ window.addEventListener('load', () => {
         localStorage.removeItem('telefonoCliente');
         localStorage.removeItem('direccionCliente');
         console.log('Datos de cliente eliminados de localStorage después de 20 minutos.');
-    }, 20 * 60 * 1000); 
+    }, 20 * 60 * 1000);
 });
 
 window.addEventListener('load', () => {
@@ -92,31 +92,6 @@ window.addEventListener('load', () => {
                 actualizarTotalFactura();
             });
             cellAcciones.appendChild(deleteBtn);
-
-            // Botón de Editar
-            const editBtn = document.createElement('button');
-            editBtn.textContent = 'Editar';
-            editBtn.className = 'btn btn-warning btn-sm';
-            editBtn.addEventListener('click', () => {
-                const row = editBtn.closest('tr');
-                const index = Array.from(tbody.rows).indexOf(row);
-                const producto = productosEnFactura[index];
-
-                // Rellenar el formulario con los datos del producto a editar
-                document.getElementById('nombreProductoManual').value = producto.nombre;
-                document.getElementById('descripcionFactura').value = producto.descripcion;
-                document.getElementById('cantidadProductoManual').value = producto.cantidad;
-                document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioUnitario);
-                document.getElementById('garantiaProducto').value = producto.garantia;
-                document.getElementById('PCProducto').value = producto.pc;
-
-                // Eliminar el producto de la factura para que se pueda volver a agregar
-                tbody.deleteRow(index);
-                totalFacturaGlobal -= producto.total;
-                productosEnFactura.splice(index, 1);
-                actualizarTotalFactura();
-            });
-            cellAcciones.appendChild(editBtn);
 
             // Agregar el precio de cada producto al total
             totalFacturaGlobal += producto.total;
@@ -246,7 +221,7 @@ function buscarProductos() {
                 data.forEach(producto => {
                     const li = document.createElement('li');
                     li.innerHTML = producto.nombre.toUpperCase() +
-                       "<i> || P.C <span style='color: red;'>$ " + formatNumber(producto.precioComprado) + "</span></i>" +
+                        "<i> || P.C <span style='color: red;'>$ " + formatNumber(producto.precioComprado) + "</span></i>" +
                         "<i> || P.V $ " + formatNumber(producto.precioVendido) + "</i>";
                     li.style.cursor = 'pointer';
                     li.classList.add('hover-effect');
@@ -281,7 +256,7 @@ function seleccionarProducto(producto) {
 
     // Ajusta el máximo permitido en el campo de cantidad
     const inputCantidad = document.getElementById('cantidadProductoManual');
-    inputCantidad.max = producto.cantidad; 
+    inputCantidad.max = producto.cantidad;
 
     // Mostrar un mensaje al usuario sobre el stock máximo
     document.getElementById('mensajeMaxCantidad').innerText =
@@ -318,18 +293,16 @@ function agregarProducto() {
     const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
     const descripcion = document.getElementById('descripcionFactura').value.trim();
     const cantidad = parseInt(document.getElementById('cantidadProductoManual').value);
-    const cantidadMaxima = parseInt(document.getElementById('cantidadProductoManual').max); // Obtener cantidad máxima
+    const cantidadMaxima = parseInt(document.getElementById('cantidadProductoManual').max);
     const precioUnitario = parseFloat(document.getElementById('precioUnitarioManual').value.replace(/\./g, ''));
     const pc = parseFloat(document.getElementById('PCProducto').value.replace(/\./g, ''));
     const garantia = parseInt(document.getElementById('garantiaProducto').value.trim());
 
-       // Validación de la cantidad seleccionada vs. cantidad máxima
     if (cantidad > cantidadMaxima) {
-      mostrarMensajeError(`La cantidad seleccionada (${cantidad}) supera la cantidad máxima disponible (${cantidadMaxima}).`);
-      return; // Detener la ejecución si la validación falla
+        mostrarMensajeError(`La cantidad seleccionada (${cantidad}) supera la cantidad máxima disponible (${cantidadMaxima}).`);
+        return;
     }
 
-    // Asegurarse de que precioComprado también esté validado
     if (nombreProducto && !isNaN(cantidad) && !isNaN(precioUnitario) && !isNaN(garantia) && !isNaN(pc)) {
         const productoId = productoSeleccionadoId || null;
         const totalProducto = cantidad * precioUnitario;
@@ -348,7 +321,7 @@ function agregarProducto() {
         const cellDescripcion = newRow.insertCell(5);
         const cellTotal = newRow.insertCell(6);
         const cellAcciones = newRow.insertCell(7);
-        const cellPc = newRow.insertCell(8); // Celda para precio comprado
+        const cellPc = newRow.insertCell(8);
         cellPc.style.display = 'none';
 
         cellNombre.textContent = nombreProducto;
@@ -357,9 +330,15 @@ function agregarProducto() {
         cellGarantia.textContent = garantia;
         cellDescripcion.textContent = descripcion;
         cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-        
-        if(cantidad > 100){
-            console.log("no puedes")
+        cellPc.textContent = pc;
+
+        // Si estamos editando un producto existente, eliminamos el anterior
+        if (productoSeleccionadoId && productosEnFactura.some(p => p.id === productoSeleccionadoId)) {
+            const index = productosEnFactura.findIndex(p => p.id === productoSeleccionadoId);
+            if (index !== -1) {
+                totalFacturaGlobal -= productosEnFactura[index].total;
+                productosEnFactura.splice(index, 1);
+            }
         }
 
         productosEnFactura.push({
@@ -373,13 +352,13 @@ function agregarProducto() {
             pc: pc
         });
 
-        
         localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
 
         // Actualizar el total de la factura
         totalFacturaGlobal += totalProducto;
         actualizarTotalFactura();
 
+        // Botón Eliminar
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Eliminar';
         deleteBtn.className = 'btn btn-danger btn-sm';
@@ -388,38 +367,42 @@ function agregarProducto() {
             const index = row.rowIndex - 1;
             tbody.deleteRow(index);
 
-            // Restar el total del producto eliminado
             totalFacturaGlobal -= productosEnFactura[index].total;
-            productosEnFactura.splice(index, 1); // Eliminar el producto del array
-            
-            actualizarTotalFactura();
-        });
-        cellAcciones.appendChild(deleteBtn);
-
-        const editBtn = document.createElement('button');
-        editBtn.textContent = 'Editar';
-        editBtn.className = 'btn btn-warning btn-sm';
-        editBtn.addEventListener('click', () => {
-            const row = editBtn.closest('tr');
-            const index = Array.from(tbody.rows).indexOf(row);
-            const producto = productosEnFactura[index];
-
-            // Rellenar el formulario con los datos del producto a editar
-            document.getElementById('nombreProductoManual').value = producto.nombre;
-            document.getElementById('descripcionFactura').value = producto.descripcion;
-            document.getElementById('cantidadProductoManual').value = producto.cantidad;
-            document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioUnitario);
-            document.getElementById('garantiaProducto').value = producto.garantia;
-            document.getElementById('PCProducto').value = producto.pc;
-
-            // Eliminar el producto de la factura para que se pueda volver a agregar
-            tbody.deleteRow(index);
-            totalFacturaGlobal -= producto.total;
             productosEnFactura.splice(index, 1);
             actualizarTotalFactura();
         });
-        cellAcciones.appendChild(editBtn);
 
+        // Botón Editar
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Editar';
+        editBtn.className = 'btn btn-warning btn-sm';
+        editBtn.style.marginLeft = '5px';
+        editBtn.addEventListener('click', () => {
+            const row = editBtn.closest('tr');
+            const index = row.rowIndex - 1;
+            const producto = productosEnFactura[index];
+
+            // Llenar el formulario con los datos del producto a editar
+            document.getElementById('nombreProductoManual').value = producto.nombre;
+            document.getElementById('descripcionFactura').value = producto.descripcion;
+            document.getElementById('cantidadProductoManual').value = producto.cantidad;
+            document.getElementById('precioUnitarioManual').value = producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+            document.getElementById('garantiaProducto').value = producto.garantia;
+            document.getElementById('PCProducto').value = producto.pc;
+            
+            // Establecer el ID del producto seleccionado para edición
+            productoSeleccionadoId = producto.id;
+
+            // Eliminar la fila de la tabla y del array
+            tbody.deleteRow(index);
+            totalFacturaGlobal -= productosEnFactura[index].total;
+            productosEnFactura.splice(index, 1);
+            actualizarTotalFactura();
+        });
+
+        cellAcciones.appendChild(deleteBtn);
+        cellAcciones.appendChild(editBtn);
+        
         productoSeleccionadoId = null;
         limpiarFormularioProducto();
     } else {
@@ -449,7 +432,7 @@ function obtenerDatosFactura() {
     const direccionCliente = document.getElementById('direccionCliente').value.trim();
     const productos = obtenerProductosSeleccionados();
     const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
-    
+
     return {
         nombreCliente,
         cedulaNit,
@@ -815,7 +798,7 @@ nombreClienteInput.addEventListener('input', function (e) {
 
     // Actualiza el valor del campo convirtiendo todo a mayúsculas
     this.value = textBefore.toUpperCase() + textAfter;
-    
+
     // Restablecer la posición del cursor
     nombreClienteInput.selectionStart = nombreClienteInput.selectionEnd = cursorPos;
 });
@@ -860,6 +843,7 @@ function limpiarFormularioProducto() {
     document.getElementById('garantiaProducto').value = '';
     document.getElementById('PCProducto').value = '';
     document.getElementById('mensajeMaxCantidad').textContent = '';
+    productoSeleccionadoId = null; // Asegurarse de limpiar el ID de edición
 }
 
 function limpiarFormulario() {
