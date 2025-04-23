@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="shortcut icon" href="../css/logo.png" type="image/x-icon">
 </head>
+
 <body>
     <header id="nav">
         <nav>
@@ -21,7 +23,7 @@
                 <li><a href="cliente.html"><img src="../css/logos/user-solid-24.png" alt=""></a></li>
                 <li><a href="config.html"><img src="../css/logos/cog-solid-24.png" alt=""></a></li>
             </ul>
-        </nav>        
+        </nav>
     </header>
 
     <div class="container">
@@ -34,12 +36,14 @@
             </button>
         </div>
         <div class="d-flex justify-content-end mb-3">
-          <div class="mr-4">
-              <button class="btn btn-primary" id="agregarPedido" data-toggle="modal" data-target="#pedidoModal">Agregar Pedido</button>
-          </div> 
-          <div class="mr-4">
-            <button class="btn btn-info" id="totalPedido" data-toggle="modal" data-target="#totalModal">Ver Total</button>
-        </div> 
+            <div class="mr-4">
+                <button class="btn btn-primary" id="agregarPedido" data-toggle="modal"
+                    data-target="#pedidoModal">Agregar Pedido</button>
+            </div>
+            <div class="mr-4">
+                <button class="btn btn-info" id="totalPedido" data-toggle="modal" data-target="#totalModal">Ver
+                    Total</button>
+            </div>
         </div>
 
         <div class="row">
@@ -63,7 +67,6 @@
             </div>
         </div>
 
-
         <div class="modal fade" id="pedidoModal" tabindex="-1" aria-labelledby="pedidoModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -78,24 +81,27 @@
                             <input type="hidden" id="pedidoId">
                             <div class="form-group">
                                 <label for="nombrePedido">Nombre</label>
-                                <input type="text" autocomplete="off" class="form-control" id="nombrePedido"  required>
+                                <input type="text" autocomplete="off" class="form-control" id="nombrePedido" required>
                             </div>
                             <div class="form-group">
                                 <label for="precioCompradoPedido">Precio Comprado</label>
-                                <input type="text" autocomplete="off" class="form-control" id="precioCompradoPedido" pattern="^[0-9,.]+$" title="Ingrese un número válido">
+                                <input type="text" autocomplete="off" class="form-control" id="precioCompradoPedido"
+                                    pattern="^[0-9,.]+$" title="Ingrese un número válido">
                             </div>
                             <div class="form-group">
                                 <label for="precioVendidoPedido">Precio Vendido</label>
-                                <input type="text" autocomplete="off" class="form-control" id="precioVendidoPedido" pattern="^[0-9,.]+$" title="Ingrese un número válido">
+                                <input type="text" autocomplete="off" class="form-control" id="precioVendidoPedido"
+                                    pattern="^[0-9,.]+$" title="Ingrese un número válido">
                             </div>
                             <div class="form-group">
                                 <label for="cantidadPedido">Cantidad</label>
-                                <input type="number" autocomplete="off" class="form-control" value="" id="cantidadPedido" required>
+                                <input type="number" autocomplete="off" class="form-control" value=""
+                                    id="cantidadPedido" required>
                             </div>
                             <div class="form-group">
                                 <label for="categoriaPedido">Categoría</label>
-                                <select class="form-control" id="categoriaPedido" required >
-                                   <!-- Las opciones de categorías se llenarán dinámicamente -->
+                                <select class="form-control" id="categoriaPedido" required>
+                                    <!-- Las opciones de categorías se llenarán dinámicamente -->
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary">Guardar</button>
@@ -105,56 +111,56 @@
             </div>
         </div>
 
-
         <!-- Modal para mostrar totales -->
-    <div class="modal fade" id="totalModal" tabindex="-1" aria-labelledby="totalModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="totalModalLabel">Totales de Categorías y Global</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+        <div class="modal fade" id="totalModal" tabindex="-1" aria-labelledby="totalModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="totalModalLabel">Totales de Categorías y Global</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 class="mt-4 text-primary">Total Global</h4>
+                        <p id="totalGlobal" class="font-weight-bold display-4">0</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <h4 class="mt-4 text-primary">Total Global</h4>
-                    <p id="totalGlobal" class="font-weight-bold display-4">0</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+
+
+        <div id="confirmModal-eliminar-pedido" class="modal fade" tabindex="-1" role="dialog"
+            aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel">Confirmación de Eliminación</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estás seguro de que quieres eliminar este pedido?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="confirmBtn-eliminar-pedido" class="btn btn-danger">Sí</button>
+                        <button class="btn btn-secondary" data-dismiss="modal">No</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <div id="confirmModal-eliminar-pedido" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmModalLabel">Confirmación de Eliminación</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Estás seguro de que quieres eliminar este pedido?</p>
-                </div>
-                <div class="modal-footer">
-                    <button id="confirmBtn-eliminar-pedido" class="btn btn-danger">Sí</button>
-                    <button class="btn btn-secondary" data-dismiss="modal">No</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    </div>
-
-
+    <script src="../js/functions.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
     <script src="../js/pedido.js"></script>
 </body>
+
 </html>

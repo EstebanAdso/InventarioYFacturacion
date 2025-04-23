@@ -1,4 +1,5 @@
 const apiUrl = 'http://localhost:8082/pedido'
+const categoriaUrl = 'http://localhost:8082/categoria'
 
 document.addEventListener('DOMContentLoaded', function () {
     const pedidoForm = document.getElementById('pedidoForm');
@@ -18,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     cargarTotalGlobal()
     // Función para cargar pedidos
     function cargarPedidos() {
-        fetch('http://localhost:8082/pedido')
+        fetch(apiUrl)
             .then(response => response.json())
             .then(pedidos => {
                 pedidoTableBody.innerHTML = '';
@@ -66,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
         $('#confirmModal-eliminar-pedido').modal('hide');
 
         // Realizar la solicitud DELETE usando el ID almacenado
-        fetch(`http://localhost:8082/pedido/${pedidoIdToDelete}`, {
+        fetch(`${apiUrl}/${pedidoIdToDelete}`, {
             method: 'DELETE'
         })
             .then(response => {
@@ -86,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function recibirPedido(event) {
         const id = event.target.dataset.id;
 
-        fetch(`http://localhost:8082/pedido/${id}/recibir`, { method: 'PUT' })
+        fetch(`${apiUrl}/${id}/recibir`, { method: 'PUT' })
             .then(response => response.json())
             .then(() => {
                 mostrarMensaje('success', 'Producto recibido y movido a inventario.');
@@ -114,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         const idPedido = document.getElementById('pedidoId').value;
-        const url = idPedido ? `http://localhost:8082/pedido/${idPedido}` : 'http://localhost:8082/pedido';
+        const url = idPedido ? `${apiUrl}/${idPedido}` : apiUrl;
         const method = idPedido ? 'PUT' : 'POST';
 
         fetch(url, {
@@ -136,13 +137,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 
-    // Función para formatear los números como moneda colombiana
-    function formatNumber(number) {
-        return number.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-    }
-
-
-
     async function cargarTotalGlobal() {
         try {
             const response = await fetch(`${apiUrl}/totalGlobal`);
@@ -159,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Cargar categorías disponibles al cargar la página
     function cargarCategorias() {
-        fetch('http://localhost:8082/categoria')
+        fetch(categoriaUrl)
             .then(response => response.json())
             .then(categorias => {
                 categoriaInput.innerHTML = '<option value="">Selecciona una categoría</option>';
@@ -179,27 +173,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-function mostrarMensaje(tipo, texto) {
-    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
-    const mensajeTexto = document.getElementById('mensajeTexto');
 
-    mensajeTexto.innerText = texto;
 
-    if (tipo === 'error') {
-        mensajeNotificacion.className = 'alert alert-danger alert-dismissible fade show';
-    } else if (tipo === 'success') {
-        mensajeNotificacion.className = 'alert alert-success alert-dismissible fade show';
-    }
 
-    mensajeNotificacion.style.display = 'block';
-
-    // Ocultar el mensaje después de 5 segundos
-    setTimeout(() => {
-        mensajeNotificacion.style.display = 'none';
-    }, 5000);
-}
-
-function cerrarMensaje() {
-    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
-    mensajeNotificacion.style.display = 'none';
-}

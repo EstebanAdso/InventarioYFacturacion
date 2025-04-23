@@ -5,7 +5,7 @@ let currentPage = 0;
 let pageSize = 14;
 let totalPages = 0;
 let filtroCategoriaSeleccionada = null;
-let mostrandoInactivos = false; 
+let mostrandoInactivos = false;
 let modificarTexto = document.getElementById('productoModalLabel')
 const botonAgregarProducto = document.getElementById('agregarProducto')
 const botonAgregarCategoria = document.getElementById('agregarCategoria')
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let botonModificador = document.getElementById('agregarProducto');
 
-    botonModificador.addEventListener('click', function() {
+    botonModificador.addEventListener('click', function () {
         modificarTexto.textContent = 'Agregar Producto';
     });
 
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error:', error);
         }
 
-        
+
     });
 
     document.getElementById('categoriaForm').addEventListener('submit', async (event) => {
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const descripcion = document.getElementById('descripcionCategoria').value.toUpperCase();
         const descripcionGarantia = document.getElementById('descripcionGarantia').value.toUpperCase();
 
-        const categoria = { nombre, descripcion, descripcionGarantia};
+        const categoria = { nombre, descripcion, descripcionGarantia };
 
         try {
             let response;
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             $('#categoriaModal').modal('hide');
             limpiarFormulario();
-            cargarProductosPorCategoria();  
+            cargarProductosPorCategoria();
             cargarTotalPorCategoria();
             cargarTotalGlobal();
             cargarCategorias();
@@ -157,22 +157,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function toggleProductos() {
         const toggleBtn = document.getElementById('toggleProductosBtn');
-    
+
         currentPage = 0; // Reiniciar la paginación cuando cambies entre activos/inactivos
-    
+
         if (mostrandoInactivos) {
             cargarProductos(); // Cargar productos activos
             toggleBtn.textContent = 'Productos Inactivos';
             toggleBtn.classList.remove('btn-success');
             toggleBtn.classList.add('btn-warning');
-    
+
             // Habilitar los botones y el buscador
             botonAgregarCategoria.removeAttribute('disabled');
             botonAgregarProducto.removeAttribute('disabled');
             botonVerTotal.removeAttribute('disabled');
             buscador.removeAttribute('disabled');
             filtroCategoria.removeAttribute('disabled')
-    
+
             // Quitar clase de estilo desactivado
             botonAgregarCategoria.classList.remove('disabled-style');
             botonAgregarProducto.classList.remove('disabled-style');
@@ -186,14 +186,14 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleBtn.textContent = 'Productos Activos';
             toggleBtn.classList.remove('btn-warning');
             toggleBtn.classList.add('btn-success');
-    
+
             // Deshabilitar los botones y el buscador
             botonAgregarCategoria.setAttribute('disabled', 'disabled');
             botonAgregarProducto.setAttribute('disabled', 'disabled');
             botonVerTotal.setAttribute('disabled', 'disabled');
             buscador.setAttribute('disabled', 'disabled');
             filtroCategoria.setAttribute('disabled', 'disabled');
-    
+
             // Agregar clase de estilo desactivado
             botonAgregarCategoria.classList.add('disabled-style');
             botonAgregarProducto.classList.add('disabled-style');
@@ -205,9 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    
 
-    
+
+
     async function cargarCategorias() {
         try {
             const response = await fetch(apiCategoria); // Ajusta la URL si es necesario
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const filtroCategoriaSelect = document.getElementById('filtroCategoria');
             const categoriaSelect = document.getElementById('categoria');
-            
+
             filtroCategoriaSelect.innerHTML = '<option value="">Todos</option>';
             categoriaSelect.innerHTML = '';
 
@@ -315,9 +315,9 @@ function mostrarProductosEnTabla(productos) {
             <td class="text-center">
                 <button class="btn btn-info btn-sm" id="botonInformacion" onclick="verInformacion(${producto.id})"><img src="../css/logos/info-circle-regular-24.png" alt="Informacion"></button>
                 <button class="btn btn-dark btn-sm" id="botonEditar" onclick="editarProducto(${producto.id})"><img src="../css/logos/edit-alt-solid-24.png" alt="Editar"></button>
-                ${producto.estado === 'activo' 
-                    ? `<button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})"><img src="../css/logos/eliminar-papelera.png" width="24px" class="invert-img" alt="Agotar"></button>` 
-                    : ''} <!-- Ocultar botón Agotar si está inactivo -->
+                ${producto.estado === 'activo'
+                ? `<button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})"><img src="../css/logos/eliminar-papelera.png" width="24px" class="invert-img" alt="Agotar"></button>`
+                : ''} <!-- Ocultar botón Agotar si está inactivo -->
             </td>
 
         `;
@@ -462,7 +462,7 @@ async function eliminarProducto(id) {
     $('#confirmModal-eliminar').modal('show');
 
     // Esperar a que el usuario haga clic en el botón "Sí"
-    $('#confirmBtn-eliminar').off('click').on('click', async function() {
+    $('#confirmBtn-eliminar').off('click').on('click', async function () {
         $('#confirmModal-eliminar').modal('hide'); // Cerrar el modal
         try {
             const response = await fetch(`${apiUrl}/${id}`, {
@@ -519,10 +519,6 @@ async function cargarTotalPorCategoria() {
     }
 }
 
-function formatNumber(number) {
-    return number.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-}
-
 // ... (otras funciones como editarProducto, limpiarFormulario, etc.)
 function limpiarFormulario() {
     document.getElementById('productoId').value = '';
@@ -531,27 +527,6 @@ function limpiarFormulario() {
 }
 
 
-function mostrarMensaje(tipo, texto) {
-    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
-    const mensajeTexto = document.getElementById('mensajeTexto');
 
-    mensajeTexto.innerText = texto;
 
-    if (tipo === 'error') {
-        mensajeNotificacion.className = 'alert alert-danger alert-dismissible fade show';
-    } else if (tipo === 'success') {
-        mensajeNotificacion.className = 'alert alert-success alert-dismissible fade show';
-    }
 
-    mensajeNotificacion.style.display = 'block';
-
-    // Ocultar el mensaje después de 5 segundos
-    setTimeout(() => {
-        mensajeNotificacion.style.display = 'none';
-    }, 5000);
-}
-
-function cerrarMensaje() {
-    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
-    mensajeNotificacion.style.display = 'none';
-}

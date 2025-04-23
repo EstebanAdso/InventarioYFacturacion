@@ -7,3 +7,22 @@ npm install electron-packager --save-dev
 npx electron-packager . frontedinventario --platform=win32 --arch=x64 --out=dist
 
 npm run build
+
+
+// FUNCIONES A IMPLEMEMTAR
+* Total de precio de venta y compra en facturas
+* Previsualizar facturas anteriores como pos o pdf
+* mejor busqueda en inventario
+* ocualtar sku en facturacion
+* metodo de abono
+* configuracion de datos de empresa
+* opcion para descargar una factura
+* leer codigo de barrar y generarlas
+* eliminar categoria
+* cancelar facturas del dia
+* auditoria de facturas y productos
+* notificacion de stock
+* modo oscuro
+* generar excel cada mes de las ventas del dia.
+* busqueda de productos inactivos
+* eliminar productos inactivos sin perder la auditoria

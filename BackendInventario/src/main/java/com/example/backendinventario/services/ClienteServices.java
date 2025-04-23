@@ -26,7 +26,7 @@ public class ClienteServices {
                 "JOIN Factura f ON c.id = f.cliente_id " +
                 "GROUP BY c.id, c.nombre " +
                 "ORDER BY total_compras DESC " +
-                "LIMIT 10";
+                "LIMIT 30";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             ClienteTopDto cliente = new ClienteTopDto();

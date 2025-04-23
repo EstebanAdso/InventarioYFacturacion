@@ -1,9 +1,12 @@
+
+const apiUrl = 'http://localhost:8082/api/facturas'
+
 document.addEventListener('DOMContentLoaded', function () {
     const facturasContainer = document.getElementById('facturasContainer');
-    
+
     // Función para traer las facturas desde el backend
     function obtenerFacturas() {
-        fetch('http://localhost:8082/api/facturas')
+        fetch(apiUrl)
             .then(response => response.json())
             .then(facturas => {
                 if (facturas.length > 0) {
@@ -44,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Agregar evento click a los botones de ver detalles
                     document.querySelectorAll('.btn-ver-detalles').forEach(button => {
-                        button.addEventListener('click', function() {
+                        button.addEventListener('click', function () {
                             const facturaId = this.getAttribute('data-id');
                             mostrarDetallesFactura(facturaId);
                         });
@@ -61,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para mostrar los detalles de la factura
     function mostrarDetallesFactura(facturaId) {
-        fetch(`http://localhost:8082/api/facturas/${facturaId}/detalles`)
+        fetch(`${apiUrl}/${facturaId}/detalles`)
             .then(response => response.json())
             .then(detalles => {
                 // Limpiar el cuerpo de la tabla de detalles

@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let botonModificador = document.getElementById('agregarActivo');
 
-    botonModificador.addEventListener('click', function() {
+    botonModificador.addEventListener('click', function () {
         modificarTexto.textContent = 'Agregar Activo';
     });
 
@@ -64,35 +64,35 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error("Error en la solicitud fetch:", error));
     }
 
-   // Variable para almacenar el ID del activo a eliminar
-let activoIdToDelete = null;
+    // Variable para almacenar el ID del activo a eliminar
+    let activoIdToDelete = null;
 
-function eliminaractivo(event) {
-    // Obtener el ID del activo desde el botón
-    activoIdToDelete = event.target.dataset.id; // Almacenar el ID en una variable global
-    $('#confirmModal-eliminar-activo').modal('show'); // Mostrar el modal
-}
+    function eliminaractivo(event) {
+        // Obtener el ID del activo desde el botón
+        activoIdToDelete = event.target.dataset.id; // Almacenar el ID en una variable global
+        $('#confirmModal-eliminar-activo').modal('show'); // Mostrar el modal
+    }
 
-// Evento de clic para el botón de confirmación
-$('#confirmBtn-eliminar-activo').on('click', function() {
-    // Cerrar el modal
-    $('#confirmModal-eliminar-activo').modal('hide');
+    // Evento de clic para el botón de confirmación
+    $('#confirmBtn-eliminar-activo').on('click', function () {
+        // Cerrar el modal
+        $('#confirmModal-eliminar-activo').modal('hide');
 
-    // Realizar la solicitud DELETE usando el ID almacenado
-    fetch(`${apiUrl}/${activoIdToDelete}`, {
-        method: 'DELETE'
-    })
-    .then(response => {
-        if (response.ok) {
-            cargaractivos(); // Refrescar lista de activos
-            cargarTotalGlobal(); // Actualizar el total global
-            mostrarMensaje('success', 'Activo eliminado con éxito.');
-        } else {
-            mostrarMensaje('error', 'Error al eliminar el activo.');
-        }
-    })
-    .catch(error => console.error('Error al eliminar el activo:', error));
-});
+        // Realizar la solicitud DELETE usando el ID almacenado
+        fetch(`${apiUrl}/${activoIdToDelete}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    cargaractivos(); // Refrescar lista de activos
+                    cargarTotalGlobal(); // Actualizar el total global
+                    mostrarMensaje('success', 'Activo eliminado con éxito.');
+                } else {
+                    mostrarMensaje('error', 'Error al eliminar el activo.');
+                }
+            })
+            .catch(error => console.error('Error al eliminar el activo:', error));
+    });
 
 
     function limpiarFormulario() {
@@ -118,18 +118,16 @@ $('#confirmBtn-eliminar-activo').on('click', function() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(activoData)
         })
-        .then(response => response.json())
-        .then(() => {
-            limpiarFormulario();
-            cargaractivos();
-            cargarTotalGlobal();
-            $('#activoModal').modal('hide');
-        });
+            .then(response => response.json())
+            .then(() => {
+                limpiarFormulario();
+                cargaractivos();
+                cargarTotalGlobal();
+                $('#activoModal').modal('hide');
+            });
     });
 
-    function formatNumber(number) {
-        return number.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-    }
+
 
     async function cargarTotalGlobal() {
         try {
@@ -168,27 +166,6 @@ $('#confirmBtn-eliminar-activo').on('click', function() {
 });
 
 
-function mostrarMensaje(tipo, texto) {
-    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
-    const mensajeTexto = document.getElementById('mensajeTexto');
 
-    mensajeTexto.innerText = texto;
 
-    if (tipo === 'error') {
-        mensajeNotificacion.className = 'alert alert-danger alert-dismissible fade show';
-    } else if (tipo === 'success') {
-        mensajeNotificacion.className = 'alert alert-success alert-dismissible fade show';
-    }
 
-    mensajeNotificacion.style.display = 'block';
-
-    // Ocultar el mensaje después de 5 segundos
-    setTimeout(() => {
-        mensajeNotificacion.style.display = 'none';
-    }, 5000);
-}
-
-function cerrarMensaje() {
-    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
-    mensajeNotificacion.style.display = 'none';
-}

@@ -1,7 +1,8 @@
 .container {
     margin-top: 60px;
 }
-h1{
+
+h1 {
     font-size: 2em;
 }
 
@@ -17,6 +18,7 @@ header {
     z-index: 1;
     top: 0;
 }
+
 header nav {
     display: flex;
     justify-content: space-around;
@@ -39,7 +41,7 @@ header nav ul {
     display: flex;
 }
 
-header nav ul li a{
+header nav ul li a {
     margin-left: 20px;
     color: #ddd;
     user-select: none;
@@ -52,92 +54,100 @@ header nav ul li a{
     width: 40px;
 }
 
-nav ul li a:hover{
+nav ul li a:hover {
     text-decoration: none;
     color: #aaa;
 }
 
 header nav ul li a.selected {
-    background-color: #4488ee; 
+    background-color: #4488ee;
     color: white;
     border-radius: 20px;
 }
 
-#searchForm input{
+#searchForm input {
     width: 90%;
     padding: 6px;
     border-radius: 7px;
 }
 
-
-
-/* Altura fija para las celdas */
 #productoTableBody td {
-    white-space: nowrap;  
-    text-overflow: ellipsis; 
+    white-space: nowrap;
+    text-overflow: ellipsis;
     overflow: hidden;
 }
 
-/* Ajustar el contenedor de la tabla */
 .table-responsive {
-    max-height: 400px; /* Limitar la altura de la tabla */
-    overflow-y: auto;  /* Agregar un scroll vertical si la tabla es muy larga */
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 fieldset {
     border: 2px solid black;
     padding: 10px;
-    max-width: 100%; /* Ajusta el ancho del fieldset */
-    margin: 0 auto; /* Centra el fieldset */
+    max-width: 100%;
+    margin: 0 auto;
 }
 
 legend {
     padding: 5px;
-    width: auto; /* Elimina el comportamiento de ocupar todo el ancho */
-    padding-left: 5px; /* Opcional: Agrega espacio a la izquierda */
-    padding-right: 5px; /* Opcional: Agrega espacio a la derecha */
-    text-align: left; /* Opcional: centra el texto dentro del legend */
+    width: auto;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: left;
 }
 
 .hide {
     display: none;
 }
 
-
 .modal-content {
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-#productoModal .modal-header, #pedidoModal .modal-header, #clientesTopModal .modal-header{
-    background-color: #007bff; /* Color del encabezado */
+#clientesTopModal {
+    height: 90dvh;
+    margin: 0 auto;
+}
+
+#productoModal .modal-header,
+#pedidoModal .modal-header,
+#clientesTopModal .modal-header {
+    background-color: #007bff;
     color: white;
     border-bottom: none;
 }
 
-#categoriaModal .modal-header, #activoModal .modal-header, #clienteModal .modal-header {
-    background-color: #252627; /* Color del encabezado */
+#categoriaModal .modal-header,
+#activoModal .modal-header,
+#clienteModal .modal-header {
+    background-color: #252627;
     color: white;
     border-bottom: none;
 }
 
 .headerOscuro {
-    background-color: #252627; /* Color del encabezado */
+    background-color: #252627;
     color: white;
     border-bottom: none;
 }
 
-#categoriaModal button, #clienteModal button, #activoModal button {
-    background-color: #252627; /* Color del encabezado */
+#categoriaModal button,
+#clienteModal button,
+#activoModal button {
+    background-color: #252627;
     color: white;
-    
 }
 
-#totalModal .modal-header, #detalleFacturaModal .modal-header, #verInfoModal .modal-header {
-    background-color: #17a2b8; /* Color del encabezado */
+#totalModal .modal-header,
+#detalleFacturaModal .modal-header,
+#verInfoModal .modal-header {
+    background-color: #17a2b8;
     color: white;
     border-bottom: none;
 }
+
 .modal-title {
     font-weight: bold;
 }
@@ -151,49 +161,45 @@ legend {
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
-    border: 1px solid #007bff; /* Borde de las categorías */
+    border: 1px solid #007bff;
     border-radius: 5px;
     margin-bottom: 10px;
     transition: background-color 0.3s;
 }
 
 .list-group-item:hover {
-    background-color: #e9f7ff; /* Color de fondo al pasar el mouse */
+    background-color: #e9f7ff;
 }
 
 #totalGlobal {
-    color: #dc3545; /* Color rojo para el total global */
+    color: #dc3545;
 }
-
 
 #totalCategorias li {
-    margin-left: 20px; /* Ajusta el valor según sea necesario */
+    margin-left: 20px;
 }
 
-
-/* Alternar el color de fondo de las filas de la tabla */
 #productoTableBody tr:nth-child(odd) {
-    background-color: #f7f7f7; /* Color de fondo para filas impares */
+    background-color: #f7f7f7;
 }
 
 #productoTableBody tr:nth-child(even) {
-    background-color: #ffffff; /* Color de fondo para filas pares */
+    background-color: #ffffff;
 }
 
 #pedidoTableBody tr:nth-child(odd) {
-    background-color: #f7f7f7; /* Color de fondo para filas impares */
+    background-color: #f7f7f7;
 }
 
 #pedidoTableBody tr:nth-child(even) {
-    background-color: #ffffff; /* Color de fondo para filas pares */
+    background-color: #ffffff;
 }
 
-
-#clienteForm input{
+#clienteForm input {
     font-weight: 400;
 }
 
-#facturaForm input{
+#facturaForm input {
     font-weight: 400;
 }
 
@@ -201,90 +207,82 @@ legend {
     text-align: center;
     font-size: 18px;
     color: #555;
-  }
+}
 
-  #facturasContainer , #clientesContainer {
+#facturasContainer,
+#clientesContainer {
     max-height: 80dvh;
-    /* Ajusta la altura máxima según tus necesidades */
     overflow-y: auto;
-    /* Habilita el desplazamiento vertical */
     overflow-x: hidden;
-    /* Oculta el desplazamiento horizontal, si no es necesario */
-  }
+}
 
-  /* Clase para el elemento seleccionado */
 .selected {
     background-color: #4488ee;
-    color: white; 
-    font-weight: bold; 
-    border-radius: 4px; 
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
 }
 
 .hover-effect:hover {
-    color: black; 
-    background-color: lightgray; 
+    color: black;
+    background-color: lightgray;
 }
 
 .form-control {
-    color: #000; /* Negro fuerte */
-    background-color: #fff; /* Fondo blanco */
+    color: #000;
+    background-color: #fff;
 }
 
-/* Estilo para el placeholder */
 .form-control::placeholder {
-    color: #aaa; /* Gris suave */
-    opacity: 1; /* Asegura que el color se muestre */
+    color: #aaa;
+    opacity: 1;
 }
 
-/* Opcional: Estilo para el textarea */
 #descripcionFactura {
-    color: #000; /* Negro fuerte */
-    background-color: #fff; /* Fondo blanco */
+    color: #000;
+    background-color: #fff;
 }
 
-/* Estilo para el border de los inputs en foco */
 .form-control:focus {
-    border-color: #1116; /* Cambia el color del borde al foco */
-    box-shadow: 0 0 5px rgba(17, 22, 22, 0.5); /* Efecto de sombra en foco */
+    border-color: #1116;
+    box-shadow: 0 0 5px rgba(17, 22, 22, 0.5);
 }
-
-
 
 .disabled-style {
     opacity: 0.4;
     cursor: not-allowed;
-    color: #e7e7e7; /* Cambia el color del texto */
-    background-color: #e0e0e0; /* Color de fondo para botones desactivados */
-    border-color: #d0d0d0; /* Color del borde */
+    color: #e7e7e7;
+    background-color: #e0e0e0;
+    border-color: #d0d0d0;
 }
 
-#mensajeError{
+#mensajeError {
     margin-top: 10px;
     margin-bottom: 0px;
 }
 
-#botonesDeImpresion{
+#botonesDeImpresion {
     margin: 0;
     padding-bottom: 50px;
 }
 
 #productosTabla tbody tr:nth-child(odd) td {
-    background-color: #f0f8ff; /* Color claro */
+    background-color: #f0f8ff;
 }
 
 #productosTabla tbody tr:nth-child(even) td {
-    background-color: #f2ffed; /* Otro color claro */
+    background-color: #f2ffed;
 }
 
 #productosTabla tbody td {
     padding: 7px;
 }
 
-#contenedorPrincipalFacturacion{
+#contenedorPrincipalFacturacion {
     width: 65%;
 }
 
-#contenedorInventario{
+#contenedorInventario {
     width: 50%;
     margin-top: 60px;
     min-width: 1300px;
@@ -294,15 +292,15 @@ legend {
     padding: 6px;
 }
 
-#pagination li a{
+#pagination li a {
     margin: 0 5px 0 5px;
 }
 
 .invert-img {
-    filter: invert(1) brightness(2); /* Invierte los colores y aumenta el brillo */
+    filter: invert(1) brightness(2);
 }
 
-#mensajeError{
+#mensajeError {
     font-size: 1.2em;
     color: white;
     background-color: red;
@@ -315,61 +313,67 @@ legend {
         padding: 1px;
     }
 
-    #pedidoTableBody td{
+    #pedidoTableBody td {
         padding: 6px;
     }
 
-    #searchForm input{
+    #searchForm input {
         padding: 4px;
     }
-    
-    #agregarProducto, #agregarCategoria, #verTotal, #toggleProductosBtn{
+
+    #agregarProducto,
+    #agregarCategoria,
+    #verTotal,
+    #toggleProductosBtn {
         padding: 4px;
         margin: 0;
     }
 
-    
-    #filtradorDeCategoria{
+    #filtradorDeCategoria {
         margin: 0;
     }
 
-    #productosTabla tbody td{
+    #productosTabla tbody td {
         padding: 7px;
     }
 
-    #contenedorPrincipalFacturacion{
+    #contenedorPrincipalFacturacion {
         width: 85%;
     }
 
-    #contenedorPrincipalFacturacion fieldset{
-       padding: 2px;
-    }
-
-    #contenedorPrincipalFacturacion #clienteForm{
-        padding: 0;
-        margin: 0;
-     }
-
-     #ventasfactura td{
+    #contenedorPrincipalFacturacion fieldset {
         padding: 2px;
-     }
-   
-     #clienteTableBody td{
+    }
+
+    #contenedorPrincipalFacturacion #clienteForm {
+        padding: 0;
+        margin: 0;
+    }
+
+    #ventasfactura td {
+        padding: 2px;
+    }
+
+    #clienteTableBody td {
         padding: 3px;
-     }
+    }
 
-    #productosPorPagina{
+    #clientesTopTableBody td {
+        padding: 5px;
+    }
+
+    #productosPorPagina {
         padding: 0;
         margin: 0;
     }
-    #productosPorPagina label{
+
+    #productosPorPagina label {
         padding: 0;
         margin: 0;
     }
 
-    #pagination{
+    #pagination {
         margin-bottom: 0;
         padding-bottom: 0;
     }
-
 }
