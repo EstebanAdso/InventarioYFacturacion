@@ -1,4 +1,4 @@
-// Función para obtener sugerencias
+// Función para obtener sugerencias de clientes
 function obtenerSugerencias(query) {
     fetch(`${apiClient}/suggestions?query=${encodeURIComponent(query)}`)
         .then(response => response.json())
@@ -10,7 +10,7 @@ function obtenerSugerencias(query) {
         });
 }
 
-// Función para mostrar sugerencias
+// Función para mostrar sugerencias de clientes
 function mostrarSugerencias(clientes) {
     const sugerenciasDiv = document.getElementById('sugerenciasClientes');
     sugerenciasDiv.innerHTML = '';

@@ -53,12 +53,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         });
                     });
                 } else {
-                    facturasContainer.innerHTML = '<p>No hay facturas disponibles.</p>';
+                    facturasContainer.innerHTML = '<p style="text-align: center; color: red; font-weight: bold">No hay facturas disponibles.</p>';
                 }
             })
             .catch(error => {
                 console.error('Error al obtener las facturas:', error);
-                facturasContainer.innerHTML = '<p>Error al cargar las facturas.</p>';
+                facturasContainer.innerHTML = '<p style="text-align: center; color: red; font-weight: bold">Error al cargar las facturas.</p>';
             });
     }
 
@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${detalle.garantia}</td>
                             <td>${detalle.pc.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
                             <td>${detalle.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>  
+                            <td style="color: #0db423; font-weight: bold">${(detalle.cantidad * detalle.pc).toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
                             <td style="color: #48e; font-weight: bold">${(detalle.cantidad * detalle.precioUnitario).toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
                         </tr>
                     `;

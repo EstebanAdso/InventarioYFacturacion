@@ -10,7 +10,6 @@ npm run build
 
 
 // FUNCIONES A IMPLEMEMTAR
-* Total de precio de venta y compra en facturas
 * Previsualizar facturas anteriores como pos o pdf
 * mejor busqueda en inventario
 * ocualtar sku en facturacion
@@ -26,3 +25,9 @@ npm run build
 * generar excel cada mes de las ventas del dia.
 * busqueda de productos inactivos
 * eliminar productos inactivos sin perder la auditoria
+* buscar facturas por clientes
+* agregar una separacion a las ventas de hoy dia si hubo ventas
+
+
+// Detalles tecnicos
+* cambiar pc por precioCompra y precioUnitario por precioVenta
