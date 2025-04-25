@@ -7,8 +7,8 @@ public class DetalleDTO {
     private Long productoId;
     private String descripcion;
     private Integer cantidad;
-    private float precioUnitario;
+    private float precioVenta;
     private String garantia;
     private String nombreProducto;
-    private float pc;
+    private float precioCompra;
 }

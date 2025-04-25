@@ -65,7 +65,7 @@ public class FacturaService {
             Producto producto = productoExistente.get();
 
             // Calcular el subtotal de este detalle (cantidad * precioUnitario)
-            float subtotal = detalle.getCantidad() * detalle.getPrecioUnitario();
+            float subtotal = detalle.getCantidad() * detalle.getPrecioVenta();
 
             // Sumar este subtotal al total de la factura
             totalFactura += subtotal;
@@ -91,10 +91,10 @@ public class FacturaService {
                     dto.setProductoId(detalle.getProducto().getId());
                     dto.setDescripcion(detalle.getDescripcion());
                     dto.setCantidad(detalle.getCantidad());
-                    dto.setPrecioUnitario(detalle.getPrecioUnitario());
+                    dto.setPrecioVenta(detalle.getPrecioVenta());
                     dto.setGarantia(detalle.getGarantia());
                     dto.setNombreProducto(detalle.getNombreProducto());
-                    dto.setPc(detalle.getPc());
+                    dto.setPrecioCompra(detalle.getPrecioCompra());
                     return dto;
                 })
                 .collect(Collectors.toList());

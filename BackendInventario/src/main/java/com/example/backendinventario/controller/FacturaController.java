@@ -91,10 +91,10 @@ public class FacturaController {
                 detalleFactura.setProducto(productoActualizado);
                 detalleFactura.setCantidad(det.getCantidad());
                 detalleFactura.setDescripcion(det.getDescripcion());
-                detalleFactura.setPrecioUnitario(det.getPrecioUnitario());
+                detalleFactura.setPrecioVenta(det.getPrecioVenta());
                 detalleFactura.setGarantia(det.getGarantia());
                 detalleFactura.setNombreProducto(productoActualizado.getNombre());
-                detalleFactura.setPc(det.getPc());
+                detalleFactura.setPrecioCompra(det.getPrecioCompra());
 
                 detalles.add(detalleFactura);
 

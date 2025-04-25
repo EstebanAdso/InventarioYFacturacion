@@ -20,8 +20,8 @@ public class DetalleFactura {
 
     private String descripcion;
     private Integer cantidad;
-    private float precioUnitario;
-    private float pc;
+    private float precioVenta;
+    private float precioCompra;
     private String garantia;
     private String nombreProducto;
 
