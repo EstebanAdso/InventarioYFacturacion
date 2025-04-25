@@ -10,24 +10,26 @@ npm run build
 
 
 // FUNCIONES A IMPLEMEMTAR
-* Previsualizar facturas anteriores como pos o pdf
+* eliminar categoria
 * mejor busqueda en inventario
 * ocualtar sku en facturacion
-* metodo de abono
 * configuracion de datos de empresa
-* opcion para descargar una factura
-* leer codigo de barrar y generarlas
-* eliminar categoria
-* cancelar facturas del dia
-* auditoria de facturas y productos
-* notificacion de stock
-* modo oscuro
-* generar excel cada mes de las ventas del dia.
 * busqueda de productos inactivos
-* eliminar productos inactivos sin perder la auditoria
 * buscar facturas por clientes
 * agregar una separacion a las ventas de hoy dia si hubo ventas
+* Previsualizar facturas anteriores como pos o pdf
+* opcion para descargar una factura
+* cancelar facturas del dia
+* metodo de abono
+* generar excel cada mes de las ventas del dia.
+* notificacion de stock
+* auditoria de facturas y productos
+* eliminar productos inactivos sin perder la auditoria
+* modo oscuro
+* leer codigo de barrar y generarlas
+* paginacion facturas
+* al dar click copiar contenido de la factura precio compra precio venta nombre.
 
 
 // Detalles tecnicos
-* cambiar pc por precioCompra y precioUnitario por precioVenta
+* necesario cambiar pc por precioCompra y precioUnitario por precioVenta en otros lugares.

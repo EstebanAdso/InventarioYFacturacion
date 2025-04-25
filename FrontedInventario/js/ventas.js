@@ -79,10 +79,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${detalle.descripcion}</td>
                             <td>${detalle.cantidad}</td>
                             <td>${detalle.garantia}</td>
-                            <td>${detalle.pc.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
-                            <td>${detalle.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>  
-                            <td style="color: #0db423; font-weight: bold">${(detalle.cantidad * detalle.pc).toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
-                            <td style="color: #48e; font-weight: bold">${(detalle.cantidad * detalle.precioUnitario).toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
+                            <td>${detalle.precioCompra.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
+                            <td>${detalle.precioVenta.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>  
+                            <td style="color: #0db423; font-weight: bold">${(detalle.cantidad * detalle.precioCompra).toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
+                            <td style="color: #48e; font-weight: bold">${(detalle.cantidad * detalle.precioVenta).toLocaleString('es-CO', { minimumFractionDigits: 0 })}</td>
                         </tr>
                     `;
                     detallesBody.innerHTML += fila;
