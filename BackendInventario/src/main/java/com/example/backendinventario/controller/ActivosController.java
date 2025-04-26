@@ -1,7 +1,6 @@
 package com.example.backendinventario.controller;
 
 import com.example.backendinventario.entities.Activos;
-import com.example.backendinventario.entities.Producto;
 import com.example.backendinventario.services.ActivosServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +40,7 @@ public class ActivosController {
     @GetMapping("/totalGlobal")
     public ResponseEntity<Double> totalGlobal() {
         Double total = activosServices.totalGlobal();
-        return ResponseEntity.ok(total); // Devuelve el total en la respuesta
+        return ResponseEntity.ok(total);
     }
 
     @PutMapping("{id}")

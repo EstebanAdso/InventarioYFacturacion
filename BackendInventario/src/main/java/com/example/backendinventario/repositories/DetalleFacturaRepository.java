@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface DetalleFacturaRepository extends JpaRepository<DetalleFactura, Long> {
     List<DetalleFactura> findByFacturaId(Long facturaId);
+    void deleteByProductoId(Long productoId);
+
 }

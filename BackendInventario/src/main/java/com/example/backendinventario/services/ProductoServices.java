@@ -75,7 +75,6 @@ public class ProductoServices {
                 .collect(Collectors.toList());
     }
 
-
     // Método para actualizar inventario al comprar productos
     public Producto actualizarInventario(Long idProducto, int cantidadComprada) throws Exception {
         // Buscar el producto

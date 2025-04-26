@@ -2,13 +2,9 @@ package com.example.backendinventario.controller;
 
 import com.example.backendinventario.entities.Cliente;
 import com.example.backendinventario.entities.ClienteTopDto;
-import com.example.backendinventario.entities.Producto;
 import com.example.backendinventario.repositories.ClienteRepository;
 import com.example.backendinventario.services.ClienteServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -92,8 +92,6 @@ public class ProductoController {
         return productoService.save(productoInactivo);
     }
 
-
-
     @GetMapping("/totalGlobal")
     public Double totalGlobal() {
         return productoService.totalGlobal();
@@ -108,7 +106,5 @@ public class ProductoController {
     public List<Producto> buscarPorNombre(@RequestParam String query) {
         return productoService.buscarPorNombre(query);
     }
-
-
 
 }
