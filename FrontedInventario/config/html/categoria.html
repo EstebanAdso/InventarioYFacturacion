@@ -26,40 +26,68 @@
         </nav>
     </header>
 
-    <h1 style="text-align: center; margin-top: 90px;">Listado Actual de Categorias</h1>
+    <div class="container"> 
+        <h1 style="text-align: center;">Listado Actual de Categorias</h1>
 
-    
-    <div id="categoriaContainer" style="width: 80%; margin: 0 auto; max-width: 1900px;">
-        <div id="categoriaTable">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="categoriaTableBody">
-                    <!-- Filas de categorías se agregan dinámicamente aquí -->
-                </tbody>
-            </table>
+        <div class="d-flex justify-content-end mb-3">
+            <div class="mr-4">
+                <button class="btn btn-dark" id="agregarActivo" data-toggle="modal" data-target="#categoriaModal">Agregar
+                    Categoría</button>
+            </div>
+
+        </div>
+        
+        <div class="row" id="categoriaContainer">
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="col-md-2">Nombre</th>
+                            <th class="col-md-2">Descripción</th>
+                            <th class="col-md-1">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoriaTableBody">
+                        <!-- Filas de categorías se agregan dinámicamente aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Modal para Agregar Categoria -->
+        <div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="categoriaModalLabel">Agregar Categoria</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="categoriaForm">
+                            <input type="hidden" id="categoriaId">
+                            <div class="form-group">
+                                <label for="nombreCategoria">Nombre de la Categoria</label>
+                                <input type="text" autocomplete="off" class="form-control" id="nombreCategoria" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="descripcionCategoria">Descripción</label>
+                                <textarea class="form-control" id="descripcionCategoria" rows="2"
+                                placeholder="Agregue una descripción de la categoria (Opcional)"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="descripcionGarantia">Descripción de Garantia</label>
+                                <textarea class="form-control" id="descripcionGarantia" rows="2"
+                                placeholder="Agregue una descripción de Garantia (Opcional)"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-dark">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div id="editarCategoria">
-        <form id="editarCategoriaForm">
-            <div class="form-group">
-                <label for="nombreCategoria">Nombre:</label>
-                <input type="text" class="form-control" id="nombreCategoria">
-            </div>
-            <div class="form-group">
-                <label for="descripcionCategoria">Descripción:</label>
-                <input type="text" class="form-control" id="descripcionCategoria">
-            </div>
-            <button type="button" class="btn btn-primary" onclick="editarCategoria()">Guardar</button>
-        </form>
-    </div>
-    
 
     <script src="../../js/functions.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

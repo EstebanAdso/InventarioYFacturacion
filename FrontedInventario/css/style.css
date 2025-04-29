@@ -232,7 +232,8 @@ legend {
 }
 
 #facturasContainer,
-#clientesContainer {
+#clientesContainer,
+#categoriaContainer {
     max-height: 80dvh;
     overflow-y: auto;
     overflow-x: hidden;
@@ -376,7 +377,7 @@ legend {
         padding: 2px;
     }
 
-    #clienteTableBody td {
+    #clienteTableBody td, #categoriaTableBody td {
         padding: 3px;
     }
 

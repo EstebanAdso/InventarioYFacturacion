@@ -14,6 +14,11 @@ public class CategoriaController {
     @Autowired
     private CategoriaServices categoriaServices;
 
+    @GetMapping("/{id}")
+    public Optional<Categoria> buscar(@PathVariable Long id) {
+        return categoriaServices.findById(id);
+    }
+
     @GetMapping
     public List<Categoria> listar() {
         return categoriaServices.findAll();

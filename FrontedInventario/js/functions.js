@@ -44,7 +44,7 @@ function mostrarConfirmacionDinamica({
         <div class="modal fade" id="modalConfirmacionDinamicaInner" tabindex="-1" role="dialog" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
-              <div class="modal-header">
+              <div class="modal-header bg-danger text-white" >
                 <h5 class="modal-title" id="modalConfirmacionLabel">Confirmación</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
@@ -53,7 +53,7 @@ function mostrarConfirmacionDinamica({
               <div class="modal-body" id="modalConfirmacionTexto"></div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnCancelarConfirmacion">${textoCancelar}</button>
-                <button type="button" class="btn btn-primary" id="btnAceptarConfirmacion">${textoAceptar}</button>
+                <button type="button" class="btn btn-danger" id="btnAceptarConfirmacion">${textoAceptar}</button>
               </div>
             </div>
           </div>
