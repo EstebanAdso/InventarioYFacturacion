@@ -399,3 +399,68 @@ legend {
         padding-bottom: 0;
     }
 }
+
+/*CONFIG*/
+
+#configContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 60px);
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 30px;
+    width: 80%;
+    max-width: 1900px;
+    height: 500px;
+
+}
+
+.parent div{
+    background-color: #343a40;
+    color: #d0d0d0;
+    font-weight: bold;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.parent div .configImg{
+    height: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding: 10px;
+}
+.parent div .configImg img{
+    width: 30px;
+}
+
+.parent div .configText{  
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 1.3em;
+    height: 50%;
+    width: 80%;
+    padding: 0;
+}
+
+.parent div .configText a{  
+    color: #ccc;
+    text-decoration: none;
+}
+
+.parent div .configText a:hover{  
+    color: #eee;
+    text-decoration: none;
+}

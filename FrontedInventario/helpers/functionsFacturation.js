@@ -119,22 +119,19 @@ function agregarDetalle(detalle) {
     detalles.push(detalle); // Agrega detalles a la lista
 }
 
-function mostrarConfirmacionProducto(callbackAceptar) {
-    const mensajeConfirmacion = document.getElementById('mensajeConfirmacion');
-    const btnAceptar = document.getElementById('btnAceptar');
-
-    // Configura el botón Aceptar para ejecutar la acción especificada en el callback
-    btnAceptar.onclick = () => {
-        cerrarConfirmacion();
-        callbackAceptar();
-    };
-
-    mensajeConfirmacion.style.display = 'block';
+function mostrarConfirmacionProducto(callbackAceptar, mensaje = 'Tienes un producto sin guardar. ¿Deseas continuar?') {
+    mostrarConfirmacionDinamica({
+        mensaje: mensaje,
+        onAceptar: callbackAceptar,
+        onCancelar: () => {},
+        textoAceptar: 'Aceptar',
+        textoCancelar: 'Volver'
+    });
 }
 
+// Ya no es necesario cerrarConfirmacion, el modal dinámico se cierra solo.
 function cerrarConfirmacion() {
-    const mensajeConfirmacion = document.getElementById('mensajeConfirmacion');
-    mensajeConfirmacion.style.display = 'none';
+    $("#modalConfirmacionDinamicaInner").modal('hide');
 }
 
 function agregarProducto() {

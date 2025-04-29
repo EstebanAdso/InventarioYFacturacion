@@ -11,12 +11,12 @@ npm run build
 
 // FUNCIONES A IMPLEMEMTAR
 * eliminar categoria
+* agregar una separacion a las ventas por dia
 * mejor busqueda en inventario
 * ocualtar sku en facturacion
 * configuracion de datos de empresa
 * busqueda de productos inactivos
 * buscar facturas por clientes
-* agregar una separacion a las ventas de hoy dia si hubo ventas
 * Previsualizar facturas anteriores como pos o pdf
 * opcion para descargar una factura
 * cancelar facturas del dia
@@ -29,6 +29,7 @@ npm run build
 * leer codigo de barrar y generarlas
 * paginacion facturas
 * al dar click copiar contenido de la factura precio compra precio venta nombre.
+* caja
 
 
 // Detalles tecnicos
