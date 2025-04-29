@@ -307,11 +307,11 @@ function mostrarProductosEnTabla(productos) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${producto.nombre.toUpperCase()}</td>
-            <td>${producto.precioComprado}</td>
-            <td>${formatNumber(producto.precioVendido)}</td>
-            <td>${producto.cantidad}</td>
-            <td>${producto.categoria.nombre}</td>
-            <td>${formatNumber(producto.total)}</td>
+            <td class="text-right pr-1">${producto.precioComprado}</td>
+            <td class="text-right pr-1">${formatNumber(producto.precioVendido)}</td>
+            <td class="text-center">${producto.cantidad}</td>
+            <td class="text-center">${producto.categoria.nombre}</td>
+            <td class="text-right pr-2 text-success font-weight-bold " style="letter-spacing: 0.05em">$${formatNumber(producto.total)}</td>
             <td class="text-center">
                 <button class="btn btn-info btn-sm" id="botonInformacion" onclick="verInformacion(${producto.id})"><img src="../css/logos/info-circle-regular-24.png" alt="Informacion"></button>
                 <button class="btn btn-dark btn-sm" id="botonEditar" onclick="editarProducto(${producto.id})"><img src="../css/logos/edit-alt-solid-24.png" alt="Editar"></button>

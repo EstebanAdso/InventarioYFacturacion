@@ -10,7 +10,6 @@ npm run build
 
 
 // FUNCIONES A IMPLEMEMTAR
-* eliminar categoria
 * agregar una separacion a las ventas por dia
 * mejor busqueda en inventario
 * ocualtar sku en facturacion
@@ -30,6 +29,7 @@ npm run build
 * paginacion facturas
 * al dar click copiar contenido de la factura precio compra precio venta nombre.
 * caja
+* agregar mas columnas a la tabla de inventario
 
 
 // Detalles tecnicos
