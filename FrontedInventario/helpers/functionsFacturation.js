@@ -194,7 +194,7 @@ function agregarProducto() {
             garantia: garantia,
             descripcion: descripcion || "",
             total: totalProducto,
-            pc: pc
+            pc: pc 
         });
 
         localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
@@ -329,10 +329,10 @@ function guardarFactura(omitVerification = false) {
                 productoId: producto.id || "",
                 nombreProducto: producto.nombre,
                 cantidad: producto.cantidad,
-                precioUnitario: producto.precioUnitario,
+                precioVenta: producto.precioUnitario,
                 garantia: producto.garantia || "1",
                 descripcion: producto.descripcion || "",
-                pc: producto.pc || null,
+                precioCompra: producto.pc || null,
             })),
         };
 
@@ -424,10 +424,10 @@ function imprimirPos(omitVerification = false) {
                 productoId: producto.id || "",
                 nombreProducto: producto.nombre,
                 cantidad: producto.cantidad,
-                precioUnitario: producto.precioUnitario,
+                precioVenta: producto.precioUnitario,
                 garantia: producto.garantia + " Mes." || "1",
                 descripcion: producto.descripcion || "",
-                pc: producto.pc,
+                precioCompra: producto.pc || null,
             })),
         };
 
