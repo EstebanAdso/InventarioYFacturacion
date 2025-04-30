@@ -465,3 +465,48 @@ legend {
     color: #eee;
     text-decoration: none;
 }
+
+/* Estilos para la agrupación por fechas */
+#toggleVistaBtn {
+    transition: all 0.3s ease;
+}
+
+#toggleVistaBtn:hover {
+    transform: scale(1.05);
+}
+
+/* Estilos para la vista agrupada */
+.grupo-fecha {
+    margin-bottom: 2rem;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+.fecha-header {
+    padding: 10px 25px;
+    margin-bottom: 0;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+    font-size: 1em;
+    padding-right: 10px;
+}
+
+/* Estilos para las tablas */
+.table {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+.table thead th {
+    border-top: none;
+    background-color: #f1f3f5;
+}
+
+/* Iconos del botón */
+.fa-calendar-alt, .fa-list {
+    margin-right: 5px;
+}

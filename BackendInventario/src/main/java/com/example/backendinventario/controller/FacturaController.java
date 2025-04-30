@@ -123,6 +123,4 @@ public class FacturaController {
         }
         return facturaService.getDetallesFactura(id);
     }
-
-
 }

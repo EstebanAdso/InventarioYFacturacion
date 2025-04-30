@@ -23,10 +23,26 @@ function cerrarMensaje() {
     mensajeNotificacion.style.display = 'none';
 }
 
+// Función para mostrar mensajes
+function mostrarMensajeParrafo(mensaje, color = 'black', element) {
+  document.getElementById(element).innerHTML = 
+      `<p style="text-align: center; color: ${color}; font-weight: bold">${mensaje}</p>`;
+}
+
 function formatNumber(number) {
     return number.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
 
+// Función para formatear fecha
+function formatearFecha(fecha) {
+  const opciones = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+  };
+  return fecha.toLocaleDateString('es-CO', opciones);
+}
 
 function mostrarConfirmacionDinamica({
     mensaje,
