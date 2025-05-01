@@ -10,11 +10,11 @@ npm run build
 
 
 // FUNCIONES A IMPLEMEMTAR
-* ocualtar sku en facturacion
 * Previsualizar facturas anteriores como pos o pdf
 * opcion para descargar una factura
-* cancelar facturas del dia
 * buscar facturas por clientes
+* ocualtar sku en facturacion
+* cancelar facturas del dia
 * generar excel cada mes de las ventas del dia.
 * notificacion de stock
 * metodo de abono

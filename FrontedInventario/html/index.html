@@ -160,20 +160,22 @@
                             <label for="nombre">Nombre</label>
                             <input type="text" autocomplete="off" class="form-control" id="nombre" required>
                         </div>
-                        <div class="form-group">
-                            <label for="precioComprado">Precio Comprado</label>
-                            <input type="text" autocomplete="off" class="form-control" id="precioComprado"
-                                pattern="^[0-9,.]+$" title="Ingrese un número válido">
-                        </div>
-                        <div class="form-group">
-                            <label for="precioVendido">Precio Vendido</label>
-                            <input type="text" autocomplete="off" class="form-control" id="precioVendido"
-                                pattern="^[0-9,.]+$" title="Ingrese un número válido">
-                        </div>
-                        <div class="form-group">
-                            <label for="cantidad">Cantidad</label>
-                            <input type="number" autocomplete="off" class="form-control" value="" id="cantidad"
-                                required>
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+                                <label for="precioComprado">Precio Comprado</label>
+                                <input type="text" autocomplete="off" class="form-control" id="precioComprado"
+                                    pattern="^[0-9,.]+$" title="Ingrese un número válido">
+                            </div>
+                            <div class="form-group col-md-5">
+                                <label for="precioVendido">Precio Vendido</label>
+                                <input type="text" autocomplete="off" class="form-control" id="precioVendido"
+                                    pattern="^[0-9,.]+$" title="Ingrese un número válido">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="cantidad">Cantidad</label>
+                                <input type="number" autocomplete="off" class="form-control" value="" id="cantidad"
+                                    required>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="descripcion">Descripción</label>
