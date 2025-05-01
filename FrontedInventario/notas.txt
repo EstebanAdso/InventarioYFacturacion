@@ -10,9 +10,7 @@ npm run build
 
 
 // FUNCIONES A IMPLEMEMTAR
-* mejor busqueda en inventario
 * ocualtar sku en facturacion
-* busqueda de productos inactivos
 * Previsualizar facturas anteriores como pos o pdf
 * opcion para descargar una factura
 * cancelar facturas del dia

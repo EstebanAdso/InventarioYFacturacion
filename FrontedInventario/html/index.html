@@ -15,7 +15,7 @@
     <header id="nav">
         <nav>
             <h6 style="user-select: none;">Gestión Total</h6>
-            <ul>
+            <ul
                 <li><a href="facturacion.html"><img src="../css/logos/library-regular-24.png" alt=""></a></li>
                 <li><a href="#" class="selected"><img src="../css/logos/store-regular-24.png" alt=""></a></li>
                 <li><a href="ventas.html"><img src="../css/logos/money-withdraw-regular-24.png" alt=""></a></li>
@@ -40,7 +40,7 @@
         <div class="d-flex justify-content-end mb-3">
             <!-- Formulario de búsqueda -->
             <form id="searchForm" class="col-md-6">
-                <input type="text" id="searchInput" autocomplete="off" placeholder="Buscar por nombre">
+                <input type="text" id="searchInput" autocomplete="off" placeholder="Buscar por nombre" oninput="this.value = this.value.toUpperCase()">
             </form>
             <div class="mr-2">
                 <button class="btn btn-primary" id="agregarProducto" data-toggle="modal" data-target="#productoModal"
@@ -88,7 +88,7 @@
                     </tbody>
                 </table>
                 <!-- Controles de paginación -->
-                <nav aria-label="Page navigation">
+                <nav aria-label="Page navigation" style="margin-top: 10px;">
                     <ul class="pagination justify-content-center" id="pagination">
                         <li class="page-item">
                             <a class="page-link" href="#" id="previousPage" aria-label="Previous">

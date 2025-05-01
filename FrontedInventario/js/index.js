@@ -1,9 +1,11 @@
 const apiUrl = 'http://localhost:8082/producto';
 const apiCategoria = 'http://localhost:8082/categoria'
+const productosInactivos = 'http://localhost:8082/producto/buscarInactivo'
 
 let currentPage = 0;
 let pageSize = 14;
 let totalPages = 0;
+const maxVisiblePages = 6;  
 let filtroCategoriaSeleccionada = null;
 let mostrandoInactivos = false;
 let modificarTexto = document.getElementById('productoModalLabel')
@@ -129,9 +131,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const nombre = document.getElementById('searchInput').value;
         currentPage = 0;
         if (nombre === '') {
-            cargarProductos();
+            if (mostrandoInactivos) {
+                cargarProductosInactivos();
+            } else {
+                cargarProductos();
+            }
         } else {
-            buscarProductosPorNombre(nombre);
+            if (mostrandoInactivos) {
+                buscarProductosPorNombreInactivo(nombre);
+            } else {
+                buscarProductosPorNombre(nombre);
+            }
         }
     });
 
@@ -157,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function toggleProductos() {
         const toggleBtn = document.getElementById('toggleProductosBtn');
+        const totalColumnHeader = document.querySelector('table th:nth-child(6)');
 
         currentPage = 0; // Reiniciar la paginación cuando cambies entre activos/inactivos
 
@@ -170,17 +181,19 @@ document.addEventListener('DOMContentLoaded', () => {
             botonAgregarCategoria.removeAttribute('disabled');
             botonAgregarProducto.removeAttribute('disabled');
             botonVerTotal.removeAttribute('disabled');
-            buscador.removeAttribute('disabled');
-            filtroCategoria.removeAttribute('disabled')
+            filtroCategoria.removeAttribute('disabled');
 
             // Quitar clase de estilo desactivado
             botonAgregarCategoria.classList.remove('disabled-style');
             botonAgregarProducto.classList.remove('disabled-style');
             botonVerTotal.classList.remove('disabled-style');
-            buscador.classList.remove('disabled-style');
-            filtroCategoria.classList.remove('disabled-style')
-            titulo.textContent = 'Inventario de Productos'
+            filtroCategoria.classList.remove('disabled-style');
+            titulo.textContent = 'Inventario de Productos';
+            buscador.value = '';
             mostrandoInactivos = false;
+            
+            // Mostrar la columna de Total
+            totalColumnHeader.style.display = '';
         } else {
             cargarProductosInactivos(); // Cargar productos inactivos
             toggleBtn.textContent = 'Productos Activos';
@@ -191,22 +204,21 @@ document.addEventListener('DOMContentLoaded', () => {
             botonAgregarCategoria.setAttribute('disabled', 'disabled');
             botonAgregarProducto.setAttribute('disabled', 'disabled');
             botonVerTotal.setAttribute('disabled', 'disabled');
-            buscador.setAttribute('disabled', 'disabled');
             filtroCategoria.setAttribute('disabled', 'disabled');
 
             // Agregar clase de estilo desactivado
             botonAgregarCategoria.classList.add('disabled-style');
             botonAgregarProducto.classList.add('disabled-style');
             botonVerTotal.classList.add('disabled-style');
-            buscador.classList.add('disabled-style');
             filtroCategoria.classList.add('disabled-style');
-            titulo.textContent = 'Inventario de Productos Inactivos'
+            titulo.textContent = 'Inventario de Productos Inactivos';
+            buscador.value = '';
             mostrandoInactivos = true;
+            
+            // Ocultar la columna de Total
+            totalColumnHeader.style.display = 'none';
         }
     }
-
-
-
 
     async function cargarCategorias() {
         try {
@@ -241,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
 
 async function editarProducto(id) {
     try {
@@ -299,19 +312,30 @@ async function cargarProductos(categoriaId = filtroCategoriaSeleccionada) {
         console.error('Error:', error);
     }
 }
+
 function mostrarProductosEnTabla(productos) {
     const tbody = document.getElementById('productoTableBody');
     tbody.innerHTML = '';
 
     productos.forEach(producto => {
         const tr = document.createElement('tr');
+        
+        // Crear el contenido HTML basado en si estamos mostrando productos inactivos o no
+        let totalColumnContent = '';
+        if (!mostrandoInactivos) {
+            totalColumnContent = `<td class="text-right pr-2 text-success font-weight-bold" style="letter-spacing: 0.05em">$${formatNumber(producto.total)}</td>`;
+        } else {
+            // Para productos inactivos, crear una celda oculta
+            totalColumnContent = `<td style="display: none;"></td>`;
+        }
+        
         tr.innerHTML = `
             <td>${producto.nombre.toUpperCase()}</td>
             <td class="text-right pr-1">${producto.precioComprado}</td>
             <td class="text-right pr-1">${formatNumber(producto.precioVendido)}</td>
             <td class="text-center">${producto.cantidad}</td>
             <td class="text-center">${producto.categoria.nombre}</td>
-            <td class="text-right pr-2 text-success font-weight-bold " style="letter-spacing: 0.05em">$${formatNumber(producto.total)}</td>
+            ${totalColumnContent}
             <td class="text-center">
                 <button class="btn btn-info btn-sm" id="botonInformacion" onclick="verInformacion(${producto.id})"><img src="../css/logos/info-circle-regular-24.png" alt="Informacion"></button>
                 <button class="btn btn-dark btn-sm" id="botonEditar" onclick="editarProducto(${producto.id})"><img src="../css/logos/edit-alt-solid-24.png" alt="Editar"></button>
@@ -319,7 +343,6 @@ function mostrarProductosEnTabla(productos) {
                 ? `<button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})"><img src="../css/logos/eliminar-papelera.png" width="24px" class="invert-img" alt="Agotar"></button>`
                 : ''} <!-- Ocultar botón Agotar si está inactivo -->
             </td>
-
         `;
         tbody.appendChild(tr);
     });
@@ -352,8 +375,6 @@ async function verInformacion(productoId) {
         mostrarMensaje('error', 'No se pudo cargar la información del producto.');
     }
 }
-
-
 
 function actualizarPaginacion() {
     const pagination = document.getElementById('pagination');
@@ -429,9 +450,6 @@ async function cargarProductosInactivos() {
 }
 
 
-const maxVisiblePages = 3;  // Número de botones de páginas visibles
-// Llamar a la función de actualización inicial
-actualizarPaginacion();
 
 async function cargarProductosPorCategoria() {
     const filtroCategoria = document.getElementById('filtroCategoria').value;
@@ -440,19 +458,59 @@ async function cargarProductosPorCategoria() {
 
 async function buscarProductosPorNombre(nombre) {
     try {
-        const response = await fetch(`${apiUrl}/nombre/${nombre}?page=${currentPage}&size=${pageSize}`);
+        // Limpiar y preparar el nombre para búsqueda
+        const terminoBusqueda = nombre.trim();
+
+        if (!terminoBusqueda) {
+            mostrarMensaje('info', 'Por favor ingrese un término de búsqueda.');
+            return;
+        }
+
+        const response = await fetch(`${apiUrl}/nombre/${terminoBusqueda}?page=${currentPage}&size=${pageSize}`);
+
         if (!response.ok) {
-            mostrarMensaje('error', 'Error al buscar productos por nombre.');
+            throw new Error(`Error HTTP: ${response.status}`);
         }
 
         const data = await response.json();
-        const productos = data.content;
-        totalPages = data.totalPages;
 
-        mostrarProductosEnTabla(productos);
+
+        mostrarProductosEnTabla(data.content);
+        totalPages = data.totalPages;
         actualizarPaginacion();
+
     } catch (error) {
         console.error('Error:', error);
+        mostrarMensaje('error', 'Error al buscar productos. Por favor intente nuevamente.');
+    }
+}
+
+async function buscarProductosPorNombreInactivo(nombre) {
+    try {
+        // Limpiar y preparar el nombre para búsqueda
+        const terminoBusqueda = nombre.trim();
+
+        if (!terminoBusqueda) {
+            mostrarMensaje('info', 'Por favor ingrese un término de búsqueda.');
+            return;
+        }
+
+        const response = await fetch(`${apiUrl}/nombreInactivo/${terminoBusqueda}?page=${currentPage}&size=${pageSize}`);
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+
+        mostrarProductosEnTabla(data.content);
+        totalPages = data.totalPages;
+        actualizarPaginacion();
+
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarMensaje('error', 'Error al buscar productos. Por favor intente nuevamente.');
     }
 }
 
@@ -497,7 +555,6 @@ async function cargarTotalGlobal() {
     }
 }
 
-// Asegúrate de que esta función esté implementada
 async function cargarTotalPorCategoria() {
     try {
         const response = await fetch(`${apiUrl}/totalPorCategoria`);
@@ -519,7 +576,6 @@ async function cargarTotalPorCategoria() {
     }
 }
 
-// ... (otras funciones como editarProducto, limpiarFormulario, etc.)
 function limpiarFormulario() {
     document.getElementById('productoId').value = '';
     document.getElementById('productoForm').reset();

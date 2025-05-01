@@ -5,6 +5,7 @@ import com.example.backendinventario.repositories.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -53,8 +54,41 @@ public class ProductoServices {
 
 
     public Page<Producto> findByNombre(String nombre, Pageable pageable) {
-        // Filtrar productos por nombre y estado activo
-        return productoRepository.findByNombreContainingAndEstado(nombre, "activo", pageable);
+        // Dividir el nombre en palabras individuales
+        String[] palabras = nombre.toLowerCase().split("\\s+");
+
+        // Crear una especificación para cada palabra
+        Specification<Producto> spec = Specification.where(null);
+
+        for (String palabra : palabras) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(cb.lower(root.get("nombre")), "%" + palabra + "%"));
+        }
+
+        // Agregar condición de estado activo
+        spec = spec.and((root, query, cb) ->
+                cb.equal(root.get("estado"), "activo"));
+
+        return productoRepository.findAll(spec, pageable);
+    }
+
+    public Page<Producto> findByNombreInactivo(String nombre, Pageable pageable) {
+        // Dividir el nombre en palabras individuales
+        String[] palabras = nombre.toLowerCase().split("\\s+");
+
+        // Crear una especificación para cada palabra
+        Specification<Producto> spec = Specification.where(null);
+
+        for (String palabra : palabras) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(cb.lower(root.get("nombre")), "%" + palabra + "%"));
+        }
+
+        // Agregar condición de estado activo
+        spec = spec.and((root, query, cb) ->
+                cb.equal(root.get("estado"), "inactivo"));
+
+        return productoRepository.findAll(spec, pageable);
     }
 
     public List<Producto> buscarPorNombre(String query) {

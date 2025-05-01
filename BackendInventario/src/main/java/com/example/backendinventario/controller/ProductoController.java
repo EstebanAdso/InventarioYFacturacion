@@ -49,6 +49,15 @@ public class ProductoController {
         return productoService.findByNombre(nombre, pageable); // Solo productos activos por nombre
     }
 
+    @GetMapping("/nombreInactivo/{nombre}")
+    public Page<Producto> listarPorNombreInactivo(
+            @PathVariable String nombre,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productoService.findByNombreInactivo(nombre, pageable); // Solo productos activos por nombre
+    }
+
     @GetMapping("/inactivos")
     public Page<Producto> listarInactivos(
             @RequestParam(defaultValue = "0") int page,
@@ -106,5 +115,4 @@ public class ProductoController {
     public List<Producto> buscarPorNombre(@RequestParam String query) {
         return productoService.buscarPorNombre(query);
     }
-
 }
