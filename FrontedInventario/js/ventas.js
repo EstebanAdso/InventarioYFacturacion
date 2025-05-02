@@ -69,7 +69,7 @@ function mostrarVentasAgrupadasPorFecha(facturas) {
         const hoy = new Date();
         const esHoy = fecha.toDateString() === hoy.toDateString();
         
-        fechaHeader.textContent = esHoy ? 'Hoy' : formatearFecha(fecha);
+        fechaHeader.textContent = esHoy ? 'Hoy - ' + formatearFecha(fecha) : formatearFecha(fecha);
         grupoFecha.appendChild(fechaHeader);
         
         const tabla = document.createElement('table');

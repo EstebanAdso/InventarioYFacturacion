@@ -13,7 +13,6 @@ npm run build
 * Previsualizar facturas anteriores como pos o pdf
 * opcion para descargar una factura
 * buscar facturas por clientes
-* ocualtar sku en facturacion
 * cancelar facturas del dia
 * generar excel cada mes de las ventas del dia.
 * notificacion de stock
@@ -24,10 +23,14 @@ npm run build
 * modo oscuro
 * al dar click copiar contenido de la factura precio compra precio venta nombre.
 * caja
-* agregar mas columnas a la tabla de inventario
+* agregar mas columnas a la tabla de inventario y poder ocultar
 * auditoria de facturas y productos
 * configuracion de datos de empresa
 * mejorar la vista de totales en tabla
+* base de datos SQL Lite embebida
+* licenciamiento
+* facturación por correo
+* facturación electronica
 
 
 // Detalles tecnicos

@@ -100,7 +100,7 @@ function buscarProductos() {
 function seleccionarProducto(producto) {
     document.getElementById('nombreProductoManual').value = producto.nombre;
     document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioVendido);
-    document.getElementById('PCProducto').value = producto.precioComprado;
+    document.getElementById('PCProducto').value = formatNumber(producto.precioComprado);
     document.getElementById('sugerenciasProductos').style.display = 'none';
 
     productoSeleccionadoId = producto.id;
