@@ -3,13 +3,13 @@ let vistaAgrupada = true; // Estado inicial: vista agrupada
 
 document.addEventListener('DOMContentLoaded', function () {
     obtenerFacturas();
-    
+
     // Configurar el botón de toggle
-    document.getElementById('toggleVistaBtn').addEventListener('click', function() {
+    document.getElementById('toggleVistaBtn').addEventListener('click', function () {
         vistaAgrupada = !vistaAgrupada;
         actualizarVista();
-        this.innerHTML = vistaAgrupada 
-            ? '<i class="fas fa-list"></i> Vista Normal' 
+        this.innerHTML = vistaAgrupada
+            ? '<i class="fas fa-list"></i> Vista Normal'
             : '<i class="fas fa-calendar-alt"></i> Vista Agrupada';
     });
 });
@@ -45,33 +45,33 @@ function actualizarVista() {
 function mostrarVentasAgrupadasPorFecha(facturas) {
     const ventasContainer = document.getElementById('ventasContainer');
     ventasContainer.innerHTML = '';
-    
+
     const facturasPorFecha = {};
-    
+
     facturas.forEach(factura => {
         const fecha = new Date(factura.fechaEmision);
         const fechaKey = fecha.toISOString().split('T')[0];
-        
+
         if (!facturasPorFecha[fechaKey]) {
             facturasPorFecha[fechaKey] = [];
         }
         facturasPorFecha[fechaKey].push(factura);
     });
-    
+
     Object.keys(facturasPorFecha).forEach(fechaKey => {
         const grupoFecha = document.createElement('div');
         grupoFecha.className = 'grupo-fecha mb-4';
-        
+
         const fechaHeader = document.createElement('h4');
         fechaHeader.className = 'fecha-header bg-light p-2 rounded';
-        
+
         const fecha = new Date(fechaKey);
         const hoy = new Date();
         const esHoy = fecha.toDateString() === hoy.toDateString();
-        
+
         fechaHeader.textContent = esHoy ? 'Hoy - ' + formatearFecha(fecha) : formatearFecha(fecha);
         grupoFecha.appendChild(fechaHeader);
-        
+
         const tabla = document.createElement('table');
         tabla.className = 'table table-striped table-hover';
         tabla.innerHTML = `
@@ -89,11 +89,11 @@ function mostrarVentasAgrupadasPorFecha(facturas) {
                 ${facturasPorFecha[fechaKey].map(crearFilaFactura).join('')}
             </tbody>
         `;
-        
+
         grupoFecha.appendChild(tabla);
         ventasContainer.appendChild(grupoFecha);
     });
-    
+
     configurarBotonesDetalles();
 }
 
@@ -117,7 +117,7 @@ function mostrarVentasNormales(facturas) {
             </tbody>
         </table>
     `;
-    
+
     configurarBotonesDetalles();
 }
 
@@ -128,13 +128,17 @@ function crearFilaFactura(factura) {
             <td>${factura.serial}</td>
             <td>${factura.cliente ? factura.cliente.nombre : 'Cliente no disponible'}</td>
             <td>${factura.cliente ? factura.cliente.identificacion : 'N/A'}</td>
-            <td>${vistaAgrupada 
-                ? new Date(factura.fechaEmision).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
-                : formatearFecha(new Date(factura.fechaEmision))}</td>
+            <td>${vistaAgrupada
+            ? new Date(factura.fechaEmision).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
+            : formatearFecha(new Date(factura.fechaEmision))}</td>
             <td style="color: #48e; font-weight: bold">${formatNumber(factura.total)}</td>
             <td>
                 <button class="btn btn-info btn-sm btn-ver-detalles" data-id="${factura.id}">
                     Ver detalles
+                </button>
+
+                <button class="btn btn-success btn-sm btn-imprimir-factura" data-id="${factura.id}" data-toggle="modal" data-target="#imprimirFacturaModal">
+                    Imprimir
                 </button>
             </td>
         </tr>
@@ -144,11 +148,171 @@ function crearFilaFactura(factura) {
 // Función para configurar los botones de detalles
 function configurarBotonesDetalles() {
     document.querySelectorAll('.btn-ver-detalles').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const facturaId = this.getAttribute('data-id');
             mostrarDetallesFactura(facturaId);
         });
     });
+
+    // Agrega este código para configurar los botones de imprimir
+    document.querySelectorAll('.btn-imprimir-factura').forEach(button => {
+        button.addEventListener('click', function () {
+            const facturaId = this.getAttribute('data-id');
+            // Configura el data-id en los botones del modal
+            document.getElementById('btnImprimirPDF').setAttribute('data-id', facturaId);
+            document.getElementById('btnImprimirPOS').setAttribute('data-id', facturaId);
+        });
+    });
+}
+
+// Modifica las funciones de previsualización así:
+function previsualizarFacturaPDF(facturaId) {
+    // Convertir facturaId a número si es necesario (depende de tu API)
+    facturaId = Number(facturaId);
+
+    const factura = window.facturas.find(f => f.id === facturaId);
+
+    if (!factura) {
+        console.error('Factura no encontrada');
+        return;
+    }
+
+    // Verificar si la factura tiene cliente
+    if (!factura.cliente) {
+        console.error('La factura no tiene información de cliente');
+        // Puedes asignar valores por defecto o mostrar un mensaje al usuario
+        factura.cliente = {
+            nombre: 'Cliente no disponible',
+            identificacion: 'N/A',
+            telefono: '',
+            correo: '',
+            direccion: ''
+        };
+    }
+
+    console.log('Datos de factura para PDF:', factura);
+
+    fetch(`${apiUrl}/${facturaId}/detalles`)
+        .then(response => {
+            if (!response.ok) throw new Error('Error al obtener detalles');
+            return response.json();
+        })
+        .then(detalles => {
+            const htmlFacturaPDF = generarFacturaHTMLPDF({
+                nombreCliente: factura.cliente.nombre,
+                cedulaNit: factura.cliente.identificacion,
+                telefonoCliente: factura.cliente.telefono || 'N/A',
+                correoCliente: factura.cliente.correo || 'N/A',
+                direccionCliente: factura.cliente.direccion || 'N/A',
+                productosHTML: detalles.map(detalle => generarFilaProductoHTML(detalle)).join(''),
+                totalFactura: factura.total,
+                fechaActual: formatearFecha(new Date(factura.fechaEmision))
+            });
+
+            const ventanaImpresion = window.open('', '_blank', 'height=1200,width=800');
+            ventanaImpresion.document.write(htmlFacturaPDF);
+            ventanaImpresion.document.close();
+            // Esperar a que cargue el contenido antes de imprimir
+            ventanaImpresion.onload = function () {
+                ventanaImpresion.focus();
+                ventanaImpresion.print();
+            };
+        })
+        .catch(error => {
+            console.error('Error al obtener la factura:', error);
+            alert('Error al generar el PDF: ' + error.message);
+        });
+}
+
+document.getElementById('btnImprimirPDF').addEventListener('click', function () {
+    const facturaId = this.getAttribute('data-id');
+    previsualizarFacturaPDF(facturaId);
+});
+
+document.getElementById('btnImprimirPOS').addEventListener('click', function () {
+    const facturaId = this.getAttribute('data-id');
+    previsualizarFacturaPOS(facturaId);
+});
+
+function previsualizarFacturaPOS(facturaId) {
+    // Convertir facturaId a número si es necesario
+    facturaId = Number(facturaId);
+
+    const factura = window.facturas.find(f => f.id === facturaId);
+
+    if (!factura) {
+        console.error('Factura no encontrada');
+        return;
+    }
+
+    // Manejar facturas sin cliente
+    if (!factura.cliente) {
+        factura.cliente = {
+            nombre: 'CLIENTE NO REGISTRADO',
+            identificacion: 'N/A',
+            telefono: '',
+            correo: '',
+            direccion: ''
+        };
+    }
+
+    console.log('Datos de factura para POS:', factura);
+
+    fetch(`${apiUrl}/${facturaId}/detalles`)
+        .then(response => {
+            if (!response.ok) throw new Error('Error al obtener detalles');
+            return response.json();
+        })
+        .then(detalles => {
+            const htmlFacturaPOS = generarFacturaHTMLPOS({
+                nombreCliente: factura.cliente.nombre,
+                cedulaNit: factura.cliente.identificacion,
+                telefonoCliente: factura.cliente.telefono || '',
+                correoCliente: factura.cliente.correo || '',
+                direccionCliente: factura.cliente.direccion || '',
+                productosHTML: detalles.map(detalle => generarFilaProductoHTMLPOS(detalle)).join(''),
+                totalFactura: factura.total,
+                fechaActual: formatearFecha(new Date(factura.fechaEmision))
+            });
+
+            const ventanaImpresion = window.open('', '_blank', 'height=900,width=300');
+            ventanaImpresion.document.write(htmlFacturaPOS);
+            ventanaImpresion.document.close();
+            // Esperar a que cargue el contenido antes de imprimir
+            ventanaImpresion.onload = function () {
+                ventanaImpresion.focus();
+                ventanaImpresion.print();
+            };
+        })
+        .catch(error => {
+            console.error('Error al obtener la factura:', error);
+            alert('Error al generar el ticket POS: ' + error.message);
+        });
+}
+
+function generarFilaProductoHTML(detalle) {
+    return `
+        <tr>
+            <td>${detalle.nombreProducto}</td>
+            <td>${detalle.cantidad}</td>
+            <td>${formatNumber(detalle.precioVenta)}</td>
+            <td>${detalle.garantia}</td>
+            <td>${detalle.descripcion}</td>
+            <td>${formatNumber(detalle.cantidad * detalle.precioVenta)}</td>
+        </tr>
+    `;
+}
+
+function generarFilaProductoHTMLPOS(detalle) {
+    return `
+        <tr style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000">
+            <td style="padding: 1px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">${detalle.nombreProducto.toUpperCase()} - ${detalle.descripcion || ''}</td>
+            <td style="padding: 1px 0; text-align: center; max-width: 10mm;">${detalle.cantidad}</td>
+            <td style="padding: 1px 0; text-align: center; max-width: 15mm;">${formatNumber(detalle.precioVenta)}</td>
+            <td style="padding: 1px 0; text-align: center; max-width: 15mm;">${detalle.garantia} Mes</td>
+           <td style="padding: 1px 0; text-align: center;">${formatNumber(detalle.cantidad * detalle.precioVenta)}</td>
+        </tr>
+    `;
 }
 
 // Función para mostrar detalles de factura (sin cambios)

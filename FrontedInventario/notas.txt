@@ -10,8 +10,6 @@ npm run build
 
 
 // FUNCIONES A IMPLEMEMTAR
-* Previsualizar facturas anteriores como pos o pdf
-* opcion para descargar una factura
 * buscar facturas por clientes
 * cancelar facturas del dia
 * generar excel cada mes de las ventas del dia.

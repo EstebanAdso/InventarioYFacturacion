@@ -30,57 +30,80 @@
   <div class="container">
 
     <h1 style="text-align: center; user-select: none;">Ventas Generadas</h1>
-  
+
     <div class="text-right mb-3">
       <button id="toggleVistaBtn" class="btn btn-outline-primary">
         <i class="fas fa-calendar-alt"></i> Vista Normal
       </button>
     </div>
-    
+
     <div id="ventasContainer">
       <!-- Aquí se generarán las ventas -->
     </div>
   </div>
 
-    <!-- Modal para mostrar detalles de la factura -->
-    <div class="modal fade" id="detalleFacturaModal" tabindex="-1" role="dialog" aria-labelledby="detalleFacturaLabel"
-      aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="detalleFacturaLabel">Detalles de Factura</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Producto</th>
-                  <th>Descripción</th>
-                  <th>Cantidad</th>
-                  <th>Garantía</th>
-                  <th>P.C</th>
-                  <th>P.V</th>
-                  <th>Total P.C</th>
-                  <th>Total P.V</th>
-                </tr>
-              </thead>
-              <tbody id="detallesFacturaBody">
-                <!-- Los detalles se insertarán aquí -->
-              </tbody>
-            </table>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
-          </div>
+  <!-- Modal para mostrar detalles de la factura -->
+  <div class="modal fade" id="detalleFacturaModal" tabindex="-1" role="dialog" aria-labelledby="detalleFacturaLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="detalleFacturaLabel">Detalles de Factura</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Garantía</th>
+                <th>P.C</th>
+                <th>P.V</th>
+                <th>Total P.C</th>
+                <th>Total P.V</th>
+              </tr>
+            </thead>
+            <tbody id="detallesFacturaBody">
+              <!-- Los detalles se insertarán aquí -->
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
         </div>
       </div>
     </div>
   </div>
+  </div>
+
+  <div class="modal fade" id="imprimirFacturaModal" tabindex="-1" role="dialog" aria-labelledby="imprimirFacturaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: max-content; width: calc(100vw + 40px);">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center w-100" id="imprimirFacturaLabel">Seleccione el formato de impresión</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+              <button type="button" class="btn btn-success m-2" id="btnImprimirPOS">
+                <i class="fas fa-receipt"></i> Imprimir POS
+              </button>
+              <button type="button" class="btn btn-primary m-2" id="btnImprimirPDF">
+                  <i class="fas fa-file-pdf"></i> Imprimir PDF
+              </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
   <script src="../js/functions.js"></script>
+  <script src="../helpers/impresion.js"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
