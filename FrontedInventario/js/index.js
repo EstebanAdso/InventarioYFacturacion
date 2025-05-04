@@ -5,10 +5,10 @@ const productosInactivos = 'http://localhost:8082/producto/buscarInactivo'
 let currentPage = 0;
 let pageSize = 14;
 let totalPages = 0;
-const maxVisiblePages = 6;  
+const maxVisiblePages = 6;
 let filtroCategoriaSeleccionada = null;
 let mostrandoInactivos = false;
-let modificarTexto = document.getElementById('productoModalLabel')
+let modificarTexto = document.getElementById('tab-producto')
 const botonAgregarProducto = document.getElementById('agregarProducto')
 const botonAgregarCategoria = document.getElementById('agregarCategoria')
 const botonVerTotal = document.getElementById('verTotal')
@@ -25,9 +25,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
     botonModificador.addEventListener('click', function () {
         modificarTexto.textContent = 'Agregar Producto';
+        // Hide code input when adding new product
+        document.getElementById('codigoBarras').style.display = 'none';
+
+        // Reset tabs when adding new product
+        const tabsContainer = document.getElementById('modalTabs');
+        const tabContentContainer = document.getElementById('modalTabContent');
+
+        try {
+            // Reset all tabs
+            if (tabsContainer) {
+                const allTabLinks = tabsContainer.querySelectorAll('.nav-link');
+                allTabLinks.forEach(link => link.classList.remove('active'));
+            }
+
+            // Reset all tab content
+            if (tabContentContainer) {
+                const allTabPanes = tabContentContainer.querySelectorAll('.tab-pane');
+                allTabPanes.forEach(pane => {
+                    pane.classList.remove('show', 'active');
+                });
+            }
+
+            // Activate Producto tab
+            const tabProductoLink = document.querySelector('a[href="#contenido-producto"]');
+            if (tabProductoLink) {
+                tabProductoLink.classList.add('active');
+                const productoPane = document.getElementById('contenido-producto');
+                if (productoPane) {
+                    productoPane.classList.add('show', 'active');
+                }
+            }
+
+            // Hide Códigos tab
+            const tabCodigo = document.getElementById('tab-codigo');
+            if (tabCodigo) tabCodigo.style.display = 'none';
+        } catch (error) {
+            console.error('Error al configurar pestañas:', error);
+        }
     });
 
-    document.getElementById('productoForm').addEventListener('submit', async (event) => {
+    document.getElementById('cantidad').addEventListener('input', function () {
+        document.getElementById('cantidadCodigos').value = this.value;
+    });
+
+    const guardarBtn = document.getElementById('guardarBtn');
+    guardarBtn.addEventListener('click', guardarProducto);
+
+    async function guardarProducto(event) {
         event.preventDefault();
         const id = document.getElementById('productoId').value;
         const nombre = document.getElementById('nombre').value.toUpperCase().trim();
@@ -36,6 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const cantidad = document.getElementById('cantidad').value;
         const categoriaId = document.getElementById('categoria').value;
         const descripcion = document.getElementById('descripcion').value.trim();
+
+
+        const form = document.getElementById('productoForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
 
         const producto = { nombre, precioComprado, precioVendido, cantidad, categoria: { id: categoriaId }, total: precioComprado * cantidad, descripcion };
 
@@ -55,13 +108,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(producto, id)
+                    body: JSON.stringify(producto)
                 });
             }
 
             if (!response.ok) {
                 mostrarMensaje('error', 'Error al guardar el producto.');
             }
+
+            const data = await response.json();
 
             mostrarMensaje('success', id ? 'Producto actualizado satisfactoriamente.' : 'Producto agregado satisfactoriamente.');
             $('#productoModal').modal('hide');
@@ -72,9 +127,93 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error:', error);
         }
+    }
 
+    const btnImprimirCodigosYGuardar = document.getElementById('imprimirCodigosYGuardarBtn');
+    btnImprimirCodigosYGuardar.addEventListener('click', imprimirCodigosYGuardar);
 
-    });
+    async function imprimirCodigosYGuardar(event) {
+        event.preventDefault();
+        const id = document.getElementById('productoId').value;
+        const nombre = document.getElementById('nombre').value.toUpperCase().trim();
+        const precioComprado = parseInt(document.getElementById('precioComprado').value.replace(/\./g, ''));
+        const precioVendido = parseInt(document.getElementById('precioVendido').value.replace(/\./g, ''));
+        const cantidad = document.getElementById('cantidad').value;
+        const categoriaId = document.getElementById('categoria').value;
+        const descripcion = document.getElementById('descripcion').value.trim();
+
+        const producto = { nombre, precioComprado, precioVendido, cantidad, categoria: { id: categoriaId }, total: precioComprado * cantidad, descripcion };
+        
+        
+        const form = document.getElementById('productoForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        try {
+            let response;
+            if (id) {
+                response = await fetch(`${apiUrl}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(producto)
+                });
+            } else {
+                response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(producto)
+                });
+            }
+
+            if (!response.ok) {
+                await mostrarMensaje('error', 'Error al guardar el producto.');
+                throw new Error('Error al guardar el producto');
+            }
+
+            const data = await response.json();
+            const codigoGenerado = `${data.codigo}`;
+            const cantidadCodigos = document.getElementById('cantidadCodigos').value;
+
+            if (!codigoGenerado) {
+                await mostrarMensajeParrafo('Debes agregar un código', 'red', 'mensajeCodigoAdvertencia');
+                console.log('Debes agregar un código');
+
+                setTimeout(() => {
+                    document.getElementById('mensajeCodigoAdvertencia').textContent = '';
+                }, 3000);
+                return;
+            }
+
+            const htmlCodigos = generarHTMLParaCodigos(cantidadCodigos, codigoGenerado);
+            const ventanaImpresion = window.open('', '', 'height=1200,width=340');
+
+            // Esperar a que la ventana esté lista
+            ventanaImpresion.document.write(htmlCodigos);
+            ventanaImpresion.document.close();
+
+            // Esperar a que la ventana cargue completamente antes de imprimir
+            ventanaImpresion.onload = function () {
+                ventanaImpresion.print();
+            };
+
+            await mostrarMensaje('success', id ? 'Producto actualizado satisfactoriamente.' : 'Producto agregado satisfactoriamente.');
+            $('#productoModal').modal('hide');
+            limpiarFormulario();
+            await cargarProductosPorCategoria();  // Recargar productos en la categoría seleccionada
+            await cargarTotalPorCategoria();
+            await cargarTotalGlobal();
+        } catch (error) {
+            console.error('Error:', error);
+            await mostrarMensaje('error', 'Ocurrió un error al procesar la solicitud.');
+        }
+    }
+
 
     document.getElementById('categoriaForm').addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -164,7 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('toggleProductosBtn').addEventListener('click', toggleProductos);
 
-
     function toggleProductos() {
         const toggleBtn = document.getElementById('toggleProductosBtn');
         const totalColumnHeader = document.querySelector('table th:nth-child(6)');
@@ -191,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
             titulo.textContent = 'Inventario de Productos';
             buscador.value = '';
             mostrandoInactivos = false;
-            
+
             // Mostrar la columna de Total
             totalColumnHeader.style.display = '';
         } else {
@@ -214,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
             titulo.textContent = 'Inventario de Productos Inactivos';
             buscador.value = '';
             mostrandoInactivos = true;
-            
+
             // Ocultar la columna de Total
             totalColumnHeader.style.display = 'none';
         }
@@ -254,7 +392,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-
 async function editarProducto(id) {
     try {
         const response = await fetch(`${apiUrl}/${id}`);
@@ -263,7 +400,7 @@ async function editarProducto(id) {
             return;
         }
 
-        modificarTexto = document.getElementById('productoModalLabel');
+        modificarTexto = document.getElementById('tab-producto');
         modificarTexto.textContent = 'Editar Producto';
         const producto = await response.json();
         document.getElementById('productoId').value = producto.id;
@@ -273,9 +410,50 @@ async function editarProducto(id) {
         document.getElementById('cantidad').value = producto.cantidad;
         document.getElementById('categoria').value = producto.categoria.id;
         document.getElementById('descripcion').value = producto.descripcion;
+        document.getElementById('codigo').value = producto.codigo;
+        document.getElementById('codigoBarrasInput').value = producto.codigo;
 
-        // Mostrar el modal para editar el producto
-        $('#productoModal').modal('show');
+        // Show code input when editing product
+        document.getElementById('codigoBarras').style.display = 'block';
+
+        // Ensure proper tab switching when editing product
+        const tabCodigo = document.getElementById('tab-codigo');
+        const tabCodigoLink = document.querySelector('a[href="#contenido-codigo"]');
+        const tabsContainer = document.getElementById('modalTabs');
+        const tabContentContainer = document.getElementById('modalTabContent');
+
+        try {
+            // Reset all tabs
+            if (tabsContainer) {
+                const allTabLinks = tabsContainer.querySelectorAll('.nav-link');
+                allTabLinks.forEach(link => link.classList.remove('active'));
+            }
+
+            // Reset all tab content
+            if (tabContentContainer) {
+                const allTabPanes = tabContentContainer.querySelectorAll('.tab-pane');
+                allTabPanes.forEach(pane => {
+                    pane.classList.remove('show', 'active');
+                });
+            }
+
+            // Activate Códigos tab
+            if (tabCodigoLink) {
+                tabCodigoLink.classList.add('active');
+                const codigoPane = document.getElementById('contenido-codigo');
+                if (codigoPane) {
+                    codigoPane.classList.add('show', 'active');
+                }
+            }
+
+            // Ensure Códigos tab is visible
+            if (tabCodigo) tabCodigo.style.display = 'block';
+
+            // Mostrar el modal para editar el producto
+            $('#productoModal').modal('show');
+        } catch (error) {
+            console.error('Error al configurar pestañas:', error);
+        }
 
         // Recargar la lista correcta solo si se cierra el modal
         $('#productoModal').on('hidden.bs.modal', async () => {
@@ -289,6 +467,31 @@ async function editarProducto(id) {
         console.error('Error:', error);
     }
 }
+
+const btnImprimirCodigos = document.getElementById('imprimirCodigosBtn');
+btnImprimirCodigos.addEventListener('click', imprimirCodigos);
+
+async function imprimirCodigos() {
+    const cantidad = document.getElementById('cantidadCodigosTab').value;
+    const codigo = document.getElementById('codigoBarrasInput').value;
+
+    if (!codigo) {
+        mostrarMensajeParrafo('Debes agregar un código', 'red', 'mensajeCodigoAdvertencia');
+        console.log('Debes agregar un código');
+
+        setTimeout(() => {
+            document.getElementById('mensajeCodigoAdvertencia').textContent = '';
+        }, 3000);
+        return;
+    }
+    const htmlCodigos = generarHTMLParaCodigos(cantidad, codigo);
+    const ventanaImpresion = window.open('', '', 'height=1200,width=340');
+    ventanaImpresion.document.write(htmlCodigos);
+    ventanaImpresion.document.close();
+    ventanaImpresion.print();
+}
+
+
 
 async function cargarProductos(categoriaId = filtroCategoriaSeleccionada) {
     try {
@@ -319,7 +522,7 @@ function mostrarProductosEnTabla(productos) {
 
     productos.forEach(producto => {
         const tr = document.createElement('tr');
-        
+
         // Crear el contenido HTML basado en si estamos mostrando productos inactivos o no
         let totalColumnContent = '';
         if (!mostrandoInactivos) {
@@ -328,7 +531,7 @@ function mostrarProductosEnTabla(productos) {
             // Para productos inactivos, crear una celda oculta
             totalColumnContent = `<td style="display: none;"></td>`;
         }
-        
+
         tr.innerHTML = `
             <td>${producto.nombre.toUpperCase()}</td>
             <td class="text-right pr-1">${producto.precioComprado}</td>
@@ -449,8 +652,6 @@ async function cargarProductosInactivos() {
     }
 }
 
-
-
 async function cargarProductosPorCategoria() {
     const filtroCategoria = document.getElementById('filtroCategoria').value;
     cargarProductos(filtroCategoria);
@@ -514,7 +715,6 @@ async function buscarProductosPorNombreInactivo(nombre) {
     }
 }
 
-
 async function eliminarProducto(id) {
     // Mostrar el modal de Bootstrap
     $('#confirmModal-eliminar').modal('show');
@@ -539,7 +739,6 @@ async function eliminarProducto(id) {
         }
     });
 }
-
 
 async function cargarTotalGlobal() {
     try {

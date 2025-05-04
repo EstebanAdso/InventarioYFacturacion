@@ -115,4 +115,23 @@ public class ProductoController {
     public List<Producto> buscarPorNombre(@RequestParam String query) {
         return productoService.buscarPorNombre(query);
     }
+
+    @PutMapping("/generarCodigoActualizado/{id}")
+    public Producto generarCodigoActualizado(@PathVariable Long id) {
+        return productoService.generarCodigoActualizado(id);
+    }
+
+    @PutMapping("/generarCodigosParaTodos")
+    public String generarCodigosParaTodos() {
+        Page<Producto> productos = productoService.findAll(Pageable.unpaged());
+        int actualizados = 0;
+
+        for (Producto producto : productos) {
+            productoService.generarCodigoActualizado(producto.getId());
+            actualizados++;
+        }
+
+        return "Se han actualizado los códigos de " + actualizados + " productos";
+    }
+
 }

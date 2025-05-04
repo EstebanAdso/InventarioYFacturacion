@@ -2,6 +2,8 @@ package com.example.backendinventario.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Entity
 @Data
 public class Producto {
@@ -16,8 +18,8 @@ public class Producto {
     private float total;
     @Column(length = 6000)
     private String descripcion;
-
-
+    @Column(unique = true)
+    private String codigo;
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
@@ -29,13 +31,32 @@ public class Producto {
     }
 
     @PrePersist
+    private void prePersist() {
+        calcularTotal();
+
+        // Generar código si no fue definido
+        if (this.codigo == null || this.codigo.trim().isEmpty()) {
+            this.codigo = generarCodigo();
+        }
+    }
+
     @PreUpdate
+    private void preUpdate() {
+        calcularTotal();
+    }
+
     private void calcularTotal() {
         if (this.cantidad != null && this.precioComprado != 0) {
             this.total = this.cantidad * this.precioComprado;
         } else {
-            this.total = 0;  // Si no hay cantidad o precio, el total es 0
+            this.total = 0;
         }
+    }
+
+    private String generarCodigo() {
+        // Código tipo PRD-20240503-<ID aleatorio corto>
+        String uuid = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+        return "PRD-" + java.time.LocalDate.now() + "-" + uuid;
     }
 
 }

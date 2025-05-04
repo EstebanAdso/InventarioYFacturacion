@@ -98,3 +98,75 @@ function generarFacturaHTMLPOS({ nombreCliente, cedulaNit, telefonoCliente, corr
                     </div>
             `;
 }
+
+function generarHTMLParaCodigos(cantidad, codigo) {
+    const codigosHtml = Array.from({ length: cantidad }, (_, i) => `
+        <div class="etiqueta">
+            <svg class="barcode" id="barcode-${i}"></svg>
+            <p>${codigo}</p>
+        </div>
+    `).join('');
+
+    return `
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Imprimir Códigos de Barras</title>
+        <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+        <style>
+            @page {
+                size: 90mm 29mm;
+                margin: 0;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+            }
+
+            .etiqueta {
+                width: 90mm;
+                height: 29mm;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                page-break-after: always;
+                box-sizing: border-box;
+            }
+
+            svg.barcode {
+                width: 80mm;
+                height: 15mm;
+            }
+
+            p {
+                margin: 0;
+                font-size: 10pt;
+            }
+        </style>
+    </head>
+    <body>
+        ${codigosHtml}
+        <script>
+            const cantidad = ${cantidad};
+            const codigo = "${codigo}";
+
+            for (let i = 0; i < cantidad; i++) {
+                JsBarcode("#barcode-" + i, codigo, {
+                    format: "CODE128",
+                    lineColor: "#000",
+                    width: 2,
+                    height: 50,
+                    displayValue: false
+                });
+            }
+        </script>
+    </body>
+    </html>
+    `;
+}
+
+

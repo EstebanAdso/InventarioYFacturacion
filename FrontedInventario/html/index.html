@@ -40,7 +40,8 @@
         <div class="d-flex justify-content-end mb-3">
             <!-- Formulario de búsqueda -->
             <form id="searchForm" class="col-md-6">
-                <input type="text" id="searchInput" autocomplete="off" placeholder="Buscar por nombre" oninput="this.value = this.value.toUpperCase()">
+                <input type="text" id="searchInput" autocomplete="off" placeholder="Buscar por nombre"
+                    oninput="this.value = this.value.toUpperCase()">
             </form>
             <div class="mr-2">
                 <button class="btn btn-primary" id="agregarProducto" data-toggle="modal" data-target="#productoModal"
@@ -143,57 +144,112 @@
         </div>
     </div>
 
-    <!-- Modal para Agregar/Editar Producto -->
+    <!-- Modal para Agregar/Editar Producto, y Generar Códigos -->
     <div class="modal fade" id="productoModal" tabindex="-1" aria-labelledby="productoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
+
+                <!-- Header con Tabs -->
                 <div class="modal-header" id="modal-producto">
-                    <h5 class="modal-title" id="productoModalLabel">Agregar Producto</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <ul class="nav nav-tabs w-100" id="modalTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="tab-producto" data-toggle="tab" href="#contenido-producto"
+                                role="tab">Agregar Producto</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab-codigo" data-toggle="tab" href="#contenido-codigo"
+                                role="tab">Códigos</a>
+                        </li>
+                    </ul>
+                    <button type="button" class="close ml-2" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+
+                <!-- Cuerpo del Modal con los contenidos de cada Tab -->
                 <div class="modal-body">
-                    <form id="productoForm">
-                        <input type="hidden" id="productoId">
-                        <div class="form-group">
-                            <label for="nombre">Nombre</label>
-                            <input type="text" autocomplete="off" class="form-control" id="nombre" required>
+                    <div class="tab-content" id="modalTabContent">
+
+                        <!-- TAB: Producto -->
+                        <div class="tab-pane fade show active" id="contenido-producto" role="tabpanel">
+                            <form id="productoForm">
+                                <input type="hidden" id="productoId">
+                                <div class="form-group">
+                                    <label for="nombre">Nombre</label>
+                                    <input type="text" autocomplete="off" class="form-control" id="nombre" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-5">
+                                        <label for="precioComprado">Precio Comprado</label>
+                                        <input type="text" autocomplete="off" class="form-control" id="precioComprado"
+                                            pattern="^[0-9,.]+$" title="Ingrese un número válido" required>
+                                    </div>
+                                    <div class="form-group col-md-5">
+                                        <label for="precioVendido">Precio Vendido</label>
+                                        <input type="text" autocomplete="off" class="form-control" id="precioVendido"
+                                            pattern="^[0-9,.]+$" title="Ingrese un número válido" required>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="cantidad">Cantidad</label>
+                                        <input type="number" autocomplete="off" class="form-control" value=""
+                                            id="cantidad" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descripcion">Descripción</label>
+                                    <textarea class="form-control" id="descripcion" rows="2"
+                                        placeholder="Agregue una descripción del producto (Opcional)"></textarea>
+                                </div>
+                                <div class="form-group" id="codigoBarras" style="display: none;">
+                                    <label for="codigo">Código</label>
+                                    <input type="text" autocomplete="off" class="form-control" id="codigo">
+                                </div>
+                                <div class="form-group">
+                                    <label for="categoria">Categoría</label>
+                                    <select class="form-control" id="categoria" required>
+                                        <!-- Las opciones de categorías se llenarán dinámicamente -->
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <button type="submit" id="guardarBtn" class="btn btn-primary">Guardar</button>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <input type="number" id="cantidadCodigos" class="form-control" value="0">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <button type="button" id="imprimirCodigosYGuardarBtn" class="btn btn-info">Imprimir Códigos y Guardar</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-5">
-                                <label for="precioComprado">Precio Comprado</label>
-                                <input type="text" autocomplete="off" class="form-control" id="precioComprado"
-                                    pattern="^[0-9,.]+$" title="Ingrese un número válido">
+
+                        <!-- TAB: Códigos -->
+                        <div class="tab-pane fade" id="contenido-codigo" role="tabpanel">
+                            <div class="form-row">
+                                <div class="form-group col-md-8" id="codigoBarrasForm">
+                                    <label for="codigoBarrasInput">Código</label>
+                                    <input type="text" autocomplete="off" class="form-control" id="codigoBarrasInput">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="cantidadCodigosTab">Cantidad a Imprimir</label>
+                                    <input type="number" autocomplete="off" class="form-control" value="1"
+                                        id="cantidadCodigosTab" min="1">
+                                </div>
+                                <div class="form-group">
+                                    <p class="text-danger text-center w-100" id="mensajeCodigoAdvertencia"></p>
+                                </div>
                             </div>
-                            <div class="form-group col-md-5">
-                                <label for="precioVendido">Precio Vendido</label>
-                                <input type="text" autocomplete="off" class="form-control" id="precioVendido"
-                                    pattern="^[0-9,.]+$" title="Ingrese un número válido">
-                            </div>
-                            <div class="form-group col-md-2">
-                                <label for="cantidad">Cantidad</label>
-                                <input type="number" autocomplete="off" class="form-control" value="" id="cantidad"
-                                    required>
-                            </div>
+                            <button type="submit" id="imprimirCodigosBtn" class="btn btn-primary">Imprimir
+                                Códigos</button>
                         </div>
-                        <div class="form-group">
-                            <label for="descripcion">Descripción</label>
-                            <textarea class="form-control" id="descripcion" rows="2"
-                                placeholder="Agregue una descripción del producto (Opcional)"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="categoria">Categoría</label>
-                            <select class="form-control" id="categoria" required>
-                                <!-- Las opciones de categorías se llenarán dinámicamente -->
-                            </select>
-                        </div>
-                        <button type="submit" id="guardarBtn" class="btn btn-primary">Guardar</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Modal para Agregar Categoria -->
     <div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" aria-hidden="true">
@@ -271,6 +327,7 @@
     </div>
 
     <script src="../js/functions.js"></script>
+    <script src="../helpers/impresion.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

@@ -8,10 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 @Service
 public class ProductoServices {
@@ -144,6 +141,17 @@ public class ProductoServices {
 
     public Page<Producto> findInactivos(Pageable pageable) {
         return productoRepository.findByEstado("inactivo", pageable);
+    }
+
+    public Producto generarCodigoActualizado(Long idProducto) {
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con el ID: " + idProducto));
+
+        //Generar un nuevo código
+        String nuevoCodigo = "PRD-" + java.time.LocalDate.now() + "-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+        producto.setCodigo(nuevoCodigo);
+
+        return productoRepository.save(producto);
     }
 
 }

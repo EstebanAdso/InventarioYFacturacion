@@ -135,7 +135,6 @@ legend {
 #productoModal .modal-header,
 #pedidoModal .modal-header,
 #clientesTopModal .modal-header {
-    background-color: #007bff;
     color: white;
     border-bottom: none;
 }
