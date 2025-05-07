@@ -18,8 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (agregarProductoBtn) agregarProductoBtn.addEventListener('click', agregarProducto);
     if (guardarFacturaBtn) guardarFacturaBtn.addEventListener('click', guardarFactura);
     if (limpiarFormularioBtn) limpiarFormularioBtn.addEventListener('click', limpiarFormulario);
+    
+    // Inicializar el lector de códigos de barras
+    document.addEventListener('keydown', leerCodigoBarras);
+    console.log('Lector de códigos de barras inicializado');
 });
-
 
 // Carga los datos de cliente desde localStorage al cargar la página y configura su eliminación después de 20 minutos
 window.addEventListener('load', () => {

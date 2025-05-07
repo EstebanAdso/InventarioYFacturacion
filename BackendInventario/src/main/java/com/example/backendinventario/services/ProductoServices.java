@@ -39,13 +39,13 @@ public class ProductoServices {
                         Collectors.summingDouble(Producto::getTotal)));
     }
 
+    // Todos los productos Activos
     public Page<Producto> findAll(Pageable pageable) {
-        // Filtrar solo los productos con estado activo
         return productoRepository.findByEstado("activo", pageable);
     }
 
+    // Filtrar productos por categoría y estado activo
     public Page<Producto> findByCategoriaNombre(String nombreCategoria, Pageable pageable) {
-        // Filtrar productos por categoría y estado activo
         return productoRepository.findByCategoriaNombreAndEstado(nombreCategoria, "activo", pageable);
     }
 
@@ -152,6 +152,10 @@ public class ProductoServices {
         producto.setCodigo(nuevoCodigo);
 
         return productoRepository.save(producto);
+    }
+
+    public Producto leerCodigoBarras(String codigoBarras){
+        return productoRepository.findByCodigo(codigoBarras);
     }
 
 }

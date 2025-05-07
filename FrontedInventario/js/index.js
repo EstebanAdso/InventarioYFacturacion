@@ -14,6 +14,7 @@ const botonAgregarCategoria = document.getElementById('agregarCategoria')
 const botonVerTotal = document.getElementById('verTotal')
 const buscador = document.getElementById('searchInput')
 const titulo = document.getElementById('titulo')
+const pagination = document.getElementById('pagination');
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarProductos();
@@ -81,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cantidad = document.getElementById('cantidad').value;
         const categoriaId = document.getElementById('categoria').value;
         const descripcion = document.getElementById('descripcion').value.trim();
+        const alertaStock = document.getElementById('alertaStock').value;
 
 
         const form = document.getElementById('productoForm');
@@ -90,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        const producto = { nombre, precioComprado, precioVendido, cantidad, categoria: { id: categoriaId }, total: precioComprado * cantidad, descripcion };
+        const producto = { nombre, precioComprado, precioVendido, cantidad, alertaStock, categoria: { id: categoriaId }, total: precioComprado * cantidad, descripcion };
 
         try {
             let response;
@@ -141,8 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const cantidad = document.getElementById('cantidad').value;
         const categoriaId = document.getElementById('categoria').value;
         const descripcion = document.getElementById('descripcion').value.trim();
+        const alertaStock = document.getElementById('alertaStock').value;
 
-        const producto = { nombre, precioComprado, precioVendido, cantidad, categoria: { id: categoriaId }, total: precioComprado * cantidad, descripcion };
+        const producto = { nombre, precioComprado, precioVendido, cantidad, alertaStock, categoria: { id: categoriaId }, total: precioComprado * cantidad, descripcion };
         
         
         const form = document.getElementById('productoForm');
@@ -314,12 +317,13 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleBtn.textContent = 'Productos Inactivos';
             toggleBtn.classList.remove('btn-success');
             toggleBtn.classList.add('btn-warning');
-
+            
             // Habilitar los botones y el buscador
             botonAgregarCategoria.removeAttribute('disabled');
             botonAgregarProducto.removeAttribute('disabled');
             botonVerTotal.removeAttribute('disabled');
             filtroCategoria.removeAttribute('disabled');
+            pagination.style.display = '';
 
             // Quitar clase de estilo desactivado
             botonAgregarCategoria.classList.remove('disabled-style');
@@ -329,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
             titulo.textContent = 'Inventario de Productos';
             buscador.value = '';
             mostrandoInactivos = false;
-
+            
             // Mostrar la columna de Total
             totalColumnHeader.style.display = '';
         } else {
@@ -337,12 +341,13 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleBtn.textContent = 'Productos Activos';
             toggleBtn.classList.remove('btn-warning');
             toggleBtn.classList.add('btn-success');
-
+            
             // Deshabilitar los botones y el buscador
             botonAgregarCategoria.setAttribute('disabled', 'disabled');
             botonAgregarProducto.setAttribute('disabled', 'disabled');
             botonVerTotal.setAttribute('disabled', 'disabled');
             filtroCategoria.setAttribute('disabled', 'disabled');
+            pagination.style.display = 'none';
 
             // Agregar clase de estilo desactivado
             botonAgregarCategoria.classList.add('disabled-style');
@@ -408,6 +413,7 @@ async function editarProducto(id) {
         document.getElementById('precioComprado').value = formatNumber(producto.precioComprado);
         document.getElementById('precioVendido').value = formatNumber(producto.precioVendido);
         document.getElementById('cantidad').value = producto.cantidad;
+        document.getElementById('alertaStock').value = producto.alertaStock;
         document.getElementById('categoria').value = producto.categoria.id;
         document.getElementById('descripcion').value = producto.descripcion;
         document.getElementById('codigo').value = producto.codigo;
@@ -580,7 +586,6 @@ async function verInformacion(productoId) {
 }
 
 function actualizarPaginacion() {
-    const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
 
     const startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));

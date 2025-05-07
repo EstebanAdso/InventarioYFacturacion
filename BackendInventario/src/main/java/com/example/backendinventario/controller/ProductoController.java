@@ -31,6 +31,14 @@ public class ProductoController {
         return productoService.findById(id);
     }
 
+    @GetMapping("/codigo-barras/{codigo}")
+    public Producto buscarPorCodigoBarras(@PathVariable String codigo) {
+        if (codigo == null || codigo.trim().isEmpty()) {
+            throw new IllegalArgumentException("El código de barras no puede estar vacío");
+        }
+        return productoService.leerCodigoBarras(codigo);
+    }
+
     @GetMapping("/categoria/{nombreCategoria}")
     public Page<Producto> listarPorCategoria(
             @PathVariable String nombreCategoria,
@@ -82,6 +90,7 @@ public class ProductoController {
         productoExistente.setCantidad(productoActualizado.getCantidad());
         productoExistente.setCategoria(productoActualizado.getCategoria());
         productoExistente.setDescripcion(productoActualizado.getDescripcion());
+        productoExistente.setAlertaStock(productoActualizado.getAlertaStock());
 
         return productoService.save(productoExistente);
     }
@@ -133,5 +142,4 @@ public class ProductoController {
 
         return "Se han actualizado los códigos de " + actualizados + " productos";
     }
-
 }

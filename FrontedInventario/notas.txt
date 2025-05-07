@@ -11,15 +11,13 @@ npm run build
 
 // FUNCIONES A IMPLEMEMTAR
 * buscar facturas por clientes
+* notificacion de stock
 * cancelar facturas del dia
 * generar excel cada mes de las ventas del dia.
-* notificacion de stock
 * metodo de abono
-* leer codigo de barrar y generarlas
 * eliminar productos inactivos sin perder la auditoria
 * paginacion facturas
 * modo oscuro
-* al dar click copiar contenido de la factura precio compra precio venta nombre.
 * caja
 * agregar mas columnas a la tabla de inventario y poder ocultar
 * auditoria de facturas y productos

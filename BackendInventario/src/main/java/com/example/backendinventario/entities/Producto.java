@@ -24,10 +24,12 @@ public class Producto {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
     private String estado;
+    private Integer alertaStock;
 
     public Producto() {
         this.estado = "activo"; // Por defecto, el producto se considera activo al crearse
         this.descripcion = null;
+        this.alertaStock = 0;
     }
 
     @PrePersist

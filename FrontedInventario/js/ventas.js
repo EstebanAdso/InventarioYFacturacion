@@ -326,23 +326,47 @@ function mostrarDetallesFactura(facturaId) {
             detalles.forEach(detalle => {
                 const fila = `
                     <tr>
-                        <td>${detalle.nombreProducto}</td>
-                        <td>${detalle.descripcion}</td>
-                        <td>${detalle.cantidad}</td>
-                        <td>${detalle.garantia}</td>
-                        <td>${formatNumber(detalle.precioCompra)}</td>
-                        <td>${formatNumber(detalle.precioVenta)}</td>  
-                        <td style="color: #0db423; font-weight: bold">${formatNumber(detalle.cantidad * detalle.precioCompra)}</td>
-                        <td style="color: #48e; font-weight: bold">${formatNumber(detalle.cantidad * detalle.precioVenta)}</td>
+                        <td onclick="copiarAlPortapapeles(event)" style="cursor: pointer;">${detalle.nombreProducto}</td>
+                        <td onclick="copiarAlPortapapeles(event)" style="cursor: pointer;">${detalle.descripcion}</td>
+                        <td onclick="copiarAlPortapapeles(event)" style="cursor: pointer;">${detalle.cantidad}</td>
+                        <td onclick="copiarAlPortapapeles(event)" style="cursor: pointer;">${detalle.garantia}</td>
+                        <td onclick="copiarAlPortapapeles(event)" style="cursor: pointer;">${formatNumber(detalle.precioCompra)}</td>
+                        <td onclick="copiarAlPortapapeles(event)" style="cursor: pointer;">${formatNumber(detalle.precioVenta)}</td>  
+                        <td style="color: #0db423; font-weight: bold; cursor: pointer;" onclick="copiarAlPortapapeles(event)">${formatNumber(detalle.cantidad * detalle.precioCompra)}</td>
+                        <td style="color: #48e; font-weight: bold; cursor: pointer;" onclick="copiarAlPortapapeles(event)">${formatNumber(detalle.cantidad * detalle.precioVenta)}</td>
                     </tr>
                 `;
                 detallesBody.innerHTML += fila;
             });
+
+            
 
             $('#detalleFacturaModal').modal('show');
         })
         .catch(error => {
             console.error('Error al obtener los detalles de la factura:', error);
             alert('Error al cargar los detalles de la factura.');
+        });
+}
+
+function copiarAlPortapapeles(event) {
+    const texto = event.target.textContent;
+    navigator.clipboard.writeText(texto)
+        .then(() => {            
+            const div = document.createElement('div');
+            div.style.position = 'fixed';
+            div.style.top = '50%';
+            div.style.left = '50%';
+            div.style.transform = 'translate(-50%, -50%)';
+            div.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            div.style.padding = '5px';
+            div.style.borderRadius = '5px';
+            div.style.color = '#fff';
+            div.textContent = 'Copiado al portapapeles';
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 1500);
+        })
+        .catch(error => {
+            console.error('Error al copiar al portapapeles:', error);
         });
 }

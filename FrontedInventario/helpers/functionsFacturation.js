@@ -1,3 +1,66 @@
+// Función para leer códigos de barras
+function leerCodigoBarras(event) {
+    let codigoBarras = '';
+    let tiempoUltimaTecla = 0;
+    const tiempoMaximoEntreTeclas = 50;
+    
+    // Solo procesar si el foco no está en un campo de entrada
+    if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+        const ahora = new Date().getTime();
+        
+        // Si ha pasado demasiado tiempo desde la última tecla, reiniciar
+        if (ahora - tiempoUltimaTecla > tiempoMaximoEntreTeclas && codigoBarras.length > 0) {
+            codigoBarras = '';
+        }
+        
+        // Actualizar el tiempo de la última tecla
+        tiempoUltimaTecla = ahora;
+        
+        if (event.key.length === 1 || event.key === 'Enter') {
+            if (event.key !== 'Enter') {
+                codigoBarras += event.key;
+            } else {
+                if (codigoBarras.length > 0) {
+                    buscarProductoPorCodigoBarras(codigoBarras);
+                    codigoBarras = '';
+                    event.preventDefault();
+                }
+            }
+        }
+    }
+}
+
+// Función para buscar un producto por código de barras
+function buscarProductoPorCodigoBarras(codigo) {
+    mostrarMensaje('info', 'Buscando producto...');
+    
+    // Llamar al endpoint de búsqueda por código de barras
+    fetch(`http://localhost:8082/producto/codigo-barras/${encodeURIComponent(codigo)}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Producto no encontrado');
+            }
+            return response.json();
+        })
+        .then(producto => {
+            if (producto) {
+                // Seleccionar el producto encontrado
+                productoSeleccionadoId = producto.id;
+                seleccionarProducto(producto);
+                // Establecer el foco en el campo de cantidad
+                document.getElementById('cantidadProductoManual').focus();
+                // Mostrar mensaje de éxito
+                mostrarMensaje('success', 'Producto encontrado');
+            } else {
+                mostrarMensaje('error', 'Producto no encontrado');
+            }
+        })
+        .catch(error => {
+            console.error('Error al buscar producto:', error);
+            mostrarMensaje('error', 'Error al buscar el producto');
+        });
+}
+
 // Función para obtener sugerencias de clientes
 function obtenerSugerencias(query) {
     fetch(`${apiClient}/suggestions?query=${encodeURIComponent(query)}`)
