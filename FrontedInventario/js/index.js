@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const htmlCodigos = generarHTMLParaCodigos(cantidadCodigos, codigoGenerado);
-            const ventanaImpresion = window.open('', '', 'height=1200,width=340');
+            const ventanaImpresion = window.open('', '', 'height=1200,width=940');
 
             // Esperar a que la ventana esté lista
             ventanaImpresion.document.write(htmlCodigos);
@@ -491,7 +491,7 @@ async function imprimirCodigos() {
         return;
     }
     const htmlCodigos = generarHTMLParaCodigos(cantidad, codigo);
-    const ventanaImpresion = window.open('', '', 'height=1200,width=340');
+    const ventanaImpresion = window.open('', '', 'height=1200,width=940');
     ventanaImpresion.document.write(htmlCodigos);
     ventanaImpresion.document.close();
     ventanaImpresion.print();

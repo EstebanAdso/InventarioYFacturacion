@@ -116,7 +116,7 @@ function generarHTMLParaCodigos(cantidad, codigo) {
         <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
         <style>
             @page {
-                size: 90mm 29mm;
+                size: 90mm 29mm; /* horizontal */
                 margin: 0;
             }
 
@@ -127,24 +127,33 @@ function generarHTMLParaCodigos(cantidad, codigo) {
             }
 
             .etiqueta {
-                width: 90mm;
+                width: 80mm;
                 height: 29mm;
                 display: flex;
                 flex-direction: column;
-                justify-content: center;
+                justify-content: center; /* Centra verticalmente el contenido */
                 align-items: center;
+                margin: auto;
                 page-break-after: always;
                 box-sizing: border-box;
+                position: relative;
             }
 
             svg.barcode {
-                width: 80mm;
-                height: 15mm;
+                width: auto;
+                height: auto;
+                max-width: 80mm;
+                max-height: 18mm;
+                margin-top: -3mm; /* Sube un poco el código de barras para centrarlo mejor */
             }
 
             p {
                 margin: 0;
-                font-size: 10pt;
+                font-size: 12pt;
+                text-align: center;
+                position: absolute;
+                top: 22mm; /* Posiciona el texto más abajo */
+                width: 100%;
             }
         </style>
     </head>
@@ -159,8 +168,9 @@ function generarHTMLParaCodigos(cantidad, codigo) {
                     format: "CODE128",
                     lineColor: "#000",
                     width: 2,
-                    height: 50,
-                    displayValue: false
+                    height: 90,
+                    displayValue: false,
+                    margin: 0
                 });
             }
         </script>
