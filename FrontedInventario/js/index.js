@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const data = await response.json();
-            const codigoGenerado = `${data.codigo}`;
+            const codigoGenerado = `${data.sku}`;
             const cantidadCodigos = document.getElementById('cantidadCodigos').value;
 
             if (!codigoGenerado) {
@@ -416,8 +416,8 @@ async function editarProducto(id) {
         document.getElementById('alertaStock').value = producto.alertaStock;
         document.getElementById('categoria').value = producto.categoria.id;
         document.getElementById('descripcion').value = producto.descripcion;
-        document.getElementById('codigo').value = producto.codigo;
-        document.getElementById('codigoBarrasInput').value = producto.codigo;
+        document.getElementById('codigo').value = producto.sku;
+        document.getElementById('codigoBarrasInput').value = producto.sku;
 
         // Show code input when editing product
         document.getElementById('codigoBarras').style.display = 'block';

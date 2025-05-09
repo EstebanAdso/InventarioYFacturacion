@@ -21,8 +21,36 @@ public class ProductoServices {
     }
 
     public Producto save(Producto producto) {
+        // Validar SKU si ya fue asignado
+        if (producto.getSku() != null && !producto.getSku().trim().isEmpty()) {
+            Producto productoConMismoSku = productoRepository.findBySku(producto.getSku());
+            if (productoConMismoSku != null) {
+                // Si el SKU ya existe pero pertenece a otro producto, generar nuevo
+                if (producto.getId() == null || !productoConMismoSku.getId().equals(producto.getId())) {
+                    producto.setSku(generarCodigoNuevo());
+                }
+                // Si el SKU es del mismo producto, se conserva
+            }
+        } else {
+            // SKU es nulo o vacío: generar uno nuevo
+            String nuevoCodigo;
+            do {
+                nuevoCodigo = generarCodigoNuevo();
+            } while (productoRepository.existsBySku(nuevoCodigo));
+            producto.setSku(nuevoCodigo);
+        }
+
+        // Calcular el total
+        if (producto.getCantidad() != null && producto.getPrecioComprado() != 0) {
+            producto.setTotal(producto.getCantidad() * producto.getPrecioComprado());
+        } else {
+            producto.setTotal(0);
+        }
+
         return productoRepository.save(producto);
     }
+
+
 
     // Calcular el total global de todos los productos
     public double totalGlobal() {
@@ -143,19 +171,51 @@ public class ProductoServices {
         return productoRepository.findByEstado("inactivo", pageable);
     }
 
+    // Genera un código nuevo, utilizando un nombre opcional (por defecto "PRD")
+    public String generarCodigoNuevo(String nombreOpcional) {
+        // Generar un prefijo de 3 letras aleatorias
+        String letrasAleatorias = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        StringBuilder prefijoBuilder = new StringBuilder();
+        for (int i = 0; i < 3; i++) {
+            int index = (int) (Math.random() * letrasAleatorias.length());
+            prefijoBuilder.append(letrasAleatorias.charAt(index));
+        }
+        String prefijo = prefijoBuilder.toString();
+
+        // Fecha en formato 'yyyyMMdd'
+        String fecha = java.time.LocalDate.now().toString().replaceAll("-", "");
+
+        // Generación de valor aleatorio
+        String aleatorio;
+        if (Math.random() < 0.5) {
+            aleatorio = String.format("%06d", (int) (Math.random() * 1000000));
+        } else {
+            aleatorio = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+        }
+
+        return prefijo + aleatorio + fecha;
+    }
+
+
+    // Genera un código y lo asigna al producto existente
     public Producto generarCodigoActualizado(Long idProducto) {
         Producto producto = productoRepository.findById(idProducto)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con el ID: " + idProducto));
 
-        //Generar un nuevo código
-        String nuevoCodigo = "PRD-" + java.time.LocalDate.now() + "-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
-        producto.setCodigo(nuevoCodigo);
+        String nuevoCodigo = generarCodigoNuevo(producto.getNombre());
+        producto.setSku(nuevoCodigo);
 
         return productoRepository.save(producto);
     }
 
-    public Producto leerCodigoBarras(String codigoBarras){
-        return productoRepository.findByCodigo(codigoBarras);
+    // Genera un código sin producto asociado
+    public String generarCodigoNuevo() {
+        return generarCodigoNuevo(null);  // Usa el valor por defecto "PRD"
     }
+
+    public Producto leerCodigoBarras(String codigoBarras){
+        return productoRepository.findBySku(codigoBarras);
+    }
+
 
 }

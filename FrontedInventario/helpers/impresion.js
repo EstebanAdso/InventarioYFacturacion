@@ -152,7 +152,7 @@ function generarHTMLParaCodigos(cantidad, codigo) {
                 font-size: 12pt;
                 text-align: center;
                 position: absolute;
-                top: 22mm; /* Posiciona el texto más abajo */
+                top: 23mm; /* Posiciona el texto más abajo */
                 width: 100%;
             }
         </style>
@@ -168,7 +168,7 @@ function generarHTMLParaCodigos(cantidad, codigo) {
                     format: "CODE128",
                     lineColor: "#000",
                     width: 2,
-                    height: 90,
+                    height: 85,
                     displayValue: false,
                     margin: 0
                 });
