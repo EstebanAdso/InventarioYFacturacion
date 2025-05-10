@@ -1,33 +1,83 @@
+let codigoBarras = '';
+let tiempoUltimaTecla = 0;
+const tiempoMaximoEntreTeclas = 50;
+const longitudMinCodigoBarras = 6; 
+let campoLectura = null;
+
 // Función para leer códigos de barras
 function leerCodigoBarras(event) {
-    let codigoBarras = '';
-    let tiempoUltimaTecla = 0;
-    const tiempoMaximoEntreTeclas = 50;
+    const ahora = new Date().getTime();
     
-    // Solo procesar si el foco no está en un campo de entrada
-    if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
-        const ahora = new Date().getTime();
-        
-        // Si ha pasado demasiado tiempo desde la última tecla, reiniciar
-        if (ahora - tiempoUltimaTecla > tiempoMaximoEntreTeclas && codigoBarras.length > 0) {
-            codigoBarras = '';
-        }
-        
-        // Actualizar el tiempo de la última tecla
-        tiempoUltimaTecla = ahora;
-        
-        if (event.key.length === 1 || event.key === 'Enter') {
-            if (event.key !== 'Enter') {
-                codigoBarras += event.key;
-            } else {
-                if (codigoBarras.length > 0) {
+    // Si ha pasado demasiado tiempo desde la última tecla, reiniciar
+    if (ahora - tiempoUltimaTecla > tiempoMaximoEntreTeclas && codigoBarras.length > 0) {
+        codigoBarras = '';
+        campoLectura = null;
+    }
+    
+    // Actualizar el tiempo de la última tecla
+    tiempoUltimaTecla = ahora;
+    
+    // Guardar referencia al campo donde se está leyendo
+    if (codigoBarras.length === 0) {
+        campoLectura = event.target;
+    }
+    
+    // Procesar solo caracteres imprimibles o Enter
+    if (event.key.length === 1 || event.key === 'Enter') {
+        // Si es Enter y tenemos un código acumulado, procesarlo
+        if (event.key === 'Enter') {
+            if (codigoBarras.length >= longitudMinCodigoBarras) {
+                if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+                    event.preventDefault();
+                }
+                
+                // Limpiar el campo donde se leyó el código
+                limpiarCampoLectura();
+                
+                buscarProductoPorCodigoBarras(codigoBarras);
+                codigoBarras = '';
+            }
+        } else {
+            codigoBarras += event.key;
+            
+            if ((event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') && 
+                event.target.id !== 'nombreProductoManual' && 
+                codigoBarras.length >= longitudMinCodigoBarras) {
+                
+                // Verificar si el código acumulado parece ser un código de barras
+                if (/^\d+$/.test(codigoBarras)) {
+                    limpiarCampoLectura();
                     buscarProductoPorCodigoBarras(codigoBarras);
                     codigoBarras = '';
-                    event.preventDefault();
                 }
             }
         }
     }
+}
+
+// Función para limpiar el campo donde se leyó el código de barras
+function limpiarCampoLectura() {
+    if (campoLectura && (campoLectura.tagName === 'INPUT' || campoLectura.tagName === 'TEXTAREA')) {
+        // Guardar el valor original del campo
+        const valorOriginal = campoLectura.value;
+        
+        // Si el código está al final del valor del campo, eliminarlo
+        if (valorOriginal.endsWith(codigoBarras)) {
+            campoLectura.value = valorOriginal.slice(0, -codigoBarras.length);
+        } else {
+            campoLectura.value = '';
+        }
+        
+        // Restaurar el valor apropiado según el tipo de campo
+        if (campoLectura.id === 'garantiaProducto' && campoLectura.value === '') {
+            campoLectura.value = '0';
+        } else if (campoLectura.id === 'cantidadProductoManual' && campoLectura.value === '') {
+            campoLectura.value = '1';
+        }
+    }
+    
+    // Limpiar la referencia al campo
+    campoLectura = null;
 }
 
 // Función para buscar un producto por código de barras
@@ -40,24 +90,21 @@ function buscarProductoPorCodigoBarras(codigo) {
             if (!response.ok) {
                 throw new Error('Producto no encontrado');
             }
+
             return response.json();
         })
         .then(producto => {
             if (producto) {
-                // Seleccionar el producto encontrado
                 productoSeleccionadoId = producto.id;
                 seleccionarProducto(producto);
-                // Establecer el foco en el campo de cantidad
                 document.getElementById('cantidadProductoManual').focus();
-                // Mostrar mensaje de éxito
                 mostrarMensaje('success', 'Producto encontrado');
             } else {
                 mostrarMensaje('error', 'Producto no encontrado');
             }
         })
-        .catch(error => {
-            console.error('Error al buscar producto:', error);
-            mostrarMensaje('error', 'Error al buscar el producto');
+        .catch(() => {
+            mostrarMensaje('error', 'El codigo de barras no se encuentra registrado');
         });
 }
 

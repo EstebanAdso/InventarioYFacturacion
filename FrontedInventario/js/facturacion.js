@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Inicializar el lector de códigos de barras
     document.addEventListener('keydown', leerCodigoBarras);
-    console.log('Lector de códigos de barras inicializado');
 });
 
 // Carga los datos de cliente desde localStorage al cargar la página y configura su eliminación después de 20 minutos
