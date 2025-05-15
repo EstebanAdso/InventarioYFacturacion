@@ -1,5 +1,6 @@
 package com.example.backendinventario.services;
 
+import com.example.backendinventario.entities.CodigoBarra;
 import com.example.backendinventario.entities.Producto;
 import com.example.backendinventario.repositories.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,13 @@ public class ProductoServices {
             producto.setSku(nuevoCodigo);
         }
 
+        // 🔁 Enlazar códigos de barra al producto antes de guardar
+        if (producto.getCodigosDeBarra() != null) {
+            for (CodigoBarra cb : producto.getCodigosDeBarra()) {
+                cb.setProducto(producto);
+            }
+        }
+
         // Calcular el total
         if (producto.getCantidad() != null && producto.getPrecioComprado() != 0) {
             producto.setTotal(producto.getCantidad() * producto.getPrecioComprado());
@@ -50,14 +58,11 @@ public class ProductoServices {
         return productoRepository.save(producto);
     }
 
-
-
     // Calcular el total global de todos los productos
     public double totalGlobal() {
         List<Producto> productos = productoRepository.findAll();
         return productos.stream().mapToDouble(Producto::getTotal).sum();
     }
-
 
     // Calcular el total por categoría
     public Map<String, Double> totalPorCategoria() {
@@ -76,7 +81,6 @@ public class ProductoServices {
     public Page<Producto> findByCategoriaNombre(String nombreCategoria, Pageable pageable) {
         return productoRepository.findByCategoriaNombreAndEstado(nombreCategoria, "activo", pageable);
     }
-
 
     public Page<Producto> findByNombre(String nombre, Pageable pageable) {
         // Dividir el nombre en palabras individuales
@@ -196,7 +200,6 @@ public class ProductoServices {
         return prefijo + aleatorio + fecha;
     }
 
-
     // Genera un código y lo asigna al producto existente
     public Producto generarCodigoActualizado(Long idProducto) {
         Producto producto = productoRepository.findById(idProducto)
@@ -216,6 +219,4 @@ public class ProductoServices {
     public Producto leerCodigoBarras(String codigoBarras){
         return productoRepository.findBySku(codigoBarras);
     }
-
-
 }

@@ -1,6 +1,7 @@
 const apiUrl = 'http://localhost:8082/producto';
 const apiCategoria = 'http://localhost:8082/categoria'
 const productosInactivos = 'http://localhost:8082/producto/buscarInactivo'
+const apiCodigosBarras = 'http://localhost:8082/codigoBarra'
 
 let currentPage = 0;
 let pageSize = 14;
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarTotalPorCategoria();
     cargarTotalGlobal()
     cargarCategorias();
+    inicializarCamposCodigosBarras();
 
     let botonModificador = document.getElementById('agregarProducto');
 
@@ -83,7 +85,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const categoriaId = document.getElementById('categoria').value;
         const descripcion = document.getElementById('descripcion').value.trim();
         const alertaStock = document.getElementById('alertaStock').value;
-
+        const codigosBarras = document.querySelectorAll('.codigo-barras');
+        const codigosDeBarra = Array.from(codigosBarras)
+        .map(input => input.value.trim())
+        .filter(codigo => codigo !== '')
+        .map(value => ({ codigoBarra: value }));
+   
+        if (id && codigosDeBarra.length > 0) {
+            // Puedes hacer una petición adicional si quieres validar cuáles son nuevos
+            // Pero aquí asumimos que son todos nuevos a agregar (simple caso)
+            for (const codigo of codigosDeBarra) {
+                await fetch(apiCodigosBarras, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        productoId: id,
+                        codigoBarra: codigo.codigoBarra
+                    })
+                });
+            }
+        }
 
         const form = document.getElementById('productoForm');
         if (!form.checkValidity()) {
@@ -92,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        const producto = { nombre, precioComprado, precioVendido, cantidad, alertaStock, categoria: { id: categoriaId }, total: precioComprado * cantidad, descripcion };
+        const producto = { nombre, precioComprado, precioVendido, cantidad, alertaStock, categoria: { id: categoriaId }, codigosDeBarra, total: precioComprado * cantidad, descripcion };
 
         try {
             let response;
@@ -416,11 +437,8 @@ async function editarProducto(id) {
         document.getElementById('alertaStock').value = producto.alertaStock;
         document.getElementById('categoria').value = producto.categoria.id;
         document.getElementById('descripcion').value = producto.descripcion;
-        document.getElementById('codigo').value = producto.sku;
-        document.getElementById('codigoBarrasInput').value = producto.sku;
-
-        // Show code input when editing product
-        document.getElementById('codigoBarras').style.display = 'block';
+        document.getElementById('sku').value = producto.sku;
+        document.getElementById('codigoSkuInput').value = producto.sku;
 
         // Ensure proper tab switching when editing product
         const tabCodigo = document.getElementById('tab-codigo');
@@ -452,8 +470,8 @@ async function editarProducto(id) {
                 }
             }
 
-            // Ensure Códigos tab is visible
-            if (tabCodigo) tabCodigo.style.display = 'block';
+            // Ocultar códigos de barras en edición
+            document.getElementById('codigosForm').style.display = 'none';
 
             // Mostrar el modal para editar el producto
             $('#productoModal').modal('show');
@@ -474,12 +492,57 @@ async function editarProducto(id) {
     }
 }
 
+// Nueva función para cargar códigos de barras existentes
+async function cargarCodigosBarrasExistente(productoId) {
+    try {
+        const response = await fetch(`${apiCodigosBarras}/producto/${productoId}`);
+        if (!response.ok) {
+            console.error('Error al cargar códigos de barras');
+            return;
+        }
+        
+        const codigos = await response.json();
+        const container = document.getElementById('codigosBarrasContainer');
+        container.innerHTML = ''; // Limpiar contenedor
+        
+        if (codigos.length === 0) {
+            // Si no hay códigos, mostrar un campo vacío
+            agregarCampoCodigoBarras('');
+        } else {
+            // Mostrar cada código existente
+            codigos.forEach(codigo => {
+                agregarCampoCodigoBarras(codigo.codigoBarra);
+            });
+        }
+        
+        // Agregar un campo vacío adicional para nuevos códigos
+        agregarCampoCodigoBarras('');
+    } catch (error) {
+        console.error('Error al cargar códigos de barras:', error);
+    }
+}
+
+// Función auxiliar para agregar un campo de código de barras
+function agregarCampoCodigoBarras(valor) {
+    const container = document.getElementById('codigosBarrasContainer');
+    const newField = document.createElement('div');
+    newField.className = 'input-group mb-2 codigo-barras-item';
+    newField.innerHTML = `
+        <input type="text" class="form-control codigo-barras" name="codigosBarras[]" 
+               placeholder="Ingrese un código" value="${valor || ''}">
+        <div class="input-group-append">
+            <button class="btn btn-danger btn-sm eliminar-codigo" type="button">&times;</button>
+        </div>
+    `;
+    container.appendChild(newField);
+}
+
 const btnImprimirCodigos = document.getElementById('imprimirCodigosBtn');
 btnImprimirCodigos.addEventListener('click', imprimirCodigos);
 
 async function imprimirCodigos() {
     const cantidad = document.getElementById('cantidadCodigosTab').value;
-    const codigo = document.getElementById('codigoBarrasInput').value;
+    const codigo = document.getElementById('codigoSkuInput').value;
 
     if (!codigo) {
         mostrarMensajeParrafo('Debes agregar un código', 'red', 'mensajeCodigoAdvertencia');
@@ -496,8 +559,6 @@ async function imprimirCodigos() {
     ventanaImpresion.document.close();
     ventanaImpresion.print();
 }
-
-
 
 async function cargarProductos(categoriaId = filtroCategoriaSeleccionada) {
     try {
@@ -780,13 +841,37 @@ async function cargarTotalPorCategoria() {
     }
 }
 
+function inicializarCamposCodigosBarras() {
+    const container = document.getElementById('codigosBarrasContainer');
+    const agregarBtn = document.getElementById('agregarCodigoBtn');
+
+    if (!container || !agregarBtn) return;
+
+    agregarBtn.addEventListener('click', function () {
+        const newField = document.createElement('div');
+        newField.className = 'input-group mb-2 codigo-barras-item';
+        newField.innerHTML = `
+            <input type="text" class="form-control codigo-barras" name="codigosBarras[]" placeholder="Ingrese un código">
+            <div class="input-group-append">
+                <button class="btn btn-danger btn-sm eliminar-codigo" type="button">&times;</button>
+            </div>
+        `;
+        container.appendChild(newField);
+    });
+
+    container.addEventListener('click', function (e) {
+        if (e.target.classList.contains('eliminar-codigo')) {
+            const item = e.target.closest('.codigo-barras-item');
+            if (container.children.length > 1) {
+                container.removeChild(item);
+            }
+        }
+    });
+}
+
 function limpiarFormulario() {
+    document.getElementById('codigosBarrasContainer').style.display = 'block';
     document.getElementById('productoId').value = '';
     document.getElementById('productoForm').reset();
     document.getElementById('categoriaForm').reset();
 }
-
-
-
-
-

@@ -10,11 +10,12 @@ npm run build
 
 
 // FUNCIONES A IMPLEMEMTAR
-* buscar facturas por clientes
+* buscar facturas por clientes ✅
+* generar excel cada mes de las ventas del dia. ✅
+* metodo de abono ✅
+* mejorar la vista de totales en tabla ✅
 * notificacion de stock
 * cancelar facturas del dia
-* generar excel cada mes de las ventas del dia.
-* metodo de abono
 * eliminar productos inactivos sin perder la auditoria
 * paginacion facturas
 * modo oscuro
@@ -22,7 +23,6 @@ npm run build
 * agregar mas columnas a la tabla de inventario y poder ocultar
 * auditoria de facturas y productos
 * configuracion de datos de empresa
-* mejorar la vista de totales en tabla
 * base de datos SQL Lite embebida
 * licenciamiento
 * facturación por correo

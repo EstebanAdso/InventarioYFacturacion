@@ -33,7 +33,7 @@
         <div id="mensajeNotificacion" class="alert alert-dismissible fade show" style="display: none;">
             <span id="mensajeTexto">Mensaje aquí</span>
             <button type="button" class="close" aria-label="Close" onclick="cerrarMensaje()">
-                <span aria-hidden="true">&times;</span>
+                <span >&times;</span>
             </button>
         </div>
 
@@ -93,13 +93,13 @@
                     <ul class="pagination justify-content-center" id="pagination">
                         <li class="page-item">
                             <a class="page-link" href="#" id="previousPage" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
+                                <span >&laquo;</span>
                             </a>
                         </li>
                         <!-- Los números de página se insertarán aquí dinámicamente -->
                         <li class="page-item">
                             <a class="page-link" href="#" id="nextPage" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
+                                <span >&raquo;</span>
                             </a>
                         </li>
                     </ul>
@@ -120,13 +120,13 @@
     </div>
 
     <!-- Modal para mostrar totales -->
-    <div class="modal fade" id="totalModal" tabindex="-1" aria-labelledby="totalModalLabel" aria-hidden="true">
+    <div class="modal fade" id="totalModal" tabindex="-1" aria-labelledby="totalModalLabel" >
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="totalModalLabel">Totales de Categorías y Global</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span >&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -145,7 +145,7 @@
     </div>
 
     <!-- Modal para Agregar/Editar Producto, y Generar Códigos -->
-    <div class="modal fade" id="productoModal" tabindex="-1" aria-labelledby="productoModalLabel" aria-hidden="true">
+    <div class="modal fade" id="productoModal" tabindex="-1" aria-labelledby="productoModalLabel" >
         <div class="modal-dialog">
             <div class="modal-content">
 
@@ -163,7 +163,7 @@
                         </li>
                     </ul>
                     <button type="button" class="close ml-2" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span >&times;</span>
                     </button>
                 </div>
 
@@ -207,8 +207,23 @@
                                         placeholder="Agregue una descripción del producto (Opcional)"></textarea>
                                 </div>
                                 <div class="form-group" id="codigoBarras" style="display: none;">
-                                    <label for="codigo">Código</label>
-                                    <input type="text" autocomplete="off" class="form-control" id="codigo">
+                                    <label for='sku'>Código</label>
+                                    <input type="text" autocomplete="off" class="form-control" id='sku'>
+                                </div>
+
+                                  <!-- NUEVO: Múltiples Códigos de Barras -->
+                                <div class="form-group" id="codigosForm">
+                                    <label>Códigos de Barras</label>
+                                    <div id="codigosBarrasContainer">
+                                        <!-- Campo inicial -->
+                                        <div class="input-group mb-2 codigo-barras-item">
+                                            <input type="text" class="form-control codigo-barras" name="codigosBarras" placeholder="Ingrese un código">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-danger btn-sm eliminar-codigo" type="button">&times;</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary btn-sm" id="agregarCodigoBtn">Agregar otro código</button>
                                 </div>
                                 <div class="form-group">
                                     <label for="categoria">Categoría</label>
@@ -234,8 +249,8 @@
                         <div class="tab-pane fade" id="contenido-codigo" role="tabpanel">
                             <div class="form-row">
                                 <div class="form-group col-md-8" id="codigoBarrasForm">
-                                    <label for="codigoBarrasInput">Código</label>
-                                    <input type="text" autocomplete="off" class="form-control" id="codigoBarrasInput">
+                                    <label for="codigoSkuInput">Código</label>
+                                    <input type="text" autocomplete="off" class="form-control" id="codigoSkuInput">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="cantidadCodigosTab">Cantidad a Imprimir</label>
@@ -257,13 +272,13 @@
 
 
     <!-- Modal para Agregar Categoria -->
-    <div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" aria-hidden="true">
+    <div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" >
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="categoriaModalLabel">Agregar Categoria</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span >&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -291,13 +306,13 @@
     </div>
 
     <!--Ver informacion-->
-    <div class="modal fade" id="verInfoModal" tabindex="-1" aria-labelledby="verInfoModal" aria-hidden="true">
+    <div class="modal fade" id="verInfoModal" tabindex="-1" aria-labelledby="verInfoModal" >
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="verInfoModal">Informacion del Producto Seleccionado</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span >&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -311,13 +326,13 @@
     </div>
 
     <div id="confirmModal-eliminar" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
-        aria-hidden="true">
+        >
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="confirmModalLabel">Confirmación</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span >&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">

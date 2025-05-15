@@ -41,6 +41,7 @@ public class ClienteServices {
     public List<Cliente> findAll() {
         return clienteRepository.findAll();
     }
+
     public Optional<Cliente> findById(Long id) {
         return clienteRepository.findById(id);
     }

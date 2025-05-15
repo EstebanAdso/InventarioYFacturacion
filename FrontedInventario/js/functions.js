@@ -57,13 +57,13 @@ function mostrarConfirmacionDinamica({
         modal = document.createElement('div');
         modal.id = 'modalConfirmacionDinamica';
         modal.innerHTML = `
-        <div class="modal fade" id="modalConfirmacionDinamicaInner" tabindex="-1" role="dialog" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+        <div class="modal fade" id="modalConfirmacionDinamicaInner" tabindex="-1" role="dialog" aria-labelledby="modalConfirmacionLabel" >
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header bg-danger text-white" >
                 <h5 class="modal-title" id="modalConfirmacionLabel">Confirmación</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
+                  <span >&times;</span>
                 </button>
               </div>
               <div class="modal-body" id="modalConfirmacionTexto"></div>

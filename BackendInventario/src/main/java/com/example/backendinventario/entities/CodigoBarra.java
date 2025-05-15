@@ -1,5 +1,6 @@
 package com.example.backendinventario.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ public class CodigoBarra {
 
     @ManyToOne
     @JoinColumn(name = "producto_id")
+    @JsonBackReference
     private Producto producto;
 
 }

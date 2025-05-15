@@ -27,7 +27,6 @@ public class ClienteController {
         return clienteServices.findAll();
     }
 
-
     @GetMapping("{id}")
     public Optional<Cliente> buscar(@PathVariable Long id) {
         return clienteServices.findById(id);
@@ -59,8 +58,6 @@ public class ClienteController {
         return ResponseEntity.ok(savedCliente);
     }
 
-
-
     @PutMapping("{id}")
     public Cliente actualizar(@PathVariable Long id, @RequestBody Cliente clienteActualizado) {
         Cliente clienteExistente = clienteServices.findById(id)
@@ -74,13 +71,11 @@ public class ClienteController {
         return clienteServices.save(clienteExistente);
     }
 
-
-
-        @GetMapping("/top")
-        public ResponseEntity<List<ClienteTopDto>> obtenerClientesTop() {
-            List<ClienteTopDto> clientesTop = clienteServices.obtenerClientesTop();
-            return ResponseEntity.ok(clientesTop);
-        }
+    @GetMapping("/top")
+    public ResponseEntity<List<ClienteTopDto>> obtenerClientesTop() {
+        List<ClienteTopDto> clientesTop = clienteServices.obtenerClientesTop();
+        return ResponseEntity.ok(clientesTop);
+    }
 
     @GetMapping("/suggestions")
     public List<Cliente> getSuggestions(@RequestParam String query) {

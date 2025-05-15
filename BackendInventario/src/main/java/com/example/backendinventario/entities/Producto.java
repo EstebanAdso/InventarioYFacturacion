@@ -1,5 +1,6 @@
 package com.example.backendinventario.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -32,6 +33,7 @@ public class Producto {
     private Categoria categoria;
 
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<CodigoBarra> codigosDeBarra = new ArrayList<>();
 
 
