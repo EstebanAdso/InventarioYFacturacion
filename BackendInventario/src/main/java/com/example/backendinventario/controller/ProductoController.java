@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,13 +32,19 @@ public class ProductoController {
         return productoService.findById(id);
     }
 
-    @GetMapping("/codigo-barras/{codigo}")
-    public Producto buscarPorCodigoBarras(@PathVariable String codigo) {
-        if (codigo == null || codigo.trim().isEmpty()) {
-            throw new IllegalArgumentException("El código de barras no puede estar vacío");
+
+    @GetMapping("/buscar-codigo/{codigo}")
+    public ResponseEntity<Producto> buscarPorCodigo(@PathVariable String codigo) {
+        try {
+            Producto producto = productoService.buscarPorSkuOCodigo(codigo);
+            return ResponseEntity.ok(producto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
-        return productoService.leerCodigoBarras(codigo);
     }
+
 
     @GetMapping("/categoria/{nombreCategoria}")
     public Page<Producto> listarPorCategoria(
@@ -139,7 +146,6 @@ public class ProductoController {
             productoService.generarCodigoActualizado(producto.getId());
             actualizados++;
         }
-
         return "Se han actualizado los códigos de " + actualizados + " productos";
     }
 }

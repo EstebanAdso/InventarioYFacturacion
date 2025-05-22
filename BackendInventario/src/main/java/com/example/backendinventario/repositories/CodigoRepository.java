@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface CodigoRepository extends JpaRepository<CodigoBarra, Long> {
     List<CodigoBarra> findByProductoId(Long productoId);
+    CodigoBarra findByCodigoBarra(String codigoBarra);
 }

@@ -24,7 +24,7 @@ public class ProductoServices {
     public Producto save(Producto producto) {
         // Validar SKU si ya fue asignado
         if (producto.getSku() != null && !producto.getSku().trim().isEmpty()) {
-            Producto productoConMismoSku = productoRepository.findBySku(producto.getSku());
+            Producto productoConMismoSku = productoRepository.findBySkuOrCodigoBarra(producto.getSku());
             if (productoConMismoSku != null) {
                 // Si el SKU ya existe pero pertenece a otro producto, generar nuevo
                 if (producto.getId() == null || !productoConMismoSku.getId().equals(producto.getId())) {
@@ -216,7 +216,17 @@ public class ProductoServices {
         return generarCodigoNuevo(null);  // Usa el valor por defecto "PRD"
     }
 
-    public Producto leerCodigoBarras(String codigoBarras){
-        return productoRepository.findBySku(codigoBarras);
+    public Producto buscarPorSkuOCodigo(String codigo) {
+        if (codigo == null || codigo.trim().isEmpty()) {
+            throw new IllegalArgumentException("El código no puede estar vacío");
+        }
+
+        Producto producto = productoRepository.findBySkuOrCodigoBarra(codigo);
+        if (producto == null) {
+            throw new RuntimeException("No se encontró producto con el código: " + codigo);
+        }
+
+        return producto;
     }
+
 }

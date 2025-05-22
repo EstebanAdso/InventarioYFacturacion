@@ -509,3 +509,37 @@ legend {
 .fa-calendar-alt, .fa-list {
     margin-right: 5px;
 }
+
+
+
+.codigo-barras-item {
+    display: inline-flex;
+    align-items: center;
+    background: #2c3e50;
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 6px 12px;
+    margin: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+.codigo-barras-item:hover {
+    background: #34495e;
+}
+
+.codigo-barras-item .eliminar-codigo {
+    margin-left: 8px;
+    background: transparent;
+    border: none;
+    color: #ff6b6b;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+}
+
+.codigo-barras-item .eliminar-codigo:hover {
+    color: #ff3b3b;
+}

@@ -27,6 +27,9 @@ function cerrarMensaje() {
 function mostrarMensajeParrafo(mensaje, color = 'black', element) {
   document.getElementById(element).innerHTML = 
       `<p style="text-align: center; color: ${color}; font-weight: bold">${mensaje}</p>`;
+      setTimeout(() => {
+        document.getElementById(element).innerHTML = '';
+      }, 3000);
 }
 
 function formatNumber(number) {

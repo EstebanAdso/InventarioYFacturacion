@@ -85,7 +85,7 @@ function buscarProductoPorCodigoBarras(codigo) {
     mostrarMensaje('info', 'Buscando producto...');
     
     // Llamar al endpoint de búsqueda por código de barras
-    fetch(`http://localhost:8082/producto/codigo-barras/${encodeURIComponent(codigo)}`)
+    fetch(`http://localhost:8082/producto/buscar-codigo/${encodeURIComponent(codigo)}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Producto no encontrado');

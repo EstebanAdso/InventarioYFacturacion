@@ -18,13 +18,18 @@ public class CodigoBarraService {
     @Autowired
     private ProductoRepository productoRepository;
 
-    public CodigoBarra guardarCodigoBarra(CodigoBarraDTO dto) throws Exception{
+    public CodigoBarra guardarCodigoBarra(CodigoBarraDTO dto) throws Exception {
         Optional<Producto> productoOpt = productoRepository.findById(dto.getProductoId());
-        if(productoOpt.isEmpty()){
+        if (productoOpt.isEmpty()) {
             throw new Exception("Producto no encontrado" + dto.getProductoId());
         }
 
         Producto producto = productoOpt.get();
+
+        // Verificar si el código ya existe
+        if (codigoRepository.findByCodigoBarra(dto.getCodigoBarra()) != null) {
+            throw new Exception("El código de barra ya existe");
+        }
 
         CodigoBarra codigoBarra = new CodigoBarra();
         codigoBarra.setCodigoBarra(dto.getCodigoBarra());

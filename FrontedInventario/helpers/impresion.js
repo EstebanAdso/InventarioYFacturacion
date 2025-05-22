@@ -99,7 +99,7 @@ function generarFacturaHTMLPOS({ nombreCliente, cedulaNit, telefonoCliente, corr
             `;
 }
 
-function generarHTMLParaCodigos(cantidad, codigo) {
+async function generarHTMLParaCodigos(cantidad, codigo) {
     const codigosHtml = Array.from({ length: cantidad }, (_, i) => `
         <div class="etiqueta">
             <svg class="barcode" id="barcode-${i}"></svg>

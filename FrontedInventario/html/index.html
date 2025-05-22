@@ -206,25 +206,7 @@
                                     <textarea class="form-control" id="descripcion" rows="2"
                                         placeholder="Agregue una descripción del producto (Opcional)"></textarea>
                                 </div>
-                                <div class="form-group" id="codigoBarras" style="display: none;">
-                                    <label for='sku'>Código</label>
-                                    <input type="text" autocomplete="off" class="form-control" id='sku'>
-                                </div>
 
-                                  <!-- NUEVO: Múltiples Códigos de Barras -->
-                                <div class="form-group" id="codigosForm">
-                                    <label>Códigos de Barras</label>
-                                    <div id="codigosBarrasContainer">
-                                        <!-- Campo inicial -->
-                                        <div class="input-group mb-2 codigo-barras-item">
-                                            <input type="text" class="form-control codigo-barras" name="codigosBarras" placeholder="Ingrese un código">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-danger btn-sm eliminar-codigo" type="button">&times;</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-secondary btn-sm" id="agregarCodigoBtn">Agregar otro código</button>
-                                </div>
                                 <div class="form-group">
                                     <label for="categoria">Categoría</label>
                                     <select class="form-control" id="categoria" required>
@@ -249,18 +231,40 @@
                         <div class="tab-pane fade" id="contenido-codigo" role="tabpanel">
                             <div class="form-row">
                                 <div class="form-group col-md-8" id="codigoBarrasForm">
-                                    <label for="codigoSkuInput">Código</label>
-                                    <input type="text" autocomplete="off" class="form-control" id="codigoSkuInput">
+                                    <label for="codigoSkuInput">SKU</label>
+                                    <input  type="text" autocomplete="off" class="form-control" id="codigoSkuInput">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="cantidadCodigosTab">Cantidad a Imprimir</label>
                                     <input type="number" autocomplete="off" class="form-control" value="1"
                                         id="cantidadCodigosTab" min="1">
                                 </div>
-                                <div class="form-group">
-                                    <p class="text-danger text-center w-100" id="mensajeCodigoAdvertencia"></p>
-                                </div>
                             </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-8">
+                                    <label for="codigoBarrasInput">Código de Barras</label>
+                                    <input type="text" autocomplete="off" class="form-control" id="codigoBarrasInput"
+                                        placeholder="Ingrese un código">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="guardarCodigoBtn">&nbsp;</label>
+                                    <button type="button" id="guardarCodigoBtn" class="btn btn-success btn-block">Guardar
+                                        Código</button>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group" id="codigosDeBarraForm">
+                                <div class="d-flex flex-wrap justify-content-center" id="listCodigosDeBarra"></div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <p class="text-danger text-center w-100" id="mensajeCodigoAdvertencia"></p>
+                            </div>
+
+
                             <button type="submit" id="imprimirCodigosBtn" class="btn btn-primary">Imprimir
                                 Códigos</button>
                         </div>
@@ -346,8 +350,8 @@
         </div>
     </div>
 
-    <script src="../js/functions.js"></script>
     <script src="../helpers/impresion.js"></script>
+    <script src="../js/functions.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
