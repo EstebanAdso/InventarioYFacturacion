@@ -11,6 +11,7 @@ npm run build
 
 // FUNCIONES A IMPLEMEMTAR
 * buscar facturas por clientes ✅
+* agregar garantia y precio mayorista ✅
 * generar excel cada mes de las ventas del dia. ✅
 * metodo de abono ✅
 * mejorar la vista de totales en tabla ✅

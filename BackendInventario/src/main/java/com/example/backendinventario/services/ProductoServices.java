@@ -26,14 +26,11 @@ public class ProductoServices {
         if (producto.getSku() != null && !producto.getSku().trim().isEmpty()) {
             Producto productoConMismoSku = productoRepository.findBySkuOrCodigoBarra(producto.getSku());
             if (productoConMismoSku != null) {
-                // Si el SKU ya existe pero pertenece a otro producto, generar nuevo
                 if (producto.getId() == null || !productoConMismoSku.getId().equals(producto.getId())) {
                     producto.setSku(generarCodigoNuevo());
                 }
-                // Si el SKU es del mismo producto, se conserva
             }
         } else {
-            // SKU es nulo o vacío: generar uno nuevo
             String nuevoCodigo;
             do {
                 nuevoCodigo = generarCodigoNuevo();
@@ -41,8 +38,15 @@ public class ProductoServices {
             producto.setSku(nuevoCodigo);
         }
 
-        // 🔁 Enlazar códigos de barra al producto antes de guardar
+        // ✅ Validar que los códigos de barra no estén usados por otro producto
         if (producto.getCodigosDeBarra() != null) {
+            for (CodigoBarra cb : producto.getCodigosDeBarra()) {
+                Producto existente = productoRepository.findByCodigoBarra(cb.getCodigoBarra());
+                if (existente != null && (producto.getId() == null || !existente.getId().equals(producto.getId()))) {
+                    throw new RuntimeException("El código de barras '" + cb.getCodigoBarra() + "' ya está asignado a otro producto.");
+                }
+            }
+            // Enlazar códigos de barra
             for (CodigoBarra cb : producto.getCodigosDeBarra()) {
                 cb.setProducto(producto);
             }
@@ -57,6 +61,7 @@ public class ProductoServices {
 
         return productoRepository.save(producto);
     }
+
 
     // Calcular el total global de todos los productos
     public double totalGlobal() {
@@ -225,7 +230,6 @@ public class ProductoServices {
         if (producto == null) {
             throw new RuntimeException("No se encontró producto con el código: " + codigo);
         }
-
         return producto;
     }
 

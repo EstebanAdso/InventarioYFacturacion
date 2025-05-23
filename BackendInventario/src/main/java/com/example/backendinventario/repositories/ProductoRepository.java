@@ -17,6 +17,8 @@ public interface ProductoRepository extends JpaRepository<Producto, Long>, JpaSp
     List<Producto> findByCategoriaId(Long categoriaId);
     @Query("SELECT p FROM Producto p LEFT JOIN p.codigosDeBarra c WHERE p.sku = :codigo OR c.codigoBarra = :codigo")
     Producto findBySkuOrCodigoBarra(@Param("codigo") String codigo);
+    @Query("SELECT p FROM Producto p JOIN p.codigosDeBarra cb WHERE cb.codigoBarra = :codigoBarra")
+    Producto findByCodigoBarra(@Param("codigoBarra") String codigoBarra);
     boolean existsBySku(String sku);
 
 

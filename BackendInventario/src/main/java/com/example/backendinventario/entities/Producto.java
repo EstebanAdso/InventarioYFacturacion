@@ -21,7 +21,7 @@ public class Producto {
     private float precioMayorista;
     private Integer cantidad;
     private float total;
-
+    private int garantia;
     @Column(length = 6000)
     private String descripcion;
 
@@ -44,6 +44,7 @@ public class Producto {
         this.estado = "activo"; // Estado por defecto
         this.descripcion = null;
         this.alertaStock = 0;
+        this.garantia = 1;
     }
 
     // Calcular el total al persistir o actualizar

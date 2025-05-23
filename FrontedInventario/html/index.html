@@ -201,6 +201,22 @@
                                             id="alertaStock">
                                     </div>
                                 </div>
+                                <div class="form-group codigosBarrasContainerProduct">
+                                    <label>Códigos de Barras</label>
+                                    <div id="codigosBarrasContainer">
+                                        <div class="input-group mb-2">
+                                            <input type="text" class="form-control codigo-barras" 
+                                                   placeholder="Escanee el código de barras" 
+                                                   autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="button" onclick="agregarCampoCodigoBarras()">+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <p class="text-danger text-center w-100" id="mensajeCodigoAdvertenciaProducto"></p>
+                                </div>
                                 <div class="form-group">
                                     <label for="descripcion">Descripción</label>
                                     <textarea class="form-control" id="descripcion" rows="2"
@@ -232,7 +248,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-8" id="codigoBarrasForm">
                                     <label for="codigoSkuInput">SKU</label>
-                                    <input  type="text" autocomplete="off" class="form-control" id="codigoSkuInput">
+                                    <input readonly type="text" autocomplete="off" class="form-control" id="codigoSkuInput">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="cantidadCodigosTab">Cantidad a Imprimir</label>
@@ -245,7 +261,7 @@
                                 <div class="form-group col-md-8">
                                     <label for="codigoBarrasInput">Código de Barras</label>
                                     <input type="text" autocomplete="off" class="form-control" id="codigoBarrasInput"
-                                        placeholder="Ingrese un código">
+                                        placeholder="Escanee el código de barra">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="guardarCodigoBtn">&nbsp;</label>
