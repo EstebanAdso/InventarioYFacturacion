@@ -3,6 +3,7 @@ let tiempoUltimaTecla = 0;
 const tiempoMaximoEntreTeclas = 50;
 const longitudMinCodigoBarras = 6; 
 let campoLectura = null;
+let productoSeleccionado = null; // Referencia al producto actualmente seleccionado
 
 // Función para leer códigos de barras
 function leerCodigoBarras(event) {
@@ -94,6 +95,10 @@ function buscarProductoPorCodigoBarras(codigo) {
             return response.json();
         })
         .then(producto => {
+            if(producto && producto.cantidad == 0){
+                mostrarMensaje('error', 'El producto no tiene stock');
+                return;
+            }
             if (producto) {
                 productoSeleccionadoId = producto.id;
                 seleccionarProducto(producto);
@@ -184,11 +189,20 @@ function buscarProductos() {
             if (Array.isArray(data) && data.length > 0) {
                 data.forEach(producto => {
                     const li = document.createElement('li');
+                    const tienePrecioMayoreo = producto.precioMayorista && producto.precioMayorista > 0;
+                    let precioMayoreoHTML = '';
+                    
+                    if (tienePrecioMayoreo) {
+                        precioMayoreoHTML = ` || <span style='color: blue;'>MAY $${formatNumber(producto.precioMayorista)}</span>`;
+                    }
+                    
                     li.innerHTML = producto.nombre.toUpperCase() +
-                        "<i> || P.C <span style='color: red;'>$ " + formatNumber(producto.precioComprado) + "</span></i>" +
-                        "<i> || P.V $ " + formatNumber(producto.precioVendido) + "</i>";
+                        `<i> || P.C <span style='color: red;'>$${formatNumber(producto.precioComprado)}</span></i>` +
+                        `<i> || P.V $${formatNumber(producto.precioVendido)}</i>${precioMayoreoHTML}`;
                     li.style.cursor = 'pointer';
                     li.classList.add('hover-effect');
+                    li.style.padding = '5px';
+                    li.style.borderBottom = '1px solid #eee';
 
                     // Evento al hacer clic en la sugerencia
                     li.onclick = () => {
@@ -209,11 +223,25 @@ function buscarProductos() {
 // Función para seleccionar un producto de la lista de sugerencias
 function seleccionarProducto(producto) {
     document.getElementById('nombreProductoManual').value = producto.nombre;
-    document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioVendido);
+    console.log(producto);
+    
+    // Verificar si el checkbox de precio mayoreo está activado y si el producto tiene precio de mayoreo
+    const precioMayoreoCheck = document.getElementById('precioMayoreoCheck');
+    const tienePrecioMayoreo = producto.precioMayorista && producto.precioMayorista > 0;
+    
+    // Mostrar el precio según corresponda
+    if (precioMayoreoCheck.checked && tienePrecioMayoreo) {
+        document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioMayorista);
+    } else {
+        document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioVendido);
+    }
+    
     document.getElementById('PCProducto').value = formatNumber(producto.precioComprado);
+    document.getElementById('garantiaProducto').value = producto.garantia || 1;
     document.getElementById('sugerenciasProductos').style.display = 'none';
 
     productoSeleccionadoId = producto.id;
+    productoSeleccionado = producto; // Guardar referencia al producto actual
 
     // Ajusta el máximo permitido en el campo de cantidad
     const inputCantidad = document.getElementById('cantidadProductoManual');
@@ -222,6 +250,34 @@ function seleccionarProducto(producto) {
     // Mostrar un mensaje al usuario sobre el stock máximo
     document.getElementById('mensajeMaxCantidad').innerText =
         `Cantidad máxima disponible: ${producto.cantidad}`;
+        
+    // Configurar el evento del checkbox de mayoreo
+    configurarEventoMayoreo();
+}
+
+// Función para configurar el evento del checkbox de mayoreo
+function configurarEventoMayoreo() {
+    const checkMayoreo = document.getElementById('precioMayoreoCheck');
+    
+    // Primero, eliminar cualquier evento change existente
+    const nuevoCheck = checkMayoreo.cloneNode(true);
+    checkMayoreo.parentNode.replaceChild(nuevoCheck, checkMayoreo);
+    
+    // Agregar el nuevo evento
+    nuevoCheck.addEventListener('change', function() {
+        if (productoSeleccionado) {
+            console.log(productoSeleccionado);
+            if (this.checked && productoSeleccionado.precioMayorista) {
+                console.log(productoSeleccionado.precioMayorista);
+                document.getElementById('precioUnitarioManual').value = formatNumber(productoSeleccionado.precioMayorista);
+            } else {
+                console.log(productoSeleccionado.precioVendido);
+                document.getElementById('precioUnitarioManual').value = formatNumber(productoSeleccionado.precioVendido);
+            }
+        }
+    });
+    
+    return nuevoCheck;
 }
 
 // Función para agregar detalles
@@ -337,6 +393,7 @@ function agregarProducto() {
             const index = row.rowIndex - 1;
             const producto = productosEnFactura[index];
 
+            
             // Llenar el formulario con los datos del producto a editar
             document.getElementById('nombreProductoManual').value = producto.nombre;
             document.getElementById('descripcionFactura').value = producto.descripcion;
@@ -344,7 +401,9 @@ function agregarProducto() {
             document.getElementById('precioUnitarioManual').value = producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
             document.getElementById('garantiaProducto').value = producto.garantia;
             document.getElementById('PCProducto').value = producto.pc;
-
+            
+            
+            
             // Establecer el ID del producto seleccionado para edición
             productoSeleccionadoId = producto.id;
 
@@ -607,10 +666,17 @@ function limpiarFormularioProducto() {
     document.getElementById('descripcionFactura').value = '';
     document.getElementById('cantidadProductoManual').value = '1';
     document.getElementById('precioUnitarioManual').value = '';
-    document.getElementById('garantiaProducto').value = '';
+    document.getElementById('garantiaProducto').value = '1';
     document.getElementById('PCProducto').value = '';
     document.getElementById('mensajeMaxCantidad').textContent = '';
-    productoSeleccionadoId = null; // Asegurarse de limpiar el ID de edición
+    productoSeleccionadoId = null; // Limpiar el ID de edición
+    productoSeleccionado = null; // Limpiar la referencia al producto actual
+    
+    // Restablecer el checkbox de precio mayoreo
+    const checkMayoreo = document.getElementById('precioMayoreoCheck');
+    if (checkMayoreo.checked) {
+        checkMayoreo.click(); // Desmarcar el checkbox si está marcado
+    }
 }
 
 function limpiarFormulario() {

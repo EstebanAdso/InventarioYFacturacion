@@ -164,7 +164,23 @@ nombreClienteInput.addEventListener('input', function(e) {
 });
 
 
+// Evento para mostrar/ocultar el costo de adquisición
 document.getElementById('verCostoAdquisicion').addEventListener('change', (e) => {
     const PCProductoInput = document.getElementById('PCProducto');
     PCProductoInput.style.webkitTextSecurity = e.target.checked ? 'none' : 'disc';
+});
+
+// Evento para el checkbox de precio mayoreo
+document.getElementById('precioMayoreoCheck').addEventListener('change', (e) => {
+    // Si hay un producto seleccionado, actualizar el precio
+    if (productoSeleccionadoId) {
+        const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
+        if (nombreProducto) {
+            // Buscar el producto en la lista de productos filtrados
+            const producto = productosFiltrados.find(p => p.id === productoSeleccionadoId);
+            if (producto) {
+                seleccionarProducto(producto);
+            }
+        }
+    }
 });

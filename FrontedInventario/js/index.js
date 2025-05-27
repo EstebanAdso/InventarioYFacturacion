@@ -79,11 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const nombre = document.getElementById('nombre').value.toUpperCase().trim();
         const precioComprado = parseInt(document.getElementById('precioComprado').value.replace(/\./g, ''));
         const precioVendido = parseInt(document.getElementById('precioVendido').value.replace(/\./g, ''));
+        const precioMayorista = parseInt(document.getElementById('productoPrecioMayoreo').value.replace(/\./g, ''));
         const cantidad = document.getElementById('cantidad').value;
         const categoriaId = document.getElementById('categoria').value;
         const descripcion = document.getElementById('descripcion').value.trim();
-        const alertaStock = document.getElementById('alertaStock').value;
         const codigosdeBarra = document.querySelectorAll('.codigo-barras')
+        const garantia = document.getElementById('productoGarantia').value;
+        const alertaStock = document.getElementById('productoAlertaStock').value;
 
         const codigosDeBarra = [];
         codigosdeBarra.forEach(codigo => {
@@ -100,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        const producto = { nombre, precioComprado, precioVendido, cantidad, alertaStock, codigosDeBarra, categoria: { id: categoriaId }, codigosDeBarra, total: precioComprado * cantidad, descripcion };
+        const producto = { nombre, precioComprado, precioVendido, cantidad, alertaStock, precioMayorista, garantia, codigosDeBarra, categoria: { id: categoriaId }, codigosDeBarra, total: precioComprado * cantidad, descripcion };
 
         console.log(producto)
         try {
@@ -152,12 +154,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const nombre = document.getElementById('nombre').value.toUpperCase().trim();
         const precioComprado = parseInt(document.getElementById('precioComprado').value.replace(/\./g, ''));
         const precioVendido = parseInt(document.getElementById('precioVendido').value.replace(/\./g, ''));
+        const precioMayorista = parseInt(document.getElementById('productoPrecioMayoreo').value.replace(/\./g, ''));
         const cantidad = document.getElementById('cantidad').value;
         const categoriaId = document.getElementById('categoria').value;
         const descripcion = document.getElementById('descripcion').value.trim();
-        const alertaStock = document.getElementById('alertaStock').value;
+        const codigosdeBarra = document.querySelectorAll('.codigo-barras')
+        const garantia = document.getElementById('productoGarantia').value;
+        const alertaStock = document.getElementById('productoAlertaStock').value;
 
-        const producto = { nombre, precioComprado, precioVendido, cantidad, alertaStock, categoria: { id: categoriaId }, total: precioComprado * cantidad, descripcion };
+        const codigosDeBarra = [];
+        codigosdeBarra.forEach(codigo => {
+            if (codigo.value.trim() !== '') {
+                codigosDeBarra.push({ codigoBarra: codigo.value.trim() });
+            }
+        });
+
+        const producto = { nombre, precioComprado, precioVendido, precioMayorista, cantidad, codigosDeBarra, garantia, alertaStock, categoria: { id: categoriaId }, total: precioComprado * cantidad, descripcion };
 
 
         const form = document.getElementById('productoForm');
@@ -439,10 +451,12 @@ async function editarProducto(id) {
         document.getElementById('precioComprado').value = formatNumber(producto.precioComprado);
         document.getElementById('precioVendido').value = formatNumber(producto.precioVendido);
         document.getElementById('cantidad').value = producto.cantidad;
-        document.getElementById('alertaStock').value = producto.alertaStock;
         document.getElementById('categoria').value = producto.categoria.id;
         document.getElementById('descripcion').value = producto.descripcion;
         document.getElementById('codigoSkuInput').value = producto.sku;
+        document.getElementById('productoPrecioMayoreo').value = formatNumber(producto.precioMayorista);
+        document.getElementById('productoGarantia').value = producto.garantia;
+        document.getElementById('productoAlertaStock').value = producto.alertaStock;
 
 
         // Ocultar la sección de códigos de barras al editar

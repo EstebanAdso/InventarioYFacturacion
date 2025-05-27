@@ -98,6 +98,8 @@ public class ProductoController {
         productoExistente.setCategoria(productoActualizado.getCategoria());
         productoExistente.setDescripcion(productoActualizado.getDescripcion());
         productoExistente.setAlertaStock(productoActualizado.getAlertaStock());
+        productoExistente.setGarantia(productoActualizado.getGarantia());
+        productoExistente.setPrecioMayorista(productoActualizado.getPrecioMayorista());
 
         return productoService.save(productoExistente);
     }

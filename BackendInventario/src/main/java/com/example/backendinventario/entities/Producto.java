@@ -21,17 +21,14 @@ public class Producto {
     private float precioMayorista;
     private Integer cantidad;
     private float total;
-    private int garantia;
+    private Integer garantia;
     @Column(length = 6000)
     private String descripcion;
-
     @Column(unique = true)
     private String sku;
-
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
-
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<CodigoBarra> codigosDeBarra = new ArrayList<>();
