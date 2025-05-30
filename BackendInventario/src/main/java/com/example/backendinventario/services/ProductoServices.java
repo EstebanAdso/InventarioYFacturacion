@@ -182,28 +182,32 @@ public class ProductoServices {
 
     // Genera un código nuevo, utilizando un nombre opcional (por defecto "PRD")
     public String generarCodigoNuevo(String nombreOpcional) {
-        // Generar un prefijo de 3 letras aleatorias
-        String letrasAleatorias = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        StringBuilder prefijoBuilder = new StringBuilder();
+        String letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String numeros = "0123456789";
+
+        StringBuilder codigo = new StringBuilder();
+
+        // 1. Agregar 3 letras aleatorias
         for (int i = 0; i < 3; i++) {
-            int index = (int) (Math.random() * letrasAleatorias.length());
-            prefijoBuilder.append(letrasAleatorias.charAt(index));
-        }
-        String prefijo = prefijoBuilder.toString();
-
-        // Fecha en formato 'yyyyMMdd'
-        String fecha = java.time.LocalDate.now().toString().replaceAll("-", "");
-
-        // Generación de valor aleatorio
-        String aleatorio;
-        if (Math.random() < 0.5) {
-            aleatorio = String.format("%06d", (int) (Math.random() * 1000000));
-        } else {
-            aleatorio = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+            int index = (int) (Math.random() * letras.length());
+            codigo.append(letras.charAt(index));
         }
 
-        return prefijo + aleatorio + fecha;
+        // 2. Agregar 3 números aleatorios
+        for (int i = 0; i < 3; i++) {
+            int index = (int) (Math.random() * numeros.length());
+            codigo.append(numeros.charAt(index));
+        }
+
+        // 3. Agregar 2 letras aleatorias finales
+        for (int i = 0; i < 2; i++) {
+            int index = (int) (Math.random() * letras.length());
+            codigo.append(letras.charAt(index));
+        }
+
+        return codigo.toString(); // Total: 3 + 3 + 2 = 8 caracteres
     }
+
 
     // Genera un código y lo asigna al producto existente
     public Producto generarCodigoActualizado(Long idProducto) {

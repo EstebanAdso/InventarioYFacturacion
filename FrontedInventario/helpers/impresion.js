@@ -7,7 +7,7 @@ function generarFacturaHTMLPDF({ nombreCliente, cedulaNit, telefonoCliente, corr
                     <div> 
                         <p style="margin: 0 0 4px 0;"><b>NIT:</b> 1193030552-4</p>
                         <p style="margin: 0 0 4px 0;"><b>Celular:</b> 3242264795</p>
-                        <p style="margin: 0;"><b>Ubicación:</b> Pasto, Centro comercial la 16, local 138</p>
+                        <p style="margin: 0;"><b>Ubicación:</b> Pasto, Centro comercial San Agustín, local 224A</p>
                     </div>
                 </div>
 
@@ -60,7 +60,7 @@ function generarFacturaHTMLPOS({ nombreCliente, cedulaNit, telefonoCliente, corr
                             <div style="text-align : left; font-size: 12px; margin-top: 10px">
                             <b>NIT:</b> 1193030552-4<br>
                             <b>Celular:</b> 3242264795<br>
-                            <b>Ubicación:</b> Pasto, Centro comercial la 16, local 138
+                            <b>Ubicación:</b> Pasto, Centro comercial San Agustín, local 224A
                             <br>NO RESPONSABLES DE IVA
                             </div>
                         </p>
@@ -99,11 +99,14 @@ function generarFacturaHTMLPOS({ nombreCliente, cedulaNit, telefonoCliente, corr
             `;
 }
 
+
 async function generarHTMLParaCodigos(cantidad, codigo) {
     const codigosHtml = Array.from({ length: cantidad }, (_, i) => `
         <div class="etiqueta">
-            <svg class="barcode" id="barcode-${i}"></svg>
-            <p>${codigo}</p>
+            <div class="contenedor-barcode">
+                <svg class="barcode" id="barcode-${i}"></svg>
+            </div>
+            <p class="codigo-texto">${codigo}</p>
         </div>
     `).join('');
 
@@ -115,46 +118,63 @@ async function generarHTMLParaCodigos(cantidad, codigo) {
         <title>Imprimir Códigos de Barras</title>
         <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
         <style>
-            @page {
-                size: 90mm 29mm; /* horizontal */
-                margin: 0;
-            }
+        @page {
+            margin: 0;
+            size: auto;
+        }
 
-            body {
-                margin: 0;
-                padding: 0;
-                font-family: Arial, sans-serif;
-            }
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+        }
 
+        .etiqueta {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            page-break-after: always;
+            box-sizing: border-box;
+            padding: 0mm 2mm;
+        }
+
+        .contenedor-barcode {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+        }
+
+        svg.barcode {
+            width: 98%;
+            height: auto;
+            max-width: 100%;
+            max-height: 90vh;
+            margin-top: 0mm;
+        }
+
+        .codigo-texto {
+            font-size: 8pt;
+            font-weight: bold;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            flex-shrink: 0;
+            margin-bottom: 1mm;
+        }
+
+        @media screen {
             .etiqueta {
-                width: 80mm;
-                height: 29mm;
-                display: flex;
-                flex-direction: column;
-                justify-content: center; /* Centra verticalmente el contenido */
-                align-items: center;
-                margin: auto;
-                page-break-after: always;
-                box-sizing: border-box;
-                position: relative;
+                height: 100vh;
             }
-
-            svg.barcode {
-                width: auto;
-                height: auto;
-                max-width: 80mm;
-                max-height: 18mm;
-                margin-top: -3mm; /* Sube un poco el código de barras para centrarlo mejor */
-            }
-
-            p {
-                margin: 0;
-                font-size: 12pt;
-                text-align: center;
-                position: absolute;
-                top: 23mm; /* Posiciona el texto más abajo */
-                width: 100%;
-            }
+        }
         </style>
     </head>
     <body>
@@ -167,10 +187,10 @@ async function generarHTMLParaCodigos(cantidad, codigo) {
                 JsBarcode("#barcode-" + i, codigo, {
                     format: "CODE128",
                     lineColor: "#000",
-                    width: 2,
-                    height: 85,
+                    width: 2.3,
+                    height: 70,
                     displayValue: false,
-                    margin: 0
+                    margin: 1
                 });
             }
         </script>
@@ -178,5 +198,12 @@ async function generarHTMLParaCodigos(cantidad, codigo) {
     </html>
     `;
 }
+
+
+
+
+
+
+
 
 
