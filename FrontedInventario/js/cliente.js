@@ -83,15 +83,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     clientesArray.sort((a, b) => b.id - a.id);
                     clientesArray.forEach(cliente => {
                         const row = `
+                        <div class="col-md-12">
                             <tr>
-                                <td>${cliente.id}</td>
-                                <td>${cliente.nombre.toUpperCase()}</td>
-                                <td>${cliente.identificacion}</td>
-                                <td>${cliente.telefono || ""}</td>
-                                <td>${cliente.direccion || ""}</td>
-                                <td>${cliente.correo || ""}</td>
+                                <td class="col-md-1">${cliente.id}</td>
+                                <td class="col-md-3">${cliente.nombre.toUpperCase()}</td>
+                                <td class="col-md-1">${cliente.identificacion}</td>
+                                <td class="col-md-2">${cliente.telefono || ""}</td>
+                                <td class="col-md-2">${cliente.direccion || ""}</td>
+                                <td class="col-md-2">${cliente.correo || ""}</td>
                                 
-                                <td>
+                                <td class="col-md-1" style="text-align: center;">
                                     <div">
                                         <button class="btn btn-success btn-sm editarclienteBtn" data-id="${cliente.id}">Editar</button>
                                     </div>

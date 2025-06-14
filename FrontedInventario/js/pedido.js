@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch(apiUrl)
             .then(response => response.json())
             .then(pedidos => {
+                if (pedidos.content.length === 0) {
+                    console.log('No hay pedidos pendientes.');
+                    return;
+                }
                 pedidoTableBody.innerHTML = '';
                 pedidos.content.forEach(pedido => {
                     const row = `

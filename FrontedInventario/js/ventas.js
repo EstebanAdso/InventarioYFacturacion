@@ -75,20 +75,21 @@ function mostrarVentasAgrupadasPorFecha(facturas) {
         const tabla = document.createElement('table');
         tabla.className = 'table table-striped table-hover';
         tabla.innerHTML = `
+        <div class="col-md-12">
             <thead>
                 <tr>
-                    <th>Factura ID</th>
-                    <th>Cliente</th>
-                    <th>Cédula/NIT</th>
-                    <th>Hora</th>
-                    <th>Total</th>
-                    <th>Acciones</th>
+                    <th class="col-md-1">Factura ID</th>
+                    <th class="col-md-1">Cliente</th>
+                    <th class="col-md-1">Cédula/NIT</th>
+                    <th class="col-md-1">Hora</th>
+                    <th class="col-md-1">Total</th>
+                    <th class="col-md-1">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 ${facturasPorFecha[fechaKey].map(crearFilaFactura).join('')}
             </tbody>
-        `;
+        </div>`;
 
         grupoFecha.appendChild(tabla);
         ventasContainer.appendChild(grupoFecha);
@@ -101,21 +102,23 @@ function mostrarVentasAgrupadasPorFecha(facturas) {
 function mostrarVentasNormales(facturas) {
     const ventasContainer = document.getElementById('ventasContainer');
     ventasContainer.innerHTML = `
+    <div class="col-md-12">
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Factura ID</th>
-                    <th>Cliente</th>
-                    <th>Cédula/NIT</th>
-                    <th>Fecha y Hora</th>
-                    <th>Total</th>
-                    <th>Acciones</th>
+                    <th class="col-md-1">Factura ID</th>
+                    <th class="col-md-1">Cliente</th>
+                    <th class="col-md-1">Cédula/NIT</th>
+                    <th class="col-md-1">Fecha y Hora</th>
+                    <th class="col-md-1">Total</th>
+                    <th class="col-md-1">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 ${facturas.map(crearFilaFactura).join('')}
             </tbody>
         </table>
+    </div>
     `;
 
     configurarBotonesDetalles();
@@ -132,7 +135,7 @@ function crearFilaFactura(factura) {
             ? new Date(factura.fechaEmision).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
             : formatearFecha(new Date(factura.fechaEmision))}</td>
             <td style="color: #48e; font-weight: bold">${formatNumber(factura.total)}</td>
-            <td>
+            <td class="d-flex">
                 <button class="btn btn-info btn-sm btn-ver-detalles" data-id="${factura.id}">
                     Ver detalles
                 </button>

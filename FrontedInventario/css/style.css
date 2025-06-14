@@ -1,5 +1,7 @@
 .container {
     margin-top: 60px;
+    max-width: 1800px;
+    width: 100%;
 }
 
 h1 {
@@ -96,11 +98,6 @@ header nav ul li a.selected {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-}
-
-.table-responsive {
-    max-height: 400px;
-    overflow-y: auto;
 }
 
 fieldset {
@@ -305,9 +302,12 @@ legend {
 }
 
 #contenedorInventario {
-    width: 50%;
+    max-width: 1800px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
     margin-top: 60px;
-    min-width: 1300px;
+    width: 100%;
 }
 
 #productoTableBody td {
