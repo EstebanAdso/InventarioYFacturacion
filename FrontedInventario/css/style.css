@@ -301,15 +301,6 @@ legend {
     width: 65%;
 }
 
-#contenedorInventario {
-    max-width: 1800px;
-    display: flex;
-    flex-direction: column;
-    margin: auto;
-    margin-top: 60px;
-    width: 100%;
-}
-
 #productoTableBody td {
     padding: 6px;
 }
