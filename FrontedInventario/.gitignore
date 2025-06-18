@@ -1,23 +1,7 @@
 # Ignorar la carpeta node_modules en cualquier parte del proyecto
 node_modules/
 node_modules
-BackendInventario-0.0.1-SNAPSHOT.jar
-
-# Ignorar la carpeta de backend copia
-/BackendInventario - copia/
-
-# Ignorar la carpeta de pruebas
-/prueba/
-
-# Ignorar la carpeta de Postman
-/Postman/
-
-# Ignorar el archivo de documentación
-/Documentacion.rtf/
-
 /dist/
-
-/BackendInventario-0.0.1-SNAPSHOT.jar/
-
 .vscode
 notas.txt
+BackendInventario-0.0.1-SNAPSHOT.jar

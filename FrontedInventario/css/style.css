@@ -193,8 +193,8 @@ legend {
     color: #dc3545;
 }
 
-#totalCategorias li {
-    margin-left: 20px;
+#totalCategorias td{
+    padding: 5px;
 }
 
 #productoTableBody tr:nth-child(odd) {

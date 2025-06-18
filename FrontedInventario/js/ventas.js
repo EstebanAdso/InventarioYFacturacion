@@ -135,7 +135,7 @@ function crearFilaFactura(factura) {
             ? new Date(factura.fechaEmision).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
             : formatearFecha(new Date(factura.fechaEmision))}</td>
             <td style="color: #48e; font-weight: bold">${formatNumber(factura.total)}</td>
-            <td class="d-flex">
+            <td>
                 <button class="btn btn-info btn-sm btn-ver-detalles" data-id="${factura.id}">
                     Ver detalles
                 </button>

@@ -52,8 +52,7 @@
                     onclick="limpiarFormulario()">Agregar Categoria</button>
             </div>
             <div class="mr-2">
-                <button class="btn btn-info" id="verTotal" data-toggle="modal" data-target="#totalModal">Ver
-                    Totales</button>
+                <button class="btn btn-info" id="verTotal" data-toggle="modal" data-target="#totalModal">Ver Totales</button>
             </div>
             <div class="mr-2">
                 <button class="btn btn-warning" id="toggleProductosBtn">Productos Inactivos</button>
@@ -129,13 +128,26 @@
                         <span >&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <ul id="totalCategorias" class="list-group">
-                        <!-- Aquí se llenará con JavaScript -->
-                    </ul>
-                    <hr>
-                    <h4 class="mt-4 text-primary">Total Global</h4>
-                    <p id="totalGlobal" class="font-weight-bold display-4">0</p>
+                <div class="modal-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover m-0">
+                            <thead class="thead-light">
+                                <!-- <tr>
+                                    <th class="w-50 text-center font-weight-bold">Categoría</th>
+                                    <th class="w-50 text-center font-weight-bold">Total</th>
+                                </tr> -->
+                            </thead>
+                            <tbody id="totalCategorias">
+                                <!-- Aquí se llenará con JavaScript -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-light">
+                                    <td class="text-right font-weight-bold text-primary">Total Global</td>
+                                    <td class="font-weight-bold text-primary display-5" id="totalGlobal">0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>

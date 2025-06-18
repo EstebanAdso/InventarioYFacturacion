@@ -1203,13 +1203,24 @@ async function cargarTotalPorCategoria() {
         }
 
         const totales = await response.json();
-        const totalCategoriasList = document.getElementById('totalCategorias');
-        totalCategoriasList.innerHTML = '';
+        const totalCategoriasTbody = document.getElementById('totalCategorias');
+        totalCategoriasTbody.innerHTML = '';
 
         for (const [categoria, total] of Object.entries(totales)) {
-            const li = document.createElement('li');
-            li.textContent = `${categoria}:  $${formatNumber(total)}`;
-            totalCategoriasList.appendChild(li);
+            const tr = document.createElement('tr');
+            
+            const tdCategoria = document.createElement('td');
+            tdCategoria.textContent = categoria;
+            tdCategoria.className = 'text-center font-weight-bold';
+            
+            const tdTotal = document.createElement('td');
+            tdTotal.textContent = `$${formatNumber(total)}`;
+            tdTotal.className = 'text-center font-weight-bold';
+            
+            tr.appendChild(tdCategoria);
+            tr.appendChild(tdTotal);
+            
+            totalCategoriasTbody.appendChild(tr);
         }
     } catch (error) {
         console.error('Error:', error);
