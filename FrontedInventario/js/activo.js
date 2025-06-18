@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const totalGlobal = await response.json();
-            document.getElementById('totalGlobal').textContent = formatNumber(totalGlobal);
+            document.getElementById('totalGlobal').textContent = '$' + formatNumber(totalGlobal);
         } catch (error) {
             console.error('Error:', error);
         }

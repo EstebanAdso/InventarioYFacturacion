@@ -343,15 +343,6 @@ function agregarProducto() {
         cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 0 });
         cellPc.textContent = pc;
 
-        // Si estamos editando un producto existente, eliminamos el anterior
-        if (productoSeleccionadoId && productosEnFactura.some(p => p.id === productoSeleccionadoId)) {
-            const index = productosEnFactura.findIndex(p => p.id === productoSeleccionadoId);
-            if (index !== -1) {
-                totalFacturaGlobal -= productosEnFactura[index].total;
-                productosEnFactura.splice(index, 1);
-            }
-        }
-
         productosEnFactura.push({
             id: productoId,
             nombre: nombreProducto,

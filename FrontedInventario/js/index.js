@@ -441,10 +441,30 @@ async function editarProducto(id) {
             return;
         }
 
-        mostrarCodigosDeBarra(id);
-
+        // Cambiar el texto a Editar Producto
         modificarTexto = document.getElementById('tab-producto');
         modificarTexto.textContent = 'Editar Producto';
+        
+        // Primero cargar los códigos de barra sin activar pestañas
+        mostrarCodigosDeBarra(id, false);
+        
+        // Usar un timeout para forzar la activación de la pestaña de producto después de que Bootstrap 
+        // y otros posibles manejadores de eventos terminen su ejecución
+        setTimeout(() => {
+            // Activar mediante jQuery que es más efectivo para manipular pestañas Bootstrap
+            $('#tab-producto').tab('show');
+            
+            // Respaldo con manipulación directa DOM por si jQuery no funciona correctamente
+            const tabProducto = document.getElementById('tab-producto');
+            const tabCodigo = document.getElementById('tab-codigo');
+            const contenidoProducto = document.getElementById('contenido-producto');
+            const contenidoCodigo = document.getElementById('contenido-codigo');
+            
+            tabProducto.classList.add('active');
+            tabCodigo.classList.remove('active');
+            contenidoProducto.classList.add('show', 'active');
+            contenidoCodigo.classList.remove('show', 'active');
+        }, 50); // Un breve retraso que debería ser suficiente
         const producto = await response.json();
         document.getElementById('productoId').value = producto.id;
         document.getElementById('nombre').value = producto.nombre;
@@ -1189,12 +1209,11 @@ async function cargarTotalGlobal() {
         }
 
         const totalGlobal = await response.json();
-        document.getElementById('totalGlobal').textContent = formatNumber(totalGlobal);
+        document.getElementById('totalGlobal').textContent = '$' + formatNumber(totalGlobal);
     } catch (error) {
         console.error('Error:', error);
     }
 }
-
 async function cargarTotalPorCategoria() {
     try {
         const response = await fetch(`${apiUrl}/totalPorCategoria`);
@@ -1206,7 +1225,11 @@ async function cargarTotalPorCategoria() {
         const totalCategoriasTbody = document.getElementById('totalCategorias');
         totalCategoriasTbody.innerHTML = '';
 
-        for (const [categoria, total] of Object.entries(totales)) {
+        // Ordenar por el total de mayor a menor
+        const entries = Object.entries(totales);
+        entries.sort((a, b) => b[1] - a[1]);
+        
+        for (const [categoria, total] of entries) {
             const tr = document.createElement('tr');
             
             const tdCategoria = document.createElement('td');
@@ -1239,7 +1262,7 @@ async function listarCodigosDeBarra(id) {
     return codigosDeBarra;
 }
 
-async function mostrarCodigosDeBarra(id) {
+async function mostrarCodigosDeBarra(id, mantenerPestanaProducto = false) {
     const codigosDeBarra = await listarCodigosDeBarra(id);
     const codigosBarrasContainer = document.getElementById('listCodigosDeBarra');
     codigosBarrasContainer.innerHTML = '';
@@ -1264,7 +1287,7 @@ async function mostrarCodigosDeBarra(id) {
                     mostrarMensaje('error', 'Error al eliminar el código de barra.');
                 } else {
                     mostrarMensaje('success', 'Código de barra eliminado correctamente.');
-                    mostrarCodigosDeBarra(id); // Actualizar la lista
+                    mostrarCodigosDeBarra(id, mantenerPestanaProducto); // Actualizar la lista
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -1274,6 +1297,20 @@ async function mostrarCodigosDeBarra(id) {
         tag.appendChild(eliminar);
         codigosBarrasContainer.appendChild(tag);
     });
+    
+    // Si estamos editando y queremos mantener la pestaña de producto activa
+    if (mantenerPestanaProducto) {
+        const tabProducto = document.getElementById('tab-producto');
+        const tabCodigo = document.getElementById('tab-codigo');
+        const contenidoProducto = document.getElementById('contenido-producto');
+        const contenidoCodigo = document.getElementById('contenido-codigo');
+        
+        // Forzar la activación de la pestaña de producto
+        tabProducto.classList.add('active');
+        tabCodigo.classList.remove('active');
+        contenidoProducto.classList.add('show', 'active');
+        contenidoCodigo.classList.remove('show', 'active');
+    }
 }
 
 function limpiarMensajeParrafo(element) {
