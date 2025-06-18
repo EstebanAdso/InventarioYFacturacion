@@ -1,12 +1,12 @@
 {
-  "name": "Inventary and Facturation",
+  "name": "inventary-and-facturation",
   "version": "1.0.0",
   "main": "main.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build": "electron-packager . Inventary and Facturation --platform=win32 --arch=x64 --out=dist --overwrite --extra-resource=BackendInventario-0.0.1-SNAPSHOT.jar"
+    "build": "electron-packager . inventary-and-facturation --platform=win32 --arch=x64 --out=dist --overwrite --extra-resource=BackendInventario-0.0.1-SNAPSHOT.jar"
   },
   "keywords": [],
   "author": "",
