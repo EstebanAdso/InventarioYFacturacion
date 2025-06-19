@@ -531,7 +531,23 @@ function guardarFactura(omitVerification = false) {
                 limpiarFormulario();
 
                 const ventanaImpresion = window.open('', '', 'height=1200,width=800');
-                ventanaImpresion.document.write(htmlFacturaPDF);
+                ventanaImpresion.document.write(`
+                    <html>
+                        <head>
+                            <title>Factura</title>
+                            <style>
+                                body { font-family: Helvetica, sans-serif; }
+                                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                                th, td { border: 1px solid #ddd; padding: 8px; }
+                                th { background-color: #f2f2f2; }
+                                h1, h2, h3 { text-align: center; }
+                            </style>
+                        </head>
+                        <body>
+                            ${htmlFacturaPDF}
+                        </body>
+                    </html>
+                `);
                 ventanaImpresion.document.close();
                 ventanaImpresion.print();
                 ventanaImpresion.onload = imprimirYLimpiarVentana(ventanaImpresion);
@@ -611,7 +627,7 @@ function imprimirPos(omitVerification = false) {
                 console.log('Factura guardada exitosamente:', data);
 
                 // Crear el HTML de la factura para visualización
-                const htmlFacturaPDF = generarFacturaHTMLPOS({
+                const htmlFacturaPOS = generarFacturaHTMLPOS({
                     nombreCliente,
                     cedulaNit,
                     telefonoCliente,
@@ -625,7 +641,52 @@ function imprimirPos(omitVerification = false) {
                 limpiarFormulario();
 
                 const ventanaImpresion = window.open('', '', 'height=900,width=300');
-                ventanaImpresion.document.write(htmlFacturaPDF);
+                ventanaImpresion.document.write(`
+                    <html>
+                    <head>
+                        <title>Factura POS</title>
+                        <style>
+                            @page {
+                                margin: 0; 
+                                padding: 0
+                                }
+                                body { 
+                                    font-family: Arial, Helvetica, sans-serif;
+                                    margin: 0; 
+                                    padding: 0;
+                                    color: #000 !important;
+                                    -webkit-print-color-adjust: exact; /* Para imprimir colores más precisos */ 
+                                }
+                                table { 
+                                    width: 100%; 
+                                    border-collapse: collapse; 
+                                    color: #000 !important;
+                                    -webkit-print-color-adjust: exact; /* Para imprimir colores más precisos */ 
+                                }
+                                th, td { 
+                                    padding: 2px 0; 
+                                    text-align: right; 
+                                    color: #000 !important;
+                                    -webkit-print-color-adjust: exact; /* Para imprimir colores más precisos */ 
+                                }
+                                th { 
+                                    text-align: center; 
+                                    color: #000 !important;
+                                    -webkit-print-color-adjust: exact; /* Para imprimir colores más precisos */ 
+                                }
+                                h2, h3, h4 { 
+                                    text-align: center; 
+                                    margin: 2px 0; 
+                                    color: #000 !important;
+                                    -webkit-print-color-adjust: exact; /* Para imprimir colores más precisos */ 
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            ${htmlFacturaPOS}
+                        </body>
+                    </html>
+                `);
                 ventanaImpresion.document.close();
                 ventanaImpresion.onload = imprimirYLimpiarVentana(ventanaImpresion);
             })

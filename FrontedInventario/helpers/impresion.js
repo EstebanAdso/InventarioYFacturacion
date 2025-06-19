@@ -6,7 +6,7 @@ function generarFacturaHTMLPDF({ nombreCliente, cedulaNit, telefonoCliente, corr
                     <p>Servicio técnico de computadores y celulares,<br> venta de computadores y periféricos</p>
                     <div> 
                         <p style="margin: 0 0 4px 0;"><b>NIT:</b> 1193030552-4</p>
-                        <p style="margin: 0 0 4px 0;"><b>Celular:</b> 3242264795</p>
+                        <p style="margin: 0 0 4px 0;"><b>Celular:</b> 3242264795 - 3174034349</p>
                         <p style="margin: 0;"><b>Ubicación:</b> Pasto, Centro comercial San Agustín, local 224A</p>
                     </div>
                 </div>
@@ -59,7 +59,7 @@ function generarFacturaHTMLPOS({ nombreCliente, cedulaNit, telefonoCliente, corr
                             Venta de computadores y periféricos</b><br></div>
                             <div style="text-align : left; font-size: 12px; margin-top: 10px">
                             <b>NIT:</b> 1193030552-4<br>
-                            <b>Celular:</b> 3242264795<br>
+                            <b>Celular:</b> 3242264795 - 3174034349<br>
                             <b>Ubicación:</b> Pasto, Centro comercial San Agustín, local 224A
                             <br>NO RESPONSABLES DE IVA
                             </div>
