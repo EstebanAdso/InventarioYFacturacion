@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escanear Producto - Gestión Total</title>
+    <link rel="stylesheet" href="../lib/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="shortcut icon" href="../css/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/scan.css">
+</head>
+
+<body>
+    <header id="nav">
+        <nav>
+            <h6 style="user-select: none;">Gestión Total</h6>
+            <ul>
+                <li><a href="facturacion.html"><img src="../css/logos/library-regular-24.png" alt="facturacion"></a></li>
+                <li><a href="#" class="selected"><img src="../css/logos/scan.png" alt="escanear producto"></a></li>
+                <li><a href="index.html"><img src="../css/logos/store-regular-24.png" alt="inventario"></a></li>
+                <li><a href="ventas.html"><img src="../css/logos/money-withdraw-regular-24.png" alt="ventas"></a></li>
+                <li><a href="pedido.html"><img src="../css/logos/plane-solid-24.png" alt="pedido"></a></li>
+                <li><a href="activo.html"><img src="../css/logos/bank-solid-24.png" alt="activo"></a></li>
+                <li><a href="cliente.html"><img src="../css/logos/user-solid-24.png" alt="cliente"></a></li>
+                <li><a href="config.html"><img src="../css/logos/cog-solid-24.png" alt="configuración"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="scan-container">
+        <div class="text-center mb-4">
+            <h1 class="display-4 text-primary">🔍 Escanear Producto</h1>
+            <p class="lead text-muted">Ingresa o escanea el código de barras para obtener información del producto</p>
+        </div>
+
+        <!-- Campo de entrada para código de barras -->
+        <div class="scan-input-group">
+            <div class="input-group input-group-lg">
+                <input type="text" 
+                       id="codigoBarras" 
+                       class="form-control scan-input" 
+                       placeholder="Código de barras del producto" 
+                       autocomplete="off"
+                       autofocus>
+                <div class="input-group-append">
+                    <button class="btn scan-btn" type="button" id="btnBuscar">
+                        🔍 Buscar
+                    </button>
+                </div>
+            </div>
+            <small class="form-text text-muted mt-2">
+                💡 Tip: Puedes usar un lector de códigos de barras o escribir el código manualmente
+            </small>
+        </div>
+
+        <!-- Área de carga -->
+        <div id="loadingArea" class="loading-spinner" style="display: none;">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Buscando...</span>
+            </div>
+            <p class="mt-2">Buscando producto...</p>
+        </div>
+
+        <!-- Área de resultados -->
+        <div id="resultadoArea"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/popper.min.js"></script>
+    <script src="../lib/bootstrap.min.js"></script>
+    <script src="../js/scan.js"></script>
+</body>
+</html>

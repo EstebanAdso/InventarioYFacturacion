@@ -50,7 +50,10 @@ function mostrarVentasAgrupadasPorFecha(facturas) {
 
     facturas.forEach(factura => {
         const fecha = new Date(factura.fechaEmision);
-        const fechaKey = fecha.toISOString().split('T')[0];
+        // Usar fecha local en lugar de UTC para evitar desfases de zona horaria
+        const fechaKey = fecha.getFullYear() + '-' + 
+            String(fecha.getMonth() + 1).padStart(2, '0') + '-' + 
+            String(fecha.getDate()).padStart(2, '0');
 
         if (!facturasPorFecha[fechaKey]) {
             facturasPorFecha[fechaKey] = [];
@@ -65,7 +68,9 @@ function mostrarVentasAgrupadasPorFecha(facturas) {
         const fechaHeader = document.createElement('h4');
         fechaHeader.className = 'fecha-header bg-light p-2 rounded';
 
-        const fecha = new Date(fechaKey);
+        // Crear fecha desde el fechaKey para comparación correcta
+        const [año, mes, dia] = fechaKey.split('-').map(Number);
+        const fecha = new Date(año, mes - 1, dia); // mes - 1 porque los meses van de 0-11
         const hoy = new Date();
         const esHoy = fecha.toDateString() === hoy.toDateString();
 

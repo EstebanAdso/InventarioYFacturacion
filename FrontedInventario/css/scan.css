@@ -1,0 +1,115 @@
+.scan-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-top: 60px;
+}
+.scan-input-group {
+    margin-bottom: 30px;
+}
+.scan-input {
+    font-size: 1.2rem;
+    padding: 15px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+}
+.scan-btn {
+    font-size: 1.2rem;
+    padding: 15px 30px;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    transition: all 0.3s ease;
+}
+.scan-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+.product-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-top: 20px;
+}
+.product-header {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+.product-name {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.product-price {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+.product-details {
+    padding: 25px;
+}
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+.detail-row:last-child {
+    border-bottom: none;
+}
+.detail-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 1.1rem;
+}
+.detail-value {
+    font-size: 1.1rem;
+    color: #212529;
+}
+.stock-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1rem;
+}
+.stock-available {
+    background-color: #d4edda;
+    color: #155724;
+}
+.stock-low {
+    background-color: #fff3cd;
+    color: #856404;
+}
+.stock-out {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+.loading-spinner {
+    text-align: center;
+    margin-top: 20px;
+}
+.spinner-border {
+    color: #007bff;
+}
+.barcode-list {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: monospace;
+}
