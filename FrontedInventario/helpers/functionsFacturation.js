@@ -1,28 +1,28 @@
 let codigoBarras = '';
 let tiempoUltimaTecla = 0;
 const tiempoMaximoEntreTeclas = 50;
-const longitudMinCodigoBarras = 6; 
+const longitudMinCodigoBarras = 6;
 let campoLectura = null;
 let productoSeleccionado = null; // Referencia al producto actualmente seleccionado
 
 // Función para leer códigos de barras
 function leerCodigoBarras(event) {
     const ahora = new Date().getTime();
-    
+
     // Si ha pasado demasiado tiempo desde la última tecla, reiniciar
     if (ahora - tiempoUltimaTecla > tiempoMaximoEntreTeclas && codigoBarras.length > 0) {
         codigoBarras = '';
         campoLectura = null;
     }
-    
+
     // Actualizar el tiempo de la última tecla
     tiempoUltimaTecla = ahora;
-    
+
     // Guardar referencia al campo donde se está leyendo
     if (codigoBarras.length === 0) {
         campoLectura = event.target;
     }
-    
+
     // Procesar solo caracteres imprimibles o Enter
     if (event.key.length === 1 || event.key === 'Enter') {
         // Si es Enter y tenemos un código acumulado, procesarlo
@@ -31,20 +31,20 @@ function leerCodigoBarras(event) {
                 if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
                     event.preventDefault();
                 }
-                
+
                 // Limpiar el campo donde se leyó el código
                 limpiarCampoLectura();
-                
+
                 buscarProductoPorCodigoBarras(codigoBarras);
                 codigoBarras = '';
             }
         } else {
             codigoBarras += event.key;
-            
-            if ((event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') && 
-                event.target.id !== 'nombreProductoManual' && 
+
+            if ((event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') &&
+                event.target.id !== 'nombreProductoManual' &&
                 codigoBarras.length >= longitudMinCodigoBarras) {
-                
+
                 // Verificar si el código acumulado parece ser un código de barras
                 if (/^\d+$/.test(codigoBarras)) {
                     limpiarCampoLectura();
@@ -61,14 +61,14 @@ function limpiarCampoLectura() {
     if (campoLectura && (campoLectura.tagName === 'INPUT' || campoLectura.tagName === 'TEXTAREA')) {
         // Guardar el valor original del campo
         const valorOriginal = campoLectura.value;
-        
+
         // Si el código está al final del valor del campo, eliminarlo
         if (valorOriginal.endsWith(codigoBarras)) {
             campoLectura.value = valorOriginal.slice(0, -codigoBarras.length);
         } else {
             campoLectura.value = '';
         }
-        
+
         // Restaurar el valor apropiado según el tipo de campo
         if (campoLectura.id === 'garantiaProducto' && campoLectura.value === '') {
             campoLectura.value = '0';
@@ -76,7 +76,7 @@ function limpiarCampoLectura() {
             campoLectura.value = '1';
         }
     }
-    
+
     // Limpiar la referencia al campo
     campoLectura = null;
 }
@@ -84,7 +84,7 @@ function limpiarCampoLectura() {
 // Función para buscar un producto por código de barras
 function buscarProductoPorCodigoBarras(codigo) {
     mostrarMensaje('info', 'Buscando producto...');
-    
+
     // Llamar al endpoint de búsqueda por código de barras
     fetch(`http://localhost:8082/producto/buscar-codigo/${encodeURIComponent(codigo)}`)
         .then(response => {
@@ -191,11 +191,11 @@ function buscarProductos() {
                     const li = document.createElement('li');
                     const tienePrecioMayoreo = producto.precioMayorista && producto.precioMayorista > 0;
                     let precioMayoreoHTML = '';
-                    
+
                     if (tienePrecioMayoreo) {
                         precioMayoreoHTML = ` || <span style='color: blue;'>MAY $${formatNumber(producto.precioMayorista)}</span>`;
                     }
-                    
+
                     li.innerHTML = producto.nombre.toUpperCase() +
                         `<i> || P.C <span style='color: red;'>$${formatNumber(producto.precioComprado)}</span></i>` +
                         `<i> || P.V $${formatNumber(producto.precioVendido)}</i>${precioMayoreoHTML}`;
@@ -224,18 +224,18 @@ function buscarProductos() {
 function seleccionarProducto(producto) {
     document.getElementById('nombreProductoManual').value = producto.nombre;
     console.log(producto);
-    
+
     // Verificar si el checkbox de precio mayoreo está activado y si el producto tiene precio de mayoreo
     const precioMayoreoCheck = document.getElementById('precioMayoreoCheck');
     const tienePrecioMayoreo = producto.precioMayorista && producto.precioMayorista > 0;
-    
+
     // Mostrar el precio según corresponda
     if (precioMayoreoCheck.checked && tienePrecioMayoreo) {
         document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioMayorista);
     } else {
         document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioVendido);
     }
-    
+
     document.getElementById('PCProducto').value = formatNumber(producto.precioComprado);
     document.getElementById('garantiaProducto').value = producto.garantia || 1;
     document.getElementById('sugerenciasProductos').style.display = 'none';
@@ -250,7 +250,7 @@ function seleccionarProducto(producto) {
     // Mostrar un mensaje al usuario sobre el stock máximo
     document.getElementById('mensajeMaxCantidad').innerText =
         `Cantidad máxima disponible: ${producto.cantidad}`;
-        
+
     // Configurar el evento del checkbox de mayoreo
     configurarEventoMayoreo();
 }
@@ -258,11 +258,11 @@ function seleccionarProducto(producto) {
 // Función para configurar el evento del checkbox de mayoreo
 function configurarEventoMayoreo() {
     const checkMayoreo = document.getElementById('precioMayoreoCheck');
-    
+
     // Primero, eliminar cualquier evento change existente
     const nuevoCheck = checkMayoreo.cloneNode(true);
     checkMayoreo.parentNode.replaceChild(nuevoCheck, checkMayoreo);
-    
+
     // Agregar el nuevo evento
     nuevoCheck.addEventListener('change', function() {
         if (productoSeleccionado) {
@@ -276,7 +276,7 @@ function configurarEventoMayoreo() {
             }
         }
     });
-    
+
     return nuevoCheck;
 }
 
@@ -351,7 +351,7 @@ function agregarProducto() {
             garantia: garantia,
             descripcion: descripcion || "",
             total: totalProducto,
-            pc: pc 
+            pc: pc
         });
 
         localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
@@ -384,7 +384,7 @@ function agregarProducto() {
             const index = row.rowIndex - 1;
             const producto = productosEnFactura[index];
 
-            
+
             // Llenar el formulario con los datos del producto a editar
             document.getElementById('nombreProductoManual').value = producto.nombre;
             document.getElementById('descripcionFactura').value = producto.descripcion;
@@ -392,9 +392,9 @@ function agregarProducto() {
             document.getElementById('precioUnitarioManual').value = producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
             document.getElementById('garantiaProducto').value = producto.garantia;
             document.getElementById('PCProducto').value = producto.pc;
-            
-            
-            
+
+
+
             // Establecer el ID del producto seleccionado para edición
             productoSeleccionadoId = producto.id;
 
@@ -518,6 +518,7 @@ function guardarFactura(omitVerification = false) {
 
                 // Crear el HTML de la factura para visualización
                 const htmlFacturaPDF = generarFacturaHTMLPDF({
+                    facturaId: data.id,
                     nombreCliente,
                     cedulaNit,
                     telefonoCliente,
@@ -624,10 +625,10 @@ function imprimirPos(omitVerification = false) {
             })
             .then(data => {
                 if (!data) return;
-                console.log('Factura guardada exitosamente:', data);
 
                 // Crear el HTML de la factura para visualización
                 const htmlFacturaPOS = generarFacturaHTMLPOS({
+                    facturaId: data.id,
                     nombreCliente,
                     cedulaNit,
                     telefonoCliente,
@@ -723,7 +724,7 @@ function limpiarFormularioProducto() {
     document.getElementById('mensajeMaxCantidad').textContent = '';
     productoSeleccionadoId = null; // Limpiar el ID de edición
     productoSeleccionado = null; // Limpiar la referencia al producto actual
-    
+
     // Restablecer el checkbox de precio mayoreo
     const checkMayoreo = document.getElementById('precioMayoreoCheck');
     if (checkMayoreo.checked) {

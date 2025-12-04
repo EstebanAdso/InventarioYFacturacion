@@ -10,6 +10,8 @@ npm run build
 
 
 // FUNCIONES A IMPLEMEMTAR
+* numeros de mas millon arreglar
+* al editar que no recargue la pagina
 * mejorar la vista de totales en tabla ✅
 * buscar facturas por clientes ✅
 * generar excel cada mes de las ventas del dia. ✅

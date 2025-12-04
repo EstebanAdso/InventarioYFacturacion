@@ -77,9 +77,16 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const id = document.getElementById('productoId').value;
         const nombre = document.getElementById('nombre').value.toUpperCase().trim();
-        const precioComprado = parseInt(document.getElementById('precioComprado').value.replace(/\./g, ''));
-        const precioVendido = parseInt(document.getElementById('precioVendido').value.replace(/\./g, ''));
-        const precioMayorista = parseInt(document.getElementById('productoPrecioMayoreo').value.replace(/\./g, ''));
+        const precioComprado = parseFloat(
+  document
+    .getElementById('precioComprado')
+    .value
+    .replace(/[.,]/g, '') // elimina puntos y comas
+);
+
+        console.log(precioComprado)
+        const precioVendido = parseFloat(document.getElementById('precioVendido').value.replace(/\./g, ''));
+        const precioMayorista = parseFloat(document.getElementById('productoPrecioMayoreo').value.replace(/\./g, ''));
         const cantidad = document.getElementById('cantidad').value;
         const categoriaId = document.getElementById('categoria').value;
         const descripcion = document.getElementById('descripcion').value.trim();

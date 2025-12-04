@@ -1,10 +1,11 @@
-function generarFacturaHTMLPDF({ nombreCliente, cedulaNit, telefonoCliente, correoCliente, direccionCliente, productosHTML, totalFactura, fechaActual }) {
+function generarFacturaHTMLPDF({facturaId, nombreCliente, cedulaNit, telefonoCliente, correoCliente, direccionCliente, productosHTML, totalFactura, fechaActual }) {
     return `
                 <div style="text-align: center; margin-bottom: 20px;">
                     <img src="../css/pc.png" alt="" style="width: 100px; height: auto;">
                     <h2>CompuServices Soft</h2>
                     <p>Servicio técnico de computadores y celulares,<br> venta de computadores y periféricos</p>
                     <div> 
+                        <p style="margin: 0 0 4px 0;"><b>Factura:</b> ${facturaId}</p>
                         <p style="margin: 0 0 4px 0;"><b>NIT:</b> 1193030552-4</p>
                         <p style="margin: 0 0 4px 0;"><b>Celular:</b> 3242264795 - 3174034349</p>
                         <p style="margin: 0;"><b>Ubicación:</b> Pasto, Centro comercial San Agustín, local 224A</p>
@@ -46,7 +47,7 @@ function generarFacturaHTMLPDF({ nombreCliente, cedulaNit, telefonoCliente, corr
             `;
 }
 
-function generarFacturaHTMLPOS({ nombreCliente, cedulaNit, telefonoCliente, correoCliente, direccionCliente, productosHTML, totalFactura, fechaActual }) {
+function generarFacturaHTMLPOS({ facturaId, nombreCliente, cedulaNit, telefonoCliente, correoCliente, direccionCliente, productosHTML, totalFactura, fechaActual }) {
     return `
                     <div style="width: 68mm; font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #000">
                         <div style="text-align: center;">
@@ -64,6 +65,7 @@ function generarFacturaHTMLPOS({ nombreCliente, cedulaNit, telefonoCliente, corr
                             <br>NO RESPONSABLES DE IVA
                             </div>
                         </p>
+                        ${facturaId && facturaId !== 'N/A' ? `<p style="margin-bottom: 0px"><strong>Factura N°:</strong> ${facturaId}</p>` : ''}
                         <p style="margin-bottom: 0px"><strong>Fecha:</strong> ${fechaActual}</p>
                         <p style="margin-bottom: 0px"><strong>Cliente:</strong> ${nombreCliente}</p>
                         <p style="margin-bottom: 0px"><strong>Cédula/NIT:</strong> ${cedulaNit}</p>

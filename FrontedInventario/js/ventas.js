@@ -51,8 +51,8 @@ function mostrarVentasAgrupadasPorFecha(facturas) {
     facturas.forEach(factura => {
         const fecha = new Date(factura.fechaEmision);
         // Usar fecha local en lugar de UTC para evitar desfases de zona horaria
-        const fechaKey = fecha.getFullYear() + '-' + 
-            String(fecha.getMonth() + 1).padStart(2, '0') + '-' + 
+        const fechaKey = fecha.getFullYear() + '-' +
+            String(fecha.getMonth() + 1).padStart(2, '0') + '-' +
             String(fecha.getDate()).padStart(2, '0');
 
         if (!facturasPorFecha[fechaKey]) {
@@ -207,6 +207,7 @@ function previsualizarFacturaPDF(facturaId) {
         })
         .then(detalles => {
             const htmlFacturaPDF = generarFacturaHTMLPDF({
+                facturaId: factura.id,
                 nombreCliente: factura.cliente.nombre,
                 cedulaNit: factura.cliente.identificacion,
                 telefonoCliente: factura.cliente.telefono || 'N/A',
@@ -289,6 +290,7 @@ function previsualizarFacturaPOS(facturaId) {
         })
         .then(detalles => {
             const htmlFacturaPOS = generarFacturaHTMLPOS({
+                facturaId: facturaId,
                 nombreCliente: factura.cliente.nombre,
                 cedulaNit: factura.cliente.identificacion,
                 telefonoCliente: factura.cliente.telefono || '',
@@ -408,7 +410,7 @@ function mostrarDetallesFactura(facturaId) {
                 detallesBody.innerHTML += fila;
             });
 
-            
+
 
             $('#detalleFacturaModal').modal('show');
         })
@@ -421,7 +423,7 @@ function mostrarDetallesFactura(facturaId) {
 function copiarAlPortapapeles(event) {
     const texto = event.target.textContent;
     navigator.clipboard.writeText(texto)
-        .then(() => {            
+        .then(() => {
             const div = document.createElement('div');
             div.style.position = 'fixed';
             div.style.top = '50%';
