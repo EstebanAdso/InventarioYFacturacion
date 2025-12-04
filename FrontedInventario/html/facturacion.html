@@ -47,8 +47,8 @@
                                 </div>
                                 <div class="form-group col-md-5">
                                     <label for="cedulaNit">Cédula o NIT:</label>
-                                    <input type="number" class="form-control" autocomplete="off" placeholder="Obligatorio"
-                                        id="cedulaNit" required>
+                                    <input type="number" class="form-control" autocomplete="off"
+                                        placeholder="Obligatorio" id="cedulaNit" required>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -91,14 +91,14 @@
                                             Ver costo unitario
                                         </label>
                                     </div>
-                                    <input type="number" class="form-control" autocomplete="off" id="PCProducto" style="-webkit-text-security: disc;">
+                                    <input type="text" pattern="^[0-9,.]+$" title="Ingrese un número válido" class="form-control" autocomplete="off" id="PCProducto" style="-webkit-text-security: disc;">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="precioUnitarioManual">Precio Venta:</label>
-                                    <input type="number" autocomplete="off" class="form-control"
-                                        id="precioUnitarioManual">
+                                    <input type="text" pattern="^[0-9,.]+$" title="Ingrese un número válido"
+                                        autocomplete="off" class="form-control" id="precioUnitarioManual">
                                     <div class="form-check mt-1">
                                         <input class="form-check-input" type="checkbox" id="precioMayoreoCheck">
                                         <label class="form-check-label" for="precioMayoreoCheck">
@@ -171,7 +171,7 @@
                         style="display: none;">
                         <span id="mensajeTexto">Por favor, completa los campos requeridos.</span>
                         <button type="button" class="close" aria-label="Close" onclick="cerrarMensaje()">
-                            <span >&times;</span>
+                            <span>&times;</span>
                         </button>
                     </div>
             </div>
