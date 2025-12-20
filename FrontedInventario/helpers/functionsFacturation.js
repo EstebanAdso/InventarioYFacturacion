@@ -95,7 +95,7 @@ function buscarProductoPorCodigoBarras(codigo) {
             return response.json();
         })
         .then(producto => {
-            if(producto && producto.cantidad == 0){
+            if (producto && producto.cantidad == 0) {
                 mostrarMensaje('error', 'El producto no tiene stock');
                 return;
             }
@@ -264,7 +264,7 @@ function configurarEventoMayoreo() {
     checkMayoreo.parentNode.replaceChild(nuevoCheck, checkMayoreo);
 
     // Agregar el nuevo evento
-    nuevoCheck.addEventListener('change', function() {
+    nuevoCheck.addEventListener('change', function () {
         if (productoSeleccionado) {
             console.log(productoSeleccionado);
             if (this.checked && productoSeleccionado.precioMayorista) {
@@ -289,7 +289,7 @@ function mostrarConfirmacionProducto(callbackAceptar, mensaje = 'Tienes un produ
     mostrarConfirmacionDinamica({
         mensaje: mensaje,
         onAceptar: callbackAceptar,
-        onCancelar: () => {},
+        onCancelar: () => { },
         textoAceptar: 'Aceptar',
         textoCancelar: 'Volver'
     });
@@ -753,4 +753,481 @@ function limpiarFormulario() {
     document.getElementById('mensajeMaxCantidad').textContent = '';
     document.getElementById('totalDeFactura').textContent = 'TOTAL:';
     productosEnFactura = [];
+
+    // Limpiar campos de préstamo/apartado
+    const tipoDocumento = document.getElementById('tipoDocumento');
+    if (tipoDocumento) {
+        tipoDocumento.value = 'FACTURA';
+        cambiarTipoDocumento();
+    }
+    const abonoInicial = document.getElementById('abonoInicial');
+    if (abonoInicial) abonoInicial.value = '';
+    const observaciones = document.getElementById('observacionesPrestamo');
+    if (observaciones) observaciones.value = '';
+}
+
+// Función para cambiar el tipo de documento y mostrar/ocultar campos
+function cambiarTipoDocumento() {
+    const tipo = document.getElementById('tipoDocumento').value;
+    const abonoContainer = document.getElementById('abonoInicialContainer');
+    const observacionesContainer = document.getElementById('observacionesContainer');
+    const botonesFactura = document.getElementById('botonesDeImpresion');
+    const botonesPrestamo = document.getElementById('botonesPrestamo');
+    const titulo = document.getElementById('tituloFacturacion');
+
+    if (tipo === 'FACTURA') {
+        // Modo factura normal
+        abonoContainer.style.display = 'none';
+        observacionesContainer.style.display = 'none';
+        botonesFactura.style.display = 'block';
+        botonesPrestamo.style.display = 'none';
+        titulo.textContent = 'Facturación';
+    } else if (tipo === 'PRESTAMO') {
+        // Modo préstamo (fiado)
+        abonoContainer.style.display = 'none';
+        observacionesContainer.style.display = 'block';
+        botonesFactura.style.display = 'none';
+        botonesPrestamo.style.display = 'block';
+        titulo.textContent = 'Préstamo (Fiado)';
+    } else if (tipo === 'APARTADO') {
+        // Modo apartado (con abono inicial)
+        abonoContainer.style.display = 'block';
+        observacionesContainer.style.display = 'block';
+        botonesFactura.style.display = 'none';
+        botonesPrestamo.style.display = 'block';
+        titulo.textContent = 'Apartado (Separar)';
+    }
+}
+
+// Variable global para almacenar el préstamo guardado
+let prestamoGuardado = null;
+
+// Función para imprimir POS de préstamo/apartado
+function imprimirPosPrestamo(omitVerification = false) {
+    const { nombreCliente, cedulaNit, telefonoCliente, correoCliente, direccionCliente, productos, nombreProducto } = obtenerDatosFactura();
+    const tipo = document.getElementById('tipoDocumento').value;
+    const observaciones = document.getElementById('observacionesPrestamo').value.trim();
+    const abonoInicialInput = document.getElementById('abonoInicial').value.replace(/\./g, '').replace(/,/g, '');
+    const abonoInicial = parseFloat(abonoInicialInput) || 0;
+
+    totalFacturaGlobal = 0;
+
+    if (!omitVerification && nombreProducto.length > 0) {
+        mostrarConfirmacionProducto(() => imprimirPosPrestamo(true));
+        return;
+    }
+
+    if (nombreCliente && cedulaNit && productos.length > 0) {
+        // Calcular el total
+        let totalPrestamo = 0;
+        productos.forEach(p => totalPrestamo += p.total);
+
+        // Validar abono inicial para apartados
+        if (tipo === 'APARTADO' && abonoInicial > totalPrestamo) {
+            mostrarMensaje('error', 'El abono inicial no puede ser mayor al total.');
+            return;
+        }
+
+        const prestamo = {
+            clienteNombre: nombreCliente,
+            clienteCedula: cedulaNit,
+            telefono: telefonoCliente || null,
+            correo: correoCliente || null,
+            direccion: direccionCliente || null,
+            tipo: tipo,
+            observaciones: observaciones || null,
+            abonoInicial: abonoInicial > 0 ? abonoInicial : null,
+            metodoPagoAbono: abonoInicial > 0 ? 'EFECTIVO' : null,
+            detalles: productos.map(producto => ({
+                productoId: producto.id || null,
+                nombreProducto: producto.nombre,
+                cantidad: producto.cantidad,
+                precioVenta: producto.precioUnitario,
+                garantia: producto.garantia + " Mes." || "1",
+                descripcion: producto.descripcion || "",
+                precioCompra: producto.pc || null,
+            })),
+        };
+
+        fetch('http://localhost:8082/api/prestamos/crear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(prestamo),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        mostrarMensaje('error', `Error: ${text}`);
+                        throw new Error(text);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data) return;
+                console.log('Préstamo guardado exitosamente:', data);
+
+                const tipoTexto = tipo === 'PRESTAMO' ? 'Préstamo' : 'Apartado';
+                let mensaje = `${tipoTexto} #${data.serial} creado exitosamente.`;
+                if (abonoInicial > 0) {
+                    mensaje += ` Abono inicial: $${abonoInicial.toLocaleString('es-CO')}. Saldo pendiente: $${data.saldoPendiente.toLocaleString('es-CO')}`;
+                }
+
+                mostrarMensaje('success', mensaje);
+
+                // Guardar para uso posterior
+                prestamoGuardado = data;
+
+                // Imprimir POS directamente
+                const fechaActual = new Date(data.fechaCreacion).toLocaleString('es-CO');
+                const productosHTML = productos.map(p => `
+                    <tr style="font-size: 11px;">
+                        <td style="padding: 2px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">${p.nombre || 'N/A'}</td>
+                        <td style="text-align: center;">${p.cantidad}</td>
+                        <td style="text-align: center;">${p.precioUnitario.toLocaleString('es-CO')}</td>
+                        <td style="text-align: center;">${p.total.toLocaleString('es-CO')}</td>
+                    </tr>
+                `).join('');
+
+                const htmlPOS = generarPrestamoHTMLPOS({
+                    prestamoId: data.serial,
+                    tipoDocumento: data.tipo,
+                    nombreCliente: nombreCliente,
+                    cedulaNit: cedulaNit,
+                    telefonoCliente: telefonoCliente || null,
+                    productosHTML: productosHTML,
+                    totalPrestamo: data.total,
+                    totalAbonado: data.totalAbonado,
+                    saldoPendiente: data.saldoPendiente,
+                    fechaActual: fechaActual,
+                    observaciones: data.observaciones
+                });
+
+                const ventana = window.open('', '', 'height=900,width=300');
+                ventana.document.write(`
+                    <html>
+                    <head>
+                        <title>Préstamo POS</title>
+                        <style>
+                            @page { margin: 0; padding: 0 }
+                            body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0; color: #000 !important; }
+                        </style>
+                    </head>
+                    <body>
+                        ${htmlPOS}
+                    </body>
+                    </html>
+                `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
+
+                limpiarFormulario();
+            })
+            .catch(error => {
+                console.error('Error al guardar el préstamo:', error);
+            });
+    } else {
+        mostrarMensaje('error', 'Por favor, completa todos los campos requeridos.');
+    }
+}
+
+// Función para guardar PDF de préstamo/apartado
+function guardarPrestamoPDF(omitVerification = false) {
+    const { nombreCliente, cedulaNit, telefonoCliente, correoCliente, direccionCliente, productos, nombreProducto } = obtenerDatosFactura();
+    const tipo = document.getElementById('tipoDocumento').value;
+    const observaciones = document.getElementById('observacionesPrestamo').value.trim();
+    const abonoInicialInput = document.getElementById('abonoInicial').value.replace(/\./g, '').replace(/,/g, '');
+    const abonoInicial = parseFloat(abonoInicialInput) || 0;
+
+    totalFacturaGlobal = 0;
+
+    if (!omitVerification && nombreProducto.length > 0) {
+        mostrarConfirmacionProducto(() => guardarPrestamoPDF(true));
+        return;
+    }
+
+    if (nombreCliente && cedulaNit && productos.length > 0) {
+        // Calcular el total
+        let totalPrestamo = 0;
+        productos.forEach(p => totalPrestamo += p.total);
+
+        // Validar abono inicial para apartados
+        if (tipo === 'APARTADO' && abonoInicial > totalPrestamo) {
+            mostrarMensaje('error', 'El abono inicial no puede ser mayor al total.');
+            return;
+        }
+
+        const prestamo = {
+            clienteNombre: nombreCliente,
+            clienteCedula: cedulaNit,
+            telefono: telefonoCliente || null,
+            correo: correoCliente || null,
+            direccion: direccionCliente || null,
+            tipo: tipo,
+            observaciones: observaciones || null,
+            abonoInicial: abonoInicial > 0 ? abonoInicial : null,
+            metodoPagoAbono: abonoInicial > 0 ? 'EFECTIVO' : null,
+            detalles: productos.map(producto => ({
+                productoId: producto.id || null,
+                nombreProducto: producto.nombre,
+                cantidad: producto.cantidad,
+                precioVenta: producto.precioUnitario,
+                garantia: producto.garantia + " Mes." || "1",
+                descripcion: producto.descripcion || "",
+                precioCompra: producto.pc || null,
+            })),
+        };
+
+        fetch('http://localhost:8082/api/prestamos/crear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(prestamo),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        mostrarMensaje('error', `Error: ${text}`);
+                        throw new Error(text);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data) return;
+                console.log('Préstamo guardado exitosamente:', data);
+
+                const tipoTexto = tipo === 'PRESTAMO' ? 'Préstamo' : 'Apartado';
+                let mensaje = `${tipoTexto} #${data.serial} creado exitosamente.`;
+                if (abonoInicial > 0) {
+                    mensaje += ` Abono inicial: $${abonoInicial.toLocaleString('es-CO')}. Saldo pendiente: $${data.saldoPendiente.toLocaleString('es-CO')}`;
+                }
+
+                mostrarMensaje('success', mensaje);
+
+                // Guardar para uso posterior
+                prestamoGuardado = data;
+
+                // Imprimir PDF directamente
+                const fechaActual = new Date(data.fechaCreacion).toLocaleString('es-CO');
+                const productosHTML = productos.map(p => `
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${p.nombre || 'N/A'}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${p.cantidad}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${p.precioUnitario.toLocaleString('es-CO')}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${p.garantia || '1'} Mes</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${p.descripcion || ''}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${p.total.toLocaleString('es-CO')}</td>
+                    </tr>
+                `).join('');
+
+                const htmlPDF = generarPrestamoHTMLPDF({
+                    prestamoId: data.serial,
+                    tipoDocumento: data.tipo,
+                    nombreCliente: nombreCliente,
+                    cedulaNit: cedulaNit,
+                    telefonoCliente: telefonoCliente || null,
+                    correoCliente: correoCliente || null,
+                    direccionCliente: direccionCliente || null,
+                    productosHTML: productosHTML,
+                    totalPrestamo: data.total,
+                    totalAbonado: data.totalAbonado,
+                    saldoPendiente: data.saldoPendiente,
+                    fechaActual: fechaActual,
+                    observaciones: data.observaciones,
+                    abonosHTML: ''
+                });
+
+                const ventana = window.open('', '', 'height=1200,width=800');
+                ventana.document.write(`
+                    <html>
+                    <head>
+                        <title>Préstamo PDF</title>
+                        <style>
+                            body { font-family: Helvetica, sans-serif; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                            th, td { border: 1px solid #ddd; padding: 8px; }
+                            th { background-color: #f2f2f2; }
+                        </style>
+                    </head>
+                    <body>
+                        ${htmlPDF}
+                    </body>
+                    </html>
+                `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
+
+                limpiarFormulario();
+            })
+            .catch(error => {
+                console.error('Error al guardar el préstamo:', error);
+            });
+    } else {
+        mostrarMensaje('error', 'Por favor, completa todos los campos requeridos.');
+    }
+}
+
+// Mostrar opciones de impresión después de guardar préstamo
+function mostrarOpcionesImpresionPrestamo(prestamo, productos) {
+    const tipoTexto = prestamo.tipo === 'PRESTAMO' ? 'Préstamo' : 'Apartado';
+
+    // Crear modal de opciones de impresión
+    const modalHTML = `
+        <div class="modal fade" id="modalImpresionPrestamo" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">${tipoTexto} Guardado</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p><strong>${prestamo.serial}</strong></p>
+                        <p>¿Desea imprimir el documento?</p>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-info" onclick="imprimirPrestamoDesdeFacturacion('POS')">Imprimir POS</button>
+                        <button type="button" class="btn btn-outline-info" onclick="imprimirPrestamoDesdeFacturacion('PDF')">Imprimir PDF</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Remover modal anterior si existe
+    const modalAnterior = document.getElementById('modalImpresionPrestamo');
+    if (modalAnterior) modalAnterior.remove();
+
+    // Agregar modal al DOM
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Guardar datos para impresión
+    window.prestamoParaImprimir = prestamo;
+    window.productosParaImprimir = productos;
+
+    // Mostrar modal
+    $('#modalImpresionPrestamo').modal('show');
+}
+
+// Imprimir préstamo desde la vista de facturación
+function imprimirPrestamoDesdeFacturacion(formato) {
+    console.log('Imprimir préstamo desde facturación');
+    console.log('formato', formato);
+    const prestamo = window.prestamoParaImprimir;
+    const productos = window.productosParaImprimir;
+
+    if (!prestamo || !productos) return;
+
+    const fechaActual = new Date(prestamo.fechaCreacion).toLocaleString('es-CO');
+    const nombreCliente = document.getElementById('nombreCliente').value.trim();
+    const cedulaNit = document.getElementById('cedulaNit').value.trim();
+    const telefonoCliente = document.getElementById('telefonoCliente').value.trim();
+    const correoCliente = document.getElementById('correoCliente').value.trim();
+    const direccionCliente = document.getElementById('direccionCliente').value.trim();
+
+    if (formato === 'POS') {
+        // Generar HTML para POS
+        const productosHTML = productos.map(p => `
+            <tr style="font-size: 11px;">
+                <td style="padding: 2px 0; text-align: left; max-width: 20mm; word-wrap: break-word;">${p.nombre || 'N/A'}</td>
+                <td style="text-align: center;">${p.cantidad}</td>
+                <td style="text-align: center;">${p.precioUnitario.toLocaleString('es-CO')}</td>
+                <td style="text-align: center;">${p.total.toLocaleString('es-CO')}</td>
+            </tr>
+        `).join('');
+
+        const htmlPOS = generarPrestamoHTMLPOS({
+            prestamoId: prestamo.serial,
+            tipoDocumento: prestamo.tipo,
+            nombreCliente: nombreCliente,
+            cedulaNit: cedulaNit,
+            telefonoCliente: telefonoCliente || null,
+            productosHTML: productosHTML,
+            totalPrestamo: prestamo.total,
+            totalAbonado: prestamo.totalAbonado,
+            saldoPendiente: prestamo.saldoPendiente,
+            fechaActual: fechaActual,
+            observaciones: prestamo.observaciones
+        });
+
+        const ventana = window.open('', '', 'height=900,width=300');
+        ventana.document.write(`
+            <html>
+            <head>
+                <title>Préstamo POS</title>
+                <style>
+                    @page { margin: 0; padding: 0 }
+                    body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0; color: #000 !important; }
+                </style>
+            </head>
+            <body>
+                ${htmlPOS}
+            </body>
+            </html>
+        `);
+        ventana.document.close();
+        ventana.focus();
+        ventana.print();
+    } else {
+        // Generar HTML para PDF
+        const productosHTML = productos.map(p => `
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">${p.nombre || 'N/A'}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${p.cantidad}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${p.precioUnitario.toLocaleString('es-CO')}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${p.garantia || '1'} Mes</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${p.descripcion || ''}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${p.total.toLocaleString('es-CO')}</td>
+            </tr>
+        `).join('');
+
+        const htmlPDF = generarPrestamoHTMLPDF({
+            prestamoId: prestamo.serial,
+            tipoDocumento: prestamo.tipo,
+            nombreCliente: nombreCliente,
+            cedulaNit: cedulaNit,
+            telefonoCliente: telefonoCliente || null,
+            correoCliente: correoCliente || null,
+            direccionCliente: direccionCliente || null,
+            productosHTML: productosHTML,
+            totalPrestamo: prestamo.total,
+            totalAbonado: prestamo.totalAbonado,
+            saldoPendiente: prestamo.saldoPendiente,
+            fechaActual: fechaActual,
+            observaciones: prestamo.observaciones,
+            abonosHTML: ''
+        });
+
+        const ventana = window.open('', '', 'height=1200,width=800');
+        ventana.document.write(`
+            <html>
+            <head>
+                <title>Préstamo PDF</title>
+                <style>
+                    body { font-family: Helvetica, sans-serif; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                    th, td { border: 1px solid #ddd; padding: 8px; }
+                    th { background-color: #f2f2f2; }
+                </style>
+            </head>
+            <body>
+                ${htmlPDF}
+            </body>
+            </html>
+        `);
+        ventana.document.close();
+        ventana.focus();
+        ventana.print();
+    }
+
+    // Cerrar modal
+    $('#modalImpresionPrestamo').modal('hide');
 }

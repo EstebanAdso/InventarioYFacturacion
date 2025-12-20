@@ -104,4 +104,46 @@ public class FacturaService {
         return facturaRepository.existsById(id);
     }
 
+    // Método para crear factura sin descontar inventario (usado al convertir préstamos)
+    @Transactional
+    public Factura crearFacturaSinDescontarInventario(Factura factura, List<DetalleFactura> detalles) {
+        // Verificar si el cliente ya existe
+        Cliente cliente = factura.getCliente();
+        Optional<Cliente> clienteExistente = clienteRepository.findByIdentificacion(cliente.getIdentificacion());
+
+        if (clienteExistente.isPresent()) {
+            factura.setCliente(clienteExistente.get());
+        } else {
+            clienteRepository.save(cliente);
+        }
+
+        // Asignar serial incremental
+        Long ultimoId = facturaRepository.count() + 1;
+        String serial = String.format("%08d", ultimoId);
+        factura.setSerial(serial);
+
+        // Inicializar el total de la factura en cero
+        float totalFactura = 0.0f;
+
+        // Guardar factura
+        Factura nuevaFactura = facturaRepository.save(factura);
+
+        // Guardar los detalles sin modificar inventario
+        for (DetalleFactura detalle : detalles) {
+            // Calcular el subtotal de este detalle
+            float subtotal = detalle.getCantidad() * detalle.getPrecioVenta();
+            totalFactura += subtotal;
+
+            // Asignar la factura a cada detalle y guardar
+            detalle.setFactura(nuevaFactura);
+            detalleFacturaRepository.save(detalle);
+        }
+
+        // Asignar el total calculado a la factura y guardar
+        nuevaFactura.setTotal(totalFactura);
+        facturaRepository.save(nuevaFactura);
+
+        return nuevaFactura;
+    }
+
 }

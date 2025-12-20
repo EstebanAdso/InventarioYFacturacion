@@ -1,71 +1,71 @@
 function mostrarMensaje(tipo, texto) {
-    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
-    const mensajeTexto = document.getElementById('mensajeTexto');
+  const mensajeNotificacion = document.getElementById('mensajeNotificacion');
+  const mensajeTexto = document.getElementById('mensajeTexto');
 
-    mensajeTexto.innerText = texto;
+  mensajeTexto.innerText = texto;
 
-    if (tipo === 'error') {
-        mensajeNotificacion.className = 'alert alert-danger alert-dismissible fade show';
-    } else if (tipo === 'success') {
-        mensajeNotificacion.className = 'alert alert-success alert-dismissible fade show';
-    }
+  if (tipo === 'error') {
+    mensajeNotificacion.className = 'alert alert-danger alert-dismissible fade show';
+  } else if (tipo === 'success') {
+    mensajeNotificacion.className = 'alert alert-success alert-dismissible fade show';
+  }
 
-    mensajeNotificacion.style.display = 'block';
+  mensajeNotificacion.style.display = 'block';
 
-    // Ocultar el mensaje después de 5 segundos
-    setTimeout(() => {
-        mensajeNotificacion.style.display = 'none';
-    }, 5000);
+  // Ocultar el mensaje después de 5 segundos
+  setTimeout(() => {
+    mensajeNotificacion.style.display = 'none';
+  }, 5000);
 }
 
 function cerrarMensaje() {
-    const mensajeNotificacion = document.getElementById('mensajeNotificacion');
-    mensajeNotificacion.style.display = 'none';
+  const mensajeNotificacion = document.getElementById('mensajeNotificacion');
+  mensajeNotificacion.style.display = 'none';
 }
 
 // Función para mostrar mensajes
 function mostrarMensajeParrafo(mensaje, color = 'black', element) {
-  document.getElementById(element).innerHTML = 
-      `<p style="text-align: center; color: ${color}; font-weight: bold">${mensaje}</p>`;
-      setTimeout(() => {
-        document.getElementById(element).innerHTML = '';
-      }, 3000);
+  document.getElementById(element).innerHTML =
+    `<p style="text-align: center; color: ${color}; font-weight: bold">${mensaje}</p>`;
+  setTimeout(() => {
+    document.getElementById(element).innerHTML = '';
+  }, 3000);
 }
 
 function formatNumber(number) {
-    return number.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  return number.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
 
 // Función para formatear fecha
 function formatearFecha(fecha) {
   const opciones = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   };
   return fecha.toLocaleDateString('es-CO', opciones);
 }
 
 function mostrarConfirmacionDinamica({
-    mensaje,
-    onAceptar,
-    onCancelar,
-    textoAceptar = 'Aceptar',
-    textoCancelar = 'Cancelar',
+  mensaje,
+  onAceptar,
+  onCancelar,
+  textoAceptar = 'Aceptar',
+  textoCancelar = 'Cancelar',
 }) {
-    // Si el modal no existe, lo crea e inyecta en el body
-    let modal = document.getElementById('modalConfirmacionDinamica');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'modalConfirmacionDinamica';
-        modal.innerHTML = `
-        <div class="modal fade" id="modalConfirmacionDinamicaInner" tabindex="-1" role="dialog" aria-labelledby="modalConfirmacionLabel" >
+  // Si el modal no existe, lo crea e inyecta en el body
+  let modal = document.getElementById('modalConfirmacionDinamica');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modalConfirmacionDinamica';
+    modal.innerHTML = `
+        <div class="modal fade" id="modalConfirmacionDinamicaInner" tabindex="-1" role="dialog" aria-labelledby="modalConfirmacionLabel" data-backdrop="static">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header bg-danger text-white" >
                 <h5 class="modal-title" id="modalConfirmacionLabel">Confirmación</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                   <span >&times;</span>
                 </button>
               </div>
@@ -77,29 +77,45 @@ function mostrarConfirmacionDinamica({
             </div>
           </div>
         </div>`;
-        document.body.appendChild(modal);
+    document.body.appendChild(modal);
+
+    // Agregar estilos CSS dinámicamente
+    const style = document.createElement('style');
+    style.id = 'modalConfirmacionStyle';
+    style.innerHTML = `
+            #modalConfirmacionDinamicaInner {
+                z-index: 1060 !important;
+            }
+            /* Oscurecer el modal de detalles cuando aparece el modal de confirmación */
+            #modalDetallePrestamo.modal.show {
+                opacity: 0
+            }
+        `;
+    if (!document.getElementById('modalConfirmacionStyle')) {
+      document.head.appendChild(style);
     }
-    // Actualizar el mensaje y los textos de los botones
-    document.getElementById('modalConfirmacionTexto').innerText = mensaje;
-    document.getElementById('btnAceptarConfirmacion').innerText = textoAceptar;
-    document.getElementById('btnCancelarConfirmacion').innerText = textoCancelar;
+  }
+  // Actualizar el mensaje y los textos de los botones
+  document.getElementById('modalConfirmacionTexto').innerText = mensaje;
+  document.getElementById('btnAceptarConfirmacion').innerText = textoAceptar;
+  document.getElementById('btnCancelarConfirmacion').innerText = textoCancelar;
 
-    // Remover listeners anteriores
-    const btnAceptar = document.getElementById('btnAceptarConfirmacion');
-    const btnCancelar = document.getElementById('btnCancelarConfirmacion');
-    btnAceptar.onclick = null;
-    btnCancelar.onclick = null;
+  // Remover listeners anteriores
+  const btnAceptar = document.getElementById('btnAceptarConfirmacion');
+  const btnCancelar = document.getElementById('btnCancelarConfirmacion');
+  btnAceptar.onclick = null;
+  btnCancelar.onclick = null;
 
-    // Asignar nuevos listeners
-    btnAceptar.onclick = function () {
-        $("#modalConfirmacionDinamicaInner").modal('hide');
-        if (typeof onAceptar === 'function') onAceptar();
-    };
-    btnCancelar.onclick = function () {
-        $("#modalConfirmacionDinamicaInner").modal('hide');
-        if (typeof onCancelar === 'function') onCancelar();
-    };
-    // Mostrar el modal
-    $("#modalConfirmacionDinamicaInner").modal('show');
+  // Asignar nuevos listeners
+  btnAceptar.onclick = function () {
+    $("#modalConfirmacionDinamicaInner").modal('hide');
+    if (typeof onAceptar === 'function') onAceptar();
+  };
+  btnCancelar.onclick = function () {
+    $("#modalConfirmacionDinamicaInner").modal('hide');
+    if (typeof onCancelar === 'function') onCancelar();
+  };
+  // Mostrar el modal
+  $("#modalConfirmacionDinamicaInner").modal('show');
 }
 

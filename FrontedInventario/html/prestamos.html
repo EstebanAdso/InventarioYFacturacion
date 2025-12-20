@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Préstamos y Apartados</title>
+    <link rel="stylesheet" href="../lib/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="shortcut icon" href="../css/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/prestamos.css">
+</head>
+
+<body>
+    <header id="nav">
+        <nav>
+            <h6 style="user-select: none;">Gestión Total</h6>
+            <ul>
+                <li><a href="facturacion.html"><img src="../css/logos/library-regular-24.png" alt="facturación"></a>
+                </li>
+                <li><a href="scan.html"><img src="../css/logos/scan.png" alt="escanear producto"></a></li>
+                <li><a href="index.html"><img src="../css/logos/store-regular-24.png" alt="inventario"></a></li>
+                <li><a href="ventas.html"><img src="../css/logos/money-withdraw-regular-24.png" alt="ventas"></a></li>
+                <li><a href="pedido.html"><img src="../css/logos/plane-solid-24.png" alt="pedidos"></a></li>
+                <li><a href="activo.html"><img src="../css/logos/bank-solid-24.png" alt="activos"></a></li>
+                <li><a href="cliente.html"><img src="../css/logos/user-solid-24.png" alt="clientes"></a></li>
+                <li><a href="#" class="selected"><img src="../css/logos/edit-alt-solid-24.png" alt="préstamos"></a></li>
+                <li><a href="config.html"><img src="../css/logos/cog-solid-24.png" alt="configuración"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container" padding: 20px;">
+        <h1 class="text-center" style="user-select: none;">Inventario de préstamos y apartados</h1>
+        <p class="text-center">Gestiona los préstamos y apartados pendientes</p>
+
+        <!-- Filtros -->
+        <div class="row mb-4 mt-4">
+            <div class="col-md-3">
+                <label for="filtroTipo">Tipo:</label>
+                <select class="form-control" id="filtroTipo" onchange="cargarPrestamos()">
+                    <option value="">Todos</option>
+                    <option value="PRESTAMO">Préstamos</option>
+                    <option value="APARTADO">Apartados</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="filtroEstado">Estado:</label>
+                <select class="form-control" id="filtroEstado" onchange="cargarPrestamos()">
+                    <option value="PENDIENTE" selected>Pendientes</option>
+                    <option value="PAGADO">Pagados (Facturados)</option>
+                    <option value="ANULADO">Anulados</option>
+                    <option value="">Todos</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="buscarCliente">Buscar Cliente:</label>
+                <input type="text" class="form-control" id="buscarCliente" placeholder="Nombre o cédula..."
+                    oninput="filtrarPorCliente()">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button class="btn btn-primary" onclick="cargarPrestamos()">
+                    Actualizar
+                </button>
+            </div>
+        </div>
+
+        <!-- Resumen -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-warning text-dark">
+                    <div class="card-body text-center">
+                        <h5>Préstamos Pendientes</h5>
+                        <h3 id="totalPrestamosPendientes">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                        <h5>Apartados Pendientes</h5>
+                        <h3 id="totalApartadosPendientes">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-danger text-white">
+                    <div class="card-body text-center">
+                        <h5>Total Por Cobrar</h5>
+                        <h3 id="totalPorCobrar">$0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <h5>Total Abonado</h5>
+                        <h3 id="totalAbonado">$0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de préstamos -->
+        <div class="row" id="listaPrestamos">
+            <!-- Se llena dinámicamente -->
+        </div>
+
+        <!-- Mensaje cuando no hay préstamos -->
+        <div class="row" id="sinPrestamos" style="display: none;">
+            <div class="col-12 text-center">
+                <h4 class="text-muted">No hay préstamos o apartados con los filtros seleccionados</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para ver detalles y abonar -->
+    <div class="modal fade" id="modalDetallePrestamo" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPrestamoTitulo">Detalle del Préstamo</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Info del préstamo -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>Serial:</strong> <span id="detalleSerial"></span></p>
+                            <p><strong>Cliente:</strong> <span id="detalleCliente"></span></p>
+                            <p><strong>Fecha:</strong> <span id="detalleFecha"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Total:</strong> <span id="detalleTotal" class="text-primary"></span></p>
+                            <p><strong>Abonado:</strong> <span id="detalleAbonado" class="text-success"></span></p>
+                            <p><strong>Pendiente:</strong> <span id="detallePendiente" class="text-danger"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- Barra de progreso -->
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-success" id="barraProgreso" role="progressbar" style="width: 0%">0%
+                        </div>
+                    </div>
+
+                    <!-- Observaciones -->
+                    <div class="mb-3" id="detalleObservacionesContainer" style="display: none;">
+                        <p><strong>Observaciones:</strong> <span id="detalleObservaciones"></span></p>
+                    </div>
+
+                    <!-- Productos -->
+                    <h6>Productos:</h6>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaProductosPrestamo">
+                        </tbody>
+                    </table>
+
+                    <!-- Historial de abonos -->
+                    <h6>Historial de Abonos:</h6>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Monto</th>
+                                <th>Método</th>
+                                <th>Observación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaAbonosPrestamo">
+                        </tbody>
+                    </table>
+
+                    <!-- Formulario de abono (solo si está pendiente) -->
+                    <div id="formAbonoContainer" style="display: none;">
+                        <hr>
+                        <h6>Registrar Nuevo Abono:</h6>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="montoAbono">Monto:</label>
+                                <input type="text" class="form-control" id="montoAbono" placeholder="$0">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="metodoAbono">Método:</label>
+                                <select class="form-control" id="metodoAbono">
+                                    <option value="EFECTIVO">Efectivo</option>
+                                    <option value="TRANSFERENCIA">Transferencia</option>
+                                    <option value="TARJETA">Tarjeta</option>
+                                    <option value="NEQUI">Nequi</option>
+                                    <option value="DAVIPLATA">Daviplata</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="observacionAbono">Observación:</label>
+                                <input type="text" class="form-control" id="observacionAbono" placeholder="Opcional">
+                            </div>
+                        </div>
+                        <button class="btn btn-success" onclick="registrarAbono()">Registrar Abono</button>
+                    </div>
+                </div>
+                <div class="modal-footer" id="modalPrestamoFooter">
+                    <button type="button" class="btn btn-info" onclick="imprimirPrestamo()">Imprimir POS</button>
+                    <button type="button" class="btn btn-outline-info" onclick="imprimirPrestamoPDF()">Imprimir
+                        PDF</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnConvertirFactura"
+                        onclick="convertirAFactura()">Convertir a Factura</button>
+                    <button type="button" class="btn btn-danger" id="btnAnular"
+                        onclick="anularPrestamo()">Anular</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/popper.min.js"></script>
+    <script src="../lib/bootstrap.min.js"></script>
+    <script src="../js/functions.js"></script>
+    <script src="../helpers/impresion.js"></script>
+    <script src="../js/prestamos.js"></script>
+</body>
+
+</html>

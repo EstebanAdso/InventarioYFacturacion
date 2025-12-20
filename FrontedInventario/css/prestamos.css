@@ -1,0 +1,53 @@
+        .badge-prestamo {
+            font-size: 14px;
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .badge-apartado {
+            font-size: 14px;
+            background-color: #17a2b8;
+            color: #fff;
+        }
+
+        .badge-pendiente {
+            background-color: #6c757d;
+            font-size: 14px;
+            color: #fff
+        }
+
+        .badge-pagado {
+            background-color: #28a745;
+            font-size: 14px;
+        }
+
+        .badge-cancelado {
+            background-color: #007bff;
+            font-size: 14px;
+        }
+
+        .badge-anulado {
+            background-color: #dc3545;
+            font-size: 14px;
+        }
+
+        .card-prestamo {
+            font-size: 14px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .card-prestamo:hover {
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress {
+            font-size: 14px;
+            height: 25px;
+        }
+
+        .progress-bar {
+            font-size: 14px;
+            line-height: 25px;
+        }
