@@ -1,5 +1,75 @@
 const apiUrl = 'http://localhost:8082/api/facturas';
 let vistaAgrupada = true; // Estado inicial: vista agrupada
+let clienteBuscado = null; // Almacena el nombre del cliente buscado
+let todasLasFacturas = []; // Almacena todas las facturas para filtrado local
+
+// Función principal para obtener facturas
+function obtenerFacturas() {
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(facturas => {
+            if (facturas.length > 0) {
+                // Guardar todas las facturas y ordenarlas
+                todasLasFacturas = facturas.sort((a, b) => new Date(b.fechaEmision) - new Date(a.fechaEmision));
+                window.facturas = [...todasLasFacturas];
+                actualizarVista();
+                actualizarContadorResultados();
+            } else {
+                mostrarMensajeParrafo('No hay facturas disponibles.', 'red', 'ventasContainer');
+            }
+        })
+        .catch(error => {
+            mostrarMensajeParrafo('Error al cargar las facturas.', 'red', 'ventasContainer');
+        });
+}
+
+// Función para filtrar facturas en tiempo real
+function filtrarFacturasPorCliente() {
+    const textoBusqueda = document.getElementById('buscarClienteInput').value.trim().toUpperCase();
+
+    if (!textoBusqueda) {
+        // Si no hay búsqueda, mostrar todas las facturas
+        window.facturas = [...todasLasFacturas];
+        clienteBuscado = null;
+    } else {
+        // Filtrar facturas que contengan el texto en nombre o cédula del cliente
+        clienteBuscado = textoBusqueda;
+        window.facturas = todasLasFacturas.filter(factura => {
+            const nombreFactura = factura.clienteNombre || factura.cliente?.nombre || '';
+            const cedulaFactura = factura.cliente?.identificacion || '';
+
+            return nombreFactura.toUpperCase().includes(textoBusqueda) ||
+                cedulaFactura.toUpperCase().includes(textoBusqueda);
+        });
+    }
+
+    actualizarVista();
+    actualizarContadorResultados();
+}
+
+// Función para limpiar la búsqueda y mostrar todas las facturas
+function limpiarBusqueda() {
+    clienteBuscado = null;
+    document.getElementById('buscarClienteInput').value = '';
+    window.facturas = [...todasLasFacturas];
+    actualizarVista();
+    actualizarContadorResultados();
+}
+
+// Función para actualizar contador de resultados
+function actualizarContadorResultados() {
+    const elementoResultados = document.getElementById('resultadosBusqueda');
+    const totalFacturas = window.facturas ? window.facturas.length : 0;
+    const totalGeneral = todasLasFacturas.length;
+
+    if (clienteBuscado) {
+        elementoResultados.innerHTML = `<i class="fas fa-filter"></i> Mostrando ${totalFacturas} de ${totalGeneral} facturas`;
+        elementoResultados.style.color = totalFacturas > 0 ? '#28a745' : '#dc3545';
+    } else {
+        elementoResultados.innerHTML = `<i class="fas fa-list"></i> Total: ${totalFacturas} facturas`;
+        elementoResultados.style.color = '#6c757d';
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     obtenerFacturas();
@@ -12,25 +82,11 @@ document.addEventListener('DOMContentLoaded', function () {
             ? '<i class="fas fa-list"></i> Vista Normal'
             : '<i class="fas fa-calendar-alt"></i> Vista Agrupada';
     });
-});
 
-// Función principal para obtener facturas
-function obtenerFacturas() {
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(facturas => {
-            if (facturas.length > 0) {
-                // Guardar las facturas y ordenarlas
-                window.facturas = facturas.sort((a, b) => new Date(b.fechaEmision) - new Date(a.fechaEmision));
-                actualizarVista();
-            } else {
-                mostrarMensajeParrafo('No hay facturas disponibles.', 'red', 'ventasContainer');
-            }
-        })
-        .catch(error => {
-            mostrarMensajeParrafo('Error al cargar las facturas.', 'red', 'ventasContainer');
-        });
-}
+    // Configurar búsqueda en tiempo real
+    document.getElementById('buscarClienteInput').addEventListener('input', filtrarFacturasPorCliente);
+    document.getElementById('btnLimpiarBusqueda').addEventListener('click', limpiarBusqueda);
+});
 
 // Función para actualizar la vista según el modo seleccionado
 function actualizarVista() {

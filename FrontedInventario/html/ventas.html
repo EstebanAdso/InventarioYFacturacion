@@ -32,10 +32,30 @@
 
     <h1 style="text-align: center; user-select: none;">Ventas Generadas</h1>
 
-    <div class="text-right mb-3">
-      <button id="toggleVistaBtn" class="btn btn-outline-primary">
-        <i class="fas fa-calendar-alt"></i> Vista Normal
-      </button>
+    <div class="row mb-3 align-items-center" style="position: relative;">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-start">
+          <div style="flex: 0 0 20%;"></div>
+          <div style="flex: 0 0 50%;">
+            <div class="input-group shadow-sm">
+              <input type="text" class="form-control border-left-0" autocorrect="off" spellcheck="false"
+                id="buscarClienteInput" placeholder="Buscar por nombre o cédula del cliente..." style="border-left: 0;">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" id="btnLimpiarBusqueda" type="button"
+                  title="Limpiar búsqueda">X
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <small class="text-muted d-block text-center mt-2" id="resultadosBusqueda"></small>
+          </div>
+          <div style="flex: 0 0 20%; text-align: right;">
+            <button id="toggleVistaBtn" class="btn btn-outline-primary">
+              <i class="fas fa-calendar-alt"></i> Vista Normal
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="ventasContainer">
@@ -44,14 +64,13 @@
   </div>
 
   <!-- Modal para mostrar detalles de la factura -->
-  <div class="modal fade" id="detalleFacturaModal" tabindex="-1" role="dialog" aria-labelledby="detalleFacturaLabel"
-    >
+  <div class="modal fade" id="detalleFacturaModal" tabindex="-1" role="dialog" aria-labelledby="detalleFacturaLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="detalleFacturaLabel">Detalles de Factura</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span >&times;</span>
+            <span>&times;</span>
           </button>
         </div>
         <div class="modal-body">
@@ -81,26 +100,27 @@
   </div>
   </div>
 
-  <div class="modal fade" id="imprimirFacturaModal" tabindex="-1" role="dialog" aria-labelledby="imprimirFacturaLabel" >
-    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: max-content; width: calc(100vw + 40px);">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-center w-100" id="imprimirFacturaLabel">Seleccione el formato de impresión</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span >&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-              <button type="button" class="btn btn-success m-2" id="btnImprimirPOS">
-                <i class="fas fa-receipt"></i> Imprimir POS
-              </button>
-              <button type="button" class="btn btn-primary m-2" id="btnImprimirPDF">
-                  <i class="fas fa-file-pdf"></i> Imprimir PDF
-              </button>
-            </div>
+  <div class="modal fade" id="imprimirFacturaModal" tabindex="-1" role="dialog" aria-labelledby="imprimirFacturaLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document"
+      style="max-width: max-content; width: calc(100vw + 40px);">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center w-100" id="imprimirFacturaLabel">Seleccione el formato de impresión</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span>&times;</span>
+          </button>
         </div>
+        <div class="modal-body text-center">
+          <button type="button" class="btn btn-success m-2" id="btnImprimirPOS">
+            <i class="fas fa-receipt"></i> Imprimir POS
+          </button>
+          <button type="button" class="btn btn-primary m-2" id="btnImprimirPDF">
+            <i class="fas fa-file-pdf"></i> Imprimir PDF
+          </button>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 
 
   <script src="../js/functions.js"></script>
