@@ -1,7 +1,6 @@
 package com.example.backendinventario.services;
 
 import com.example.backendinventario.entities.Pedido;
-import com.example.backendinventario.entities.Producto;
 import com.example.backendinventario.repositories.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

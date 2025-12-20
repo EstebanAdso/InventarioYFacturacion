@@ -15,16 +15,16 @@
         <nav>
             <h6 style="user-select: none;">Gestión Total</h6>
             <ul>
-                <li><a href="#" class="selected"><img src="../css/logos/library-regular-24.png" alt="facturación"></a>
+                <li><a href="#" class="selected"><img src="../css/logos/library-regular-24.png" alt="facturación"><span class="nav-tooltip">Facturación</span></a>
                 </li>
-                <li><a href="scan.html"><img src="../css/logos/scan.png" alt="escanear producto"></a></li>
-                <li><a href="index.html"><img src="../css/logos/store-regular-24.png" alt="inventario"></a></li>
-                <li><a href="ventas.html"><img src="../css/logos/money-withdraw-regular-24.png" alt="ventas"></a></li>
-                <li><a href="pedido.html"><img src="../css/logos/plane-solid-24.png" alt="pedidos"></a></li>
-                <li><a href="activo.html"><img src="../css/logos/bank-solid-24.png" alt="activos"></a></li>
-                <li><a href="cliente.html"><img src="../css/logos/user-solid-24.png" alt="clientes"></a></li>
-                <li><a href="prestamos.html"><img src="../css/logos/edit-alt-solid-24.png" alt="préstamos"></a></li>
-                <li><a href="config.html"><img src="../css/logos/cog-solid-24.png" alt="configuración"></a></li>
+                <li><a href="index.html"><img src="../css/logos/store-regular-24.png" alt="inventario"><span class="nav-tooltip">Inventario</span></a></li>
+                <li><a href="ventas.html"><img src="../css/logos/money-withdraw-regular-24.png" alt="ventas"><span class="nav-tooltip">Ventas</span></a></li>
+                <li><a href="prestamos.html"><img src="../css/logos/bx--bx-transfer-alt.png" alt="préstamos"><span class="nav-tooltip">Préstamos</span></a></li>
+                <li><a href="scan.html"><img src="../css/logos/scan.png" alt="escanear producto"><span class="nav-tooltip">Escanear</span></a></li>
+                <li><a href="pedido.html"><img src="../css/logos/plane-solid-24.png" alt="pedidos"><span class="nav-tooltip">Pedidos</span></a></li>
+                <li><a href="activo.html"><img src="../css/logos/bank-solid-24.png" alt="activos"><span class="nav-tooltip">Activos</span></a></li>
+                <li><a href="cliente.html"><img src="../css/logos/user-solid-24.png" alt="clientes"><span class="nav-tooltip">Clientes</span></a></li>
+                <li><a href="config.html"><img src="../css/logos/cog-solid-24.png" alt="configuración"><span class="nav-tooltip">Configuración</span></a></li>
             </ul>
         </nav>
     </header>
@@ -32,145 +32,164 @@
     <div class="container-fluid" id="contenedorPrincipalFacturacion" style="height: calc(100dvh); margin: 0 auto;">
         <div class="row" style="height: 80%;">
 
-            <div class="col-md-6" style="overflow-y: auto; border-right: 2px solid #1116;">
-                <h2 class="text-center" id="tituloFacturacion"
-                    style="user-select: none; margin-top: 90px; margin-left: 40px;">Facturación</h1>
-                    <!-- Selector de tipo de documento -->
-                    <fieldset style="border: 2px solid #1116; border-radius: 10px; padding: 10px; margin-bottom: 10px;">
-                        <legend>Tipo de Documento</legend>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="tipoDocumento">Tipo de Documento</label>
-                                <select class="form-control" id="tipoDocumento" onchange="cambiarTipoDocumento()">
-                                    <option value="FACTURA" selected>Factura Normal</option>
-                                    <option value="PRESTAMO">Préstamo (Fiado)</option>
-                                    <option value="APARTADO">Apartado (Separar producto)</option>
-                                </select>
+            <div class="col-md-6" style="overflow-y: auto; border-right: 2px solid #1116; padding: 0 10px;">
+                <h1 class="text-center" id="tituloFacturacion"
+                    style="user-select: none; margin-top: 70px; margin-bottom: 0px; margin-left: 0;">Facturación</h1>
+                <!-- Selector de tipo de documento -->
+                <fieldset style="border: 2px solid #1116; border-radius: 10px; padding: 5px; margin-bottom: 3px;">
+                    <legend style="font-size: 0.95em; margin-bottom: 5px;">Tipo de Documento</legend>
+                    <div class="form-row" style="margin: 0;">
+                        <div class="form-group col-md-6" style="margin-bottom: 3px;">
+                            <label for="tipoDocumento" style="font-size: 0.9em; margin-bottom: 3px;">Tipo de
+                                Documento</label>
+                            <select class="form-control" id="tipoDocumento" onchange="cambiarTipoDocumento()"
+                                style="font-size: 0.9em;">
+                                <option value="FACTURA" selected>Factura Normal</option>
+                                <option value="PRESTAMO">Préstamo (Fiado)</option>
+                                <option value="APARTADO">Apartado (Separar producto)</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6" id="abonoInicialContainer"
+                            style="display: none; margin-bottom: 3px;">
+                            <label for="abonoInicial" style="font-size: 0.9em; margin-bottom: 3px;">Abono
+                                Inicial:</label>
+                            <input type="text" pattern="^[0-9,.]+$" class="form-control" id="abonoInicial"
+                                placeholder="$0" autocomplete="off" style="font-size: 0.9em;">
+                        </div>
+                    </div>
+                    <div class="form-row" id="observacionesContainer" style="display: none; margin: 0;">
+                        <div class="form-group col-md-12" style="margin-bottom: 0;">
+                            <label for="observacionesPrestamo"
+                                style="font-size: 0.9em; margin-bottom: 3px;">Observaciones:</label>
+                            <textarea class="form-control" id="observacionesPrestamo" rows="1"
+                                placeholder="Notas adicionales..." style="font-size: 0.9em;"></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset style="border: 2px solid #1116; border-radius: 10px; padding: 5px; margin-top: 5px;">
+                    <legend style="font-size: 0.95em; margin-bottom: 5px;">Datos del Cliente</legend>
+                    <form id="clienteForm" style="margin-bottom: 0;">
+                        <div class="form-row" style="margin: 0;">
+                            <div class="form-group col-md-7" style="margin-bottom: 3px;">
+                                <label for="nombreCliente" style="font-size: 0.9em; margin-bottom: 3px;">Nombre del
+                                    Cliente:</label>
+                                <input type="text" class="form-control" id="nombreCliente" autocomplete="off"
+                                    placeholder="Obligatorio" required style="font-size: 0.9em;">
+                                <ul id="sugerenciasClientes"
+                                    style="position: absolute; border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto; background-color: white; width: 100%; z-index: 1;">
+                                </ul>
                             </div>
-                            <div class="form-group col-md-6" id="abonoInicialContainer" style="display: none;">
-                                <label for="abonoInicial">Abono Inicial:</label>
-                                <input type="text" pattern="^[0-9,.]+$" class="form-control" id="abonoInicial"
-                                    placeholder="$0" autocomplete="off">
+                            <div class="form-group col-md-5" style="margin-bottom: 3px;">
+                                <label for="cedulaNit" style="font-size: 0.9em; margin-bottom: 3px;">Cédula o
+                                    NIT:</label>
+                                <input type="number" class="form-control" autocomplete="off" placeholder="Obligatorio"
+                                    id="cedulaNit" required style="font-size: 0.9em;">
                             </div>
                         </div>
-                        <div class="form-row" id="observacionesContainer" style="display: none;">
-                            <div class="form-group col-md-12">
-                                <label for="observacionesPrestamo">Observaciones:</label>
-                                <textarea class="form-control" id="observacionesPrestamo" rows="1"
-                                    placeholder="Notas adicionales..."></textarea>
+                        <div class="form-row" style="margin: 0;">
+                            <div class="form-group col-md-6" style="margin-bottom: 3px;">
+                                <label for="telefonoCliente"
+                                    style="font-size: 0.9em; margin-bottom: 3px;">Teléfono:</label>
+                                <input type="number" class="form-control" autocomplete="off" placeholder="Opcional"
+                                    id="telefonoCliente" style="font-size: 0.9em;">
+                            </div>
+                            <div class="form-group col-md-6" style="margin-bottom: 3px;">
+                                <label for="direccionCliente"
+                                    style="font-size: 0.9em; margin-bottom: 3px;">Dirección:</label>
+                                <input type="text" class="form-control" autocomplete="off" placeholder="Opcional"
+                                    id="direccionCliente" style="font-size: 0.9em;">
+                            </div>
+                            <div class="form-group col-md-12" style="margin-bottom: 0;">
+                                <label for="correoCliente" style="font-size: 0.9em; margin-bottom: 3px;">Correo
+                                    Electrónico:</label>
+                                <input type="email" class="form-control" autocomplete="off" placeholder="Opcional"
+                                    id="correoCliente" style="font-size: 0.9em;">
                             </div>
                         </div>
-                    </fieldset>
+                    </form>
+                </fieldset>
 
-                    <fieldset style="border: 2px solid #1116; border-radius: 10px; padding: 10px;">
-                        <legend>Datos del Cliente</legend>
-                        <form id="clienteForm" class="mb-1">
-                            <div class="form-row">
-                                <div class="form-group col-md-7">
-                                    <label for="nombreCliente">Nombre del Cliente:</label>
-                                    <input type="text" class="form-control" id="nombreCliente" autocomplete="off"
-                                        placeholder="Obligatorio" required>
-                                    <ul id="sugerenciasClientes"
-                                        style="position: absolute; border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto; background-color: white; width: 100%; z-index: 1;">
-                                    </ul>
+                <!-- Fieldset para datos de facturación -->
+                <fieldset style="border: 2px solid #1116; padding: 5px; margin-top: 5px; border-radius: 10px;">
+                    <legend style="font-size: 0.95em; margin-bottom: 5px;">Datos de Facturación</legend>
+                    <form id="facturaForm">
+                        <div class="form-row" style="margin: 0;">
+                            <div class="form-group col-md-8" style="margin-bottom: 3px;">
+                                <label for="nombreProductoManual" style="font-size: 0.9em; margin-bottom: 3px;">Nombre
+                                    del Producto:</label>
+                                <input type="text" class="form-control" autocomplete="off" id="nombreProductoManual"
+                                    style="font-size: 0.9em;">
+                                <ul id="sugerenciasProductos"
+                                    style="position: absolute; border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto; background-color: white; width: 100%; z-index: 1;">
+                                </ul>
+                            </div>
+                            <div class="form-group col-md-4" style="margin-bottom: 5px;">
+                                <div class="form-check" style="margin-bottom: 3px;">
+                                    <input class="form-check-input" type="checkbox" value="" id="verCostoAdquisicion">
+                                    <label class="form-check-label" for="verCostoAdquisicion"
+                                        style="user-select: none; font-size: 0.85em;">
+                                        Ver costo
+                                    </label>
                                 </div>
-                                <div class="form-group col-md-5">
-                                    <label for="cedulaNit">Cédula o NIT:</label>
-                                    <input type="number" class="form-control" autocomplete="off"
-                                        placeholder="Obligatorio" id="cedulaNit" required>
+                                <input type="text" pattern="^[0-9,.]+$" title="Ingrese un número válido"
+                                    class="form-control" autocomplete="off" id="PCProducto"
+                                    style="-webkit-text-security: disc; font-size: 0.9em;">
+                            </div>
+                        </div>
+                        <div class="form-row" style="margin: 0;">
+                            <div class="form-group col-md-4" style="margin-bottom: 3px;">
+                                <label for="precioUnitarioManual" style="font-size: 0.9em; margin-bottom: 3px;">Precio
+                                    Venta:</label>
+                                <input type="text" pattern="^[0-9,.]+$" title="Ingrese un número válido"
+                                    autocomplete="off" class="form-control" id="precioUnitarioManual"
+                                    style="font-size: 0.9em;">
+                                <div class="form-check" style="margin-top: 3px;">
+                                    <input class="form-check-input" type="checkbox" id="precioMayoreoCheck">
+                                    <label class="form-check-label" for="precioMayoreoCheck" style="font-size: 0.85em;">
+                                        Mayoreo
+                                    </label>
                                 </div>
                             </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="telefonoCliente">Teléfono:</label>
-                                    <input type="number" class="form-control" autocomplete="off" placeholder="Opcional"
-                                        id="telefonoCliente">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="direccionCliente">Dirección:</label>
-                                    <input type="text" class="form-control" autocomplete="off" placeholder="Opcional"
-                                        id="direccionCliente">
-                                </div>
-                                <div class="form-group col-md-12">
-                                    <label for="correoCliente">Correo Electrónico:</label>
-                                    <input type="email" class="form-control" autocomplete="off" placeholder="Opcional"
-                                        id="correoCliente">
-                                </div>
+                            <div class="form-group col-md-4" style="margin-bottom: 3px;">
+                                <label for="cantidadProductoManual"
+                                    style="font-size: 0.9em; margin-bottom: 3px;">Cantidad:</label>
+                                <input type="number" autocomplete="off" class="form-control" id="cantidadProductoManual"
+                                    value="1" min="1" style="font-size: 0.9em;">
+                                <p id="mensajeMaxCantidad"
+                                    style="color: red; display: block; position: absolute; top: 90%; left: 0; margin-top: 4px; font-size: 0.85em;">
+                                </p>
                             </div>
-                        </form>
-                    </fieldset>
-
-                    <!-- Fieldset para datos de facturación -->
-                    <fieldset style="border: 2px solid #1116; padding: 10px; margin-top: 10px; border-radius: 10px;">
-                        <legend>Datos de Facturación</legend>
-                        <form id="facturaForm">
-                            <div class="form-row">
-                                <div class="form-group col-md-8">
-                                    <label for="nombreProductoManual">Nombre del Producto:</label>
-                                    <input type="text" class="form-control" autocomplete="off"
-                                        id="nombreProductoManual">
-                                    <ul id="sugerenciasProductos"
-                                        style="position: absolute; border: 1px solid #ddd; display: none; list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto; background-color: white; width: 100%; z-index: 1;">
-                                    </ul>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value=""
-                                            id="verCostoAdquisicion">
-                                        <label class="form-check-label" for="verCostoAdquisicion"
-                                            style="user-select: none;">
-                                            Ver costo unitario
-                                        </label>
-                                    </div>
-                                    <input type="text" pattern="^[0-9,.]+$" title="Ingrese un número válido"
-                                        class="form-control" autocomplete="off" id="PCProducto"
-                                        style="-webkit-text-security: disc;">
-                                </div>
+                            <div class="form-group col-md-4" style="margin-bottom: 3px;">
+                                <label for="garantiaProducto" style="font-size: 0.9em; margin-bottom: 3px;">Garantía
+                                    (meses):</label>
+                                <input type="number" autocomplete="off" class="form-control" id="garantiaProducto"
+                                    style="font-size: 0.9em;">
                             </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-4">
-                                    <label for="precioUnitarioManual">Precio Venta:</label>
-                                    <input type="text" pattern="^[0-9,.]+$" title="Ingrese un número válido"
-                                        autocomplete="off" class="form-control" id="precioUnitarioManual">
-                                    <div class="form-check mt-1">
-                                        <input class="form-check-input" type="checkbox" id="precioMayoreoCheck">
-                                        <label class="form-check-label" for="precioMayoreoCheck">
-                                            Precio Mayoreo
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="cantidadProductoManual">Cantidad:</label>
-                                    <input type="number" autocomplete="off" class="form-control"
-                                        id="cantidadProductoManual" value="1" min="1">
-                                    <p id="mensajeMaxCantidad"
-                                        style="color: red; display: block; position: absolute; top: 90%; left: 0; margin-top: 4px;">
-                                    </p>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="garantiaProducto">Garantía (en meses):</label>
-                                    <input type="number" autocomplete="off" class="form-control" id="garantiaProducto">
-                                </div>
-                                <div class="form-group col-md-12">
-                                    <label for="descripcionFactura">Descripción:</label>
-                                    <textarea oninput="this.value = this.value.toUpperCase()" class="form-control"
-                                        autocomplete="off" id="descripcionFactura" placeholder="Opcional"
-                                        rows="1"></textarea>
-                                </div>
+                            <div class="form-group col-md-12" style="margin-bottom: 3px;">
+                                <label for="descripcionFactura"
+                                    style="font-size: 0.9em; margin-bottom: 3px;">Descripción:</label>
+                                <textarea oninput="this.value = this.value.toUpperCase()" class="form-control"
+                                    autocomplete="off" id="descripcionFactura" placeholder="Opcional" rows="1"
+                                    style="font-size: 0.9em;"></textarea>
                             </div>
-                            <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-                                <button type="button" class="btn btn-primary" style="letter-spacing: 2px;"
-                                    onclick="agregarProducto()">Agregar Producto</button>
-                                <button type="button" class="btn btn-secondary" style="letter-spacing: 2px;"
-                                    onclick="limpiarFormularioProducto()">Limpiar</button>
-                            </div>
-                        </form>
-                    </fieldset>
+                        </div>
+                        <div
+                            style="display: flex; justify-content: center; align-items: center; gap: 5px; margin-top: 5px;">
+                            <button type="button" class="btn btn-primary"
+                                style="letter-spacing: 1px; font-size: 0.9em; padding: 6px 12px; flex: 1;"
+                                onclick="agregarProducto()">Agregar</button>
+                            <button type="button" class="btn btn-secondary"
+                                style="letter-spacing: 1px; font-size: 0.9em; padding: 6px 12px; flex: 1;"
+                                onclick="limpiarFormularioProducto()">Limpiar</button>
+                        </div>
+                    </form>
+                </fieldset>
             </div>
 
             <!-- Columna de la tabla de productos seleccionados -->
             <div class="col-md-6" style="overflow-y: auto;">
-                <h2 class="text-center" style="user-select: none; margin-top: 90px;">Productos seleccionados</h1>
+                <h2 class="text-center" style="user-select: none; margin-top: 70px;">Productos seleccionados</h1>
                     <div class="mt-4">
                         <h5> Tabla de Productos Seleccionados</h5>
                         <table id="productosTabla" class="table table-bordered">

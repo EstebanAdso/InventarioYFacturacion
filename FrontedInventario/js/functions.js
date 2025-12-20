@@ -3,11 +3,12 @@ function mostrarMensaje(tipo, texto) {
   const mensajeTexto = document.getElementById('mensajeTexto');
 
   mensajeTexto.innerText = texto;
-
   if (tipo === 'error') {
     mensajeNotificacion.className = 'alert alert-danger alert-dismissible fade show';
   } else if (tipo === 'success') {
     mensajeNotificacion.className = 'alert alert-success alert-dismissible fade show';
+  } else if( tipo === 'info') {
+    mensajeNotificacion.className = 'alert alert-info alert-dismissible fade show';
   }
 
   mensajeNotificacion.style.display = 'block';
@@ -16,6 +17,48 @@ function mostrarMensaje(tipo, texto) {
   setTimeout(() => {
     mensajeNotificacion.style.display = 'none';
   }, 5000);
+}
+
+function mostrarToast(tipo, texto) {
+  const toastNotificacion = document.getElementById('toastNotificacion');
+  const toastTexto = document.getElementById('toastTexto');
+  const toastIcon = document.getElementById('toastIcon');
+
+  if (!toastNotificacion || !toastTexto) {
+    console.warn('Elementos del toast no encontrados. Usando alert fallback.');
+    alert(texto);
+    return;
+  }
+
+  // Limpiar clases anteriores
+  toastNotificacion.classList.remove('success', 'error', 'info');
+
+  // Configurar tipo, icono y clase
+  let iconClass = 'fas fa-info-circle';
+  if (tipo === 'error') {
+    toastNotificacion.classList.add('error');
+    iconClass = 'fas fa-times-circle';
+  } else if (tipo === 'success') {
+    toastNotificacion.classList.add('success');
+    iconClass = 'fas fa-check-circle';
+  } else if (tipo === 'info') {
+    toastNotificacion.classList.add('info');
+    iconClass = 'fas fa-info-circle';
+  }
+
+  // Actualizar icono y texto
+  if (toastIcon) {
+    toastIcon.innerHTML = `<i class="${iconClass}"></i>`;
+  }
+  toastTexto.innerText = texto;
+
+  // Mostrar el toast
+  toastNotificacion.style.display = 'block';
+
+  // Ocultar después de 4 segundos
+  setTimeout(() => {
+    toastNotificacion.style.display = 'none';
+  }, 4000);
 }
 
 function cerrarMensaje() {
@@ -78,22 +121,6 @@ function mostrarConfirmacionDinamica({
           </div>
         </div>`;
     document.body.appendChild(modal);
-
-    // Agregar estilos CSS dinámicamente
-    const style = document.createElement('style');
-    style.id = 'modalConfirmacionStyle';
-    style.innerHTML = `
-            #modalConfirmacionDinamicaInner {
-                z-index: 1060 !important;
-            }
-            /* Oscurecer el modal de detalles cuando aparece el modal de confirmación */
-            #modalDetallePrestamo.modal.show {
-                opacity: 0
-            }
-        `;
-    if (!document.getElementById('modalConfirmacionStyle')) {
-      document.head.appendChild(style);
-    }
   }
   // Actualizar el mensaje y los textos de los botones
   document.getElementById('modalConfirmacionTexto').innerText = mensaje;
@@ -117,5 +144,62 @@ function mostrarConfirmacionDinamica({
   };
   // Mostrar el modal
   $("#modalConfirmacionDinamicaInner").modal('show');
+}
+
+function mostrarConfirmacionToast({
+  mensaje,
+  onAceptar,
+  onCancelar,
+  textoAceptar = 'Aceptar',
+  textoCancelar = 'Cancelar',
+}) {
+  const toastConfirmacion = document.getElementById('toastConfirmacion');
+  const toastConfirmacionTexto = document.getElementById('toastConfirmacionTexto');
+  const btnAceptarToast = document.getElementById('btnAceptarToast');
+  const btnCancelarToast = document.getElementById('btnCancelarToast');
+  const backdropConfirmacion = document.getElementById('backdropConfirmacion');
+
+  if (!toastConfirmacion || !toastConfirmacionTexto) {
+    console.warn('Elementos del toast de confirmación no encontrados.');
+    return;
+  }
+
+  // Actualizar mensaje y textos de botones
+  toastConfirmacionTexto.innerText = mensaje;
+  btnAceptarToast.innerText = textoAceptar;
+  btnCancelarToast.innerText = textoCancelar;
+
+  // Remover listeners anteriores
+  btnAceptarToast.onclick = null;
+  btnCancelarToast.onclick = null;
+
+  // Función para cerrar
+  function cerrarConfirmacionToast() {
+    toastConfirmacion.style.display = 'none';
+    backdropConfirmacion.style.display = 'none';
+  }
+
+  // Asignar nuevos listeners
+  btnAceptarToast.onclick = function () {
+    cerrarConfirmacionToast();
+    if (typeof onAceptar === 'function') onAceptar();
+  };
+
+  btnCancelarToast.onclick = function () {
+    cerrarConfirmacionToast();
+    if (typeof onCancelar === 'function') onCancelar();
+  };
+
+  // Cerrar al hacer clic en el backdrop
+  backdropConfirmacion.onclick = function (e) {
+    if (e.target === backdropConfirmacion) {
+      cerrarConfirmacionToast();
+      if (typeof onCancelar === 'function') onCancelar();
+    }
+  };
+
+  // Mostrar el toast
+  toastConfirmacion.style.display = 'flex';
+  backdropConfirmacion.style.display = 'block';
 }
 

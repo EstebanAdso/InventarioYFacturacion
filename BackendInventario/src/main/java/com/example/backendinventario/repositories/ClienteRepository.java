@@ -1,7 +1,6 @@
 package com.example.backendinventario.repositories;
 
 import com.example.backendinventario.entities.Cliente;
-import com.example.backendinventario.entities.Producto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

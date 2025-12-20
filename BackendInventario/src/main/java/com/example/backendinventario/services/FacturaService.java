@@ -62,8 +62,6 @@ public class FacturaService {
                 throw new RuntimeException("Producto con ID " + detalle.getProducto().getId() + " no existe.");
             }
 
-            Producto producto = productoExistente.get();
-
             // Calcular el subtotal de este detalle (cantidad * precioUnitario)
             float subtotal = detalle.getCantidad() * detalle.getPrecioVenta();
 

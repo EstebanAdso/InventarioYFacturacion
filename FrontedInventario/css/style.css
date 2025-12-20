@@ -75,6 +75,7 @@ header nav ul li a {
     justify-content: center;
     height: 40px;
     width: 40px;
+    position: relative;
 }
 
 nav ul li a:hover {
@@ -82,10 +83,40 @@ nav ul li a:hover {
     color: #aaa;
 }
 
+.nav-tooltip {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85em;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
 header nav ul li a.selected {
     background-color: #4488ee;
     color: white;
     border-radius: 20px;
+}
+
+header nav ul li a:hover .nav-tooltip {
+    opacity: 1;
+    animation: tooltipFadeIn 0.3s ease 1s forwards;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 #searchForm input {
@@ -281,6 +312,11 @@ legend {
 }
 
 #botonesDeImpresion {
+    margin: 0;
+    padding-bottom: 50px;
+}
+
+#botonesPrestamo {
     margin: 0;
     padding-bottom: 50px;
 }

@@ -7,6 +7,7 @@
     <title>Préstamos y Apartados</title>
     <link rel="stylesheet" href="../lib/bootstrap.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/toast.css">
     <link rel="shortcut icon" href="../css/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/prestamos.css">
 </head>
@@ -16,16 +17,25 @@
         <nav>
             <h6 style="user-select: none;">Gestión Total</h6>
             <ul>
-                <li><a href="facturacion.html"><img src="../css/logos/library-regular-24.png" alt="facturación"></a>
+                <li><a href="facturacion.html"><img src="../css/logos/library-regular-24.png" alt="facturación"><span
+                            class="nav-tooltip">Facturación</span></a>
                 </li>
-                <li><a href="scan.html"><img src="../css/logos/scan.png" alt="escanear producto"></a></li>
-                <li><a href="index.html"><img src="../css/logos/store-regular-24.png" alt="inventario"></a></li>
-                <li><a href="ventas.html"><img src="../css/logos/money-withdraw-regular-24.png" alt="ventas"></a></li>
-                <li><a href="pedido.html"><img src="../css/logos/plane-solid-24.png" alt="pedidos"></a></li>
-                <li><a href="activo.html"><img src="../css/logos/bank-solid-24.png" alt="activos"></a></li>
-                <li><a href="cliente.html"><img src="../css/logos/user-solid-24.png" alt="clientes"></a></li>
-                <li><a href="#" class="selected"><img src="../css/logos/edit-alt-solid-24.png" alt="préstamos"></a></li>
-                <li><a href="config.html"><img src="../css/logos/cog-solid-24.png" alt="configuración"></a></li>
+                <li><a href="index.html"><img src="../css/logos/store-regular-24.png" alt="inventario"><span
+                            class="nav-tooltip">Inventario</span></a></li>
+                <li><a href="ventas.html"><img src="../css/logos/money-withdraw-regular-24.png" alt="ventas"><span
+                            class="nav-tooltip">Ventas</span></a></li>
+                <li><a href="#" class="selected"><img src="../css/logos/bx--bx-transfer-alt.png" alt="préstamos"><span
+                            class="nav-tooltip">Préstamos</span></a></li>
+                <li><a href="scan.html"><img src="../css/logos/scan.png" alt="escanear producto"><span
+                            class="nav-tooltip">Escanear</span></a></li>
+                <li><a href="pedido.html"><img src="../css/logos/plane-solid-24.png" alt="pedidos"><span
+                            class="nav-tooltip">Pedidos</span></a></li>
+                <li><a href="activo.html"><img src="../css/logos/bank-solid-24.png" alt="activos"><span
+                            class="nav-tooltip">Activos</span></a></li>
+                <li><a href="cliente.html"><img src="../css/logos/user-solid-24.png" alt="clientes"><span
+                            class="nav-tooltip">Clientes</span></a></li>
+                <li><a href="config.html"><img src="../css/logos/cog-solid-24.png" alt="configuración"><span
+                            class="nav-tooltip">Configuración</span></a></li>
             </ul>
         </nav>
     </header>
@@ -33,6 +43,32 @@
     <div class="container" padding: 20px;">
         <h1 class="text-center" style="user-select: none;">Inventario de préstamos y apartados</h1>
         <p class="text-center">Gestiona los préstamos y apartados pendientes</p>
+        <div id="toastNotificacion" class="custom-toast" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
+            <div class="toast-content">
+                <div class="toast-icon" id="toastIcon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="toast-message" id="toastTexto">
+                    Mensaje aquí
+                </div>
+            </div>
+        </div>
+
+        <div id="backdropConfirmacion" class="toast-backdrop" style="display: none;"></div>
+        <div id="toastConfirmacion" class="custom-toast-confirmacion" role="alertdialog" aria-labelledby="toastConfirmacionTexto" style="display: none;">
+            <div class="toast-confirmacion-content">
+                <div class="toast-confirmacion-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <div class="toast-confirmacion-mensaje" id="toastConfirmacionTexto">
+                    ¿Confirmar esta acción?
+                </div>
+                <div class="toast-confirmacion-buttons">
+                    <button class="btn-toast-cancelar" id="btnCancelarToast">Cancelar</button>
+                    <button class="btn-toast-aceptar" id="btnAceptarToast">Aceptar</button>
+                </div>
+            </div>
+        </div>
 
         <!-- Filtros -->
         <div class="row mb-4 mt-4">
@@ -212,7 +248,6 @@
                     <button type="button" class="btn btn-info" onclick="imprimirPrestamo()">Imprimir POS</button>
                     <button type="button" class="btn btn-outline-info" onclick="imprimirPrestamoPDF()">Imprimir
                         PDF</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-primary" id="btnConvertirFactura"
                         onclick="convertirAFactura()">Convertir a Factura</button>
                     <button type="button" class="btn btn-danger" id="btnAnular"
@@ -225,8 +260,8 @@
     <script src="../lib/jquery.min.js"></script>
     <script src="../lib/popper.min.js"></script>
     <script src="../lib/bootstrap.min.js"></script>
-    <script src="../js/functions.js"></script>
     <script src="../helpers/impresion.js"></script>
+    <script src="../js/functions.js"></script>
     <script src="../js/prestamos.js"></script>
 </body>
 

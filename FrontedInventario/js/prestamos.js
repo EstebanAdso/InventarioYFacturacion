@@ -216,12 +216,7 @@ function verDetalle(id) {
         })
         .catch(error => {
             console.error('Error al cargar detalle:', error);
-            mostrarConfirmacionDinamica({
-                mensaje: 'Error al cargar el detalle del préstamo',
-                onAceptar: () => { },
-                textoAceptar: 'Aceptar',
-                textoCancelar: ''
-            });
+            mostrarToast('error', 'Error al cargar el detalle del préstamo.');
         });
 }
 
@@ -288,22 +283,12 @@ function registrarAbono() {
     const observacion = document.getElementById('observacionAbono').value.trim();
 
     if (!monto || monto <= 0) {
-        mostrarConfirmacionDinamica({
-            mensaje: 'Ingrese un monto válido',
-            onAceptar: () => { },
-            textoAceptar: 'Aceptar',
-            textoCancelar: ''
-        });
+        mostrarToast('error', 'El monto del abono debe ser mayor a cero.');
         return;
     }
 
     if (monto > prestamoSeleccionado.saldoPendiente) {
-        mostrarConfirmacionDinamica({
-            mensaje: `El monto no puede ser mayor al saldo pendiente ($${prestamoSeleccionado.saldoPendiente.toLocaleString('es-CO')})`,
-            onAceptar: () => { },
-            textoAceptar: 'Aceptar',
-            textoCancelar: ''
-        });
+        mostrarToast('error', 'El monto del abono no puede ser mayor al saldo pendiente.');
         return;
     }
 
@@ -326,16 +311,11 @@ function registrarAbono() {
             return response.json();
         })
         .then(data => {
-            let mensaje = 'Abono registrado exitosamente';
             if (data.estado === 'PAGADO') {
                 mensaje += '. El préstamo ha sido completamente pagado y convertido a factura.';
             }
-            mostrarConfirmacionDinamica({
-                mensaje: mensaje,
-                onAceptar: () => { },
-                textoAceptar: 'Aceptar',
-                textoCancelar: ''
-            });
+            mostrarToast('success', 'Abono registrado exitosamente');
+
 
             // Limpiar formulario
             document.getElementById('montoAbono').value = '';
@@ -350,12 +330,7 @@ function registrarAbono() {
         })
         .catch(error => {
             console.error('Error al registrar abono:', error);
-            mostrarConfirmacionDinamica({
-                mensaje: 'Error al registrar el abono: ' + error.message,
-                onAceptar: () => { },
-                textoAceptar: 'Aceptar',
-                textoCancelar: ''
-            });
+            mostrarToast('error', 'Error al registrar el abono: ' + error.message);
         });
 }
 
@@ -363,7 +338,7 @@ function registrarAbono() {
 function convertirAFactura() {
     if (!prestamoSeleccionado) return;
 
-    mostrarConfirmacionDinamica({
+    mostrarConfirmacionToast({
         mensaje: '¿Está seguro de convertir este préstamo a factura? Esta acción no se puede deshacer.',
         onAceptar: () => {
             fetch(`${apiPrestamos}/${prestamoSeleccionado.id}/convertir-factura`, {
@@ -376,24 +351,14 @@ function convertirAFactura() {
                     return response.json();
                 })
                 .then(factura => {
-                    mostrarConfirmacionDinamica({
-                        mensaje: `Factura #${factura.serial} generada exitosamente. El préstamo ha sido marcado como PAGADO.`,
-                        onAceptar: () => { },
-                        textoAceptar: 'Aceptar',
-                        textoCancelar: ''
-                    });
+                    mostrarToast('success', `Factura #${factura.serial} generada exitosamente. El préstamo ha sido marcado como PAGADO.`);
                     $('#modalDetallePrestamo').modal('hide');
                     cargarPrestamos();
                     cargarResumen();
                 })
                 .catch(error => {
                     console.error('Error al convertir a factura:', error);
-                    mostrarConfirmacionDinamica({
-                        mensaje: 'Error al convertir a factura: ' + error.message,
-                        onAceptar: () => { },
-                        textoAceptar: 'Aceptar',
-                        textoCancelar: ''
-                    });
+                    mostrarToast('error', 'Error al convertir a factura: ' + error.message);
                 });
         },
         onCancelar: () => { },
@@ -406,7 +371,7 @@ function convertirAFactura() {
 function anularPrestamo() {
     if (!prestamoSeleccionado) return;
 
-    mostrarConfirmacionDinamica({
+    mostrarConfirmacionToast({
         mensaje: '¿Está seguro de anular este préstamo? Los productos volverán al inventario. Esta acción no se puede deshacer.',
         onAceptar: () => {
             fetch(`${apiPrestamos}/${prestamoSeleccionado.id}/anular`, {
@@ -419,24 +384,14 @@ function anularPrestamo() {
                     return response.json();
                 })
                 .then(data => {
-                    mostrarConfirmacionDinamica({
-                        mensaje: 'Préstamo anulado. Los productos han sido devueltos al inventario.',
-                        onAceptar: () => { },
-                        textoAceptar: 'Aceptar',
-                        textoCancelar: ''
-                    });
+                    mostrarToast('success', 'Préstamo anulado. Los productos han sido devueltos al inventario.');
                     $('#modalDetallePrestamo').modal('hide');
                     cargarPrestamos();
                     cargarResumen();
                 })
                 .catch(error => {
                     console.error('Error al anular préstamo:', error);
-                    mostrarConfirmacionDinamica({
-                        mensaje: 'Error al anular el préstamo: ' + error.message,
-                        onAceptar: () => { },
-                        textoAceptar: 'Aceptar',
-                        textoCancelar: ''
-                    });
+                    mostrarToast('error', 'Error al anular el préstamo: ' + error.message);
                 });
         },
         onCancelar: () => { },

@@ -823,9 +823,15 @@ function imprimirPosPrestamo(omitVerification = false) {
         productos.forEach(p => totalPrestamo += p.total);
 
         // Validar abono inicial para apartados
-        if (tipo === 'APARTADO' && abonoInicial > totalPrestamo) {
-            mostrarMensaje('error', 'El abono inicial no puede ser mayor al total.');
-            return;
+        if (tipo === 'APARTADO') {
+            if (abonoInicial === 0 || isNaN(abonoInicial)) {
+                mostrarMensaje('error', 'El abono inicial es obligatorio para apartados. No puede dejar un apartado sin abono (sería un préstamo).');
+                return;
+            }
+            if (abonoInicial > totalPrestamo) {
+                mostrarMensaje('error', 'El abono inicial no puede ser mayor al total.');
+                return;
+            }
         }
 
         const prestamo = {
@@ -867,15 +873,11 @@ function imprimirPosPrestamo(omitVerification = false) {
             })
             .then(data => {
                 if (!data) return;
-                console.log('Préstamo guardado exitosamente:', data);
-
                 const tipoTexto = tipo === 'PRESTAMO' ? 'Préstamo' : 'Apartado';
                 let mensaje = `${tipoTexto} #${data.serial} creado exitosamente.`;
                 if (abonoInicial > 0) {
                     mensaje += ` Abono inicial: $${abonoInicial.toLocaleString('es-CO')}. Saldo pendiente: $${data.saldoPendiente.toLocaleString('es-CO')}`;
                 }
-
-                mostrarMensaje('success', mensaje);
 
                 // Guardar para uso posterior
                 prestamoGuardado = data;
@@ -955,9 +957,15 @@ function guardarPrestamoPDF(omitVerification = false) {
         productos.forEach(p => totalPrestamo += p.total);
 
         // Validar abono inicial para apartados
-        if (tipo === 'APARTADO' && abonoInicial > totalPrestamo) {
-            mostrarMensaje('error', 'El abono inicial no puede ser mayor al total.');
-            return;
+        if (tipo === 'APARTADO') {
+            if (abonoInicial === 0 || isNaN(abonoInicial)) {
+                mostrarMensaje('error', 'El abono inicial es obligatorio para apartados. No puede dejar un apartado sin abono (sería un préstamo).');
+                return;
+            }
+            if (abonoInicial > totalPrestamo) {
+                mostrarMensaje('error', 'El abono inicial no puede ser mayor al total.');
+                return;
+            }
         }
 
         const prestamo = {
@@ -1006,8 +1014,6 @@ function guardarPrestamoPDF(omitVerification = false) {
                 if (abonoInicial > 0) {
                     mensaje += ` Abono inicial: $${abonoInicial.toLocaleString('es-CO')}. Saldo pendiente: $${data.saldoPendiente.toLocaleString('es-CO')}`;
                 }
-
-                mostrarMensaje('success', mensaje);
 
                 // Guardar para uso posterior
                 prestamoGuardado = data;

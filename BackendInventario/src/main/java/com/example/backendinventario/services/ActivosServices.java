@@ -1,7 +1,6 @@
 package com.example.backendinventario.services;
 
 import com.example.backendinventario.entities.Activos;
-import com.example.backendinventario.entities.Pedido;
 import com.example.backendinventario.repositories.ActivosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

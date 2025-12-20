@@ -2,7 +2,6 @@ package com.example.backendinventario.controller;
 
 import com.example.backendinventario.entities.CodigoBarra;
 import com.example.backendinventario.entities.CodigoBarraDTO;
-import com.example.backendinventario.entities.Producto;
 import com.example.backendinventario.services.CodigoBarraService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

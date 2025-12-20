@@ -78,11 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const id = document.getElementById('productoId').value;
         const nombre = document.getElementById('nombre').value.toUpperCase().trim();
         const precioComprado = parseFloat(
-  document
-    .getElementById('precioComprado')
-    .value
-    .replace(/[.,]/g, '') // elimina puntos y comas
-);
+            document
+                .getElementById('precioComprado')
+                .value
+                .replace(/[.,]/g, '') // elimina puntos y comas
+        );
 
         console.log(precioComprado)
         const precioVendido = parseFloat(document.getElementById('precioVendido').value.replace(/\./g, ''));
@@ -101,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        console.log(codigosDeBarra)
         const form = document.getElementById('productoForm');
         if (!form.checkValidity()) {
             form.reportValidity();
@@ -111,7 +110,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const producto = { nombre, precioComprado, precioVendido, cantidad, alertaStock, precioMayorista, garantia, codigosDeBarra, categoria: { id: categoriaId }, codigosDeBarra, total: precioComprado * cantidad, descripcion };
 
-        console.log(producto)
+        if(producto.precioVendido <= producto.precioComprado){
+            mostrarToast('error', 'El precio de venta debe ser mayor que el precio de compra.');
+            return
+        }       
+        
+        if(precioMayorista <= precioComprado){
+            mostrarToast('error', 'El precio de mayoreo debe ser mayor que el precio de compra.');
+            return;
+        }
+
+        if(precioVendido <= precioMayorista){
+            mostrarToast('error', 'El precio de venta debe ser mayor que el precio de mayoreo.');
+            return
+        }
+
         try {
             let response;
             if (id) {
@@ -133,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (!response.ok) {
-                const errorData = await response.json(); 
+                const errorData = await response.json();
                 const mensajeError = errorData.message || 'Error al guardar el producto.';
                 mostrarMensajeParrafo(mensajeError, 'red', 'mensajeCodigoAdvertenciaProducto');
                 return;
@@ -451,22 +464,22 @@ async function editarProducto(id) {
         // Cambiar el texto a Editar Producto
         modificarTexto = document.getElementById('tab-producto');
         modificarTexto.textContent = 'Editar Producto';
-        
+
         // Primero cargar los códigos de barra sin activar pestañas
         mostrarCodigosDeBarra(id, false);
-        
+
         // Usar un timeout para forzar la activación de la pestaña de producto después de que Bootstrap 
         // y otros posibles manejadores de eventos terminen su ejecución
         setTimeout(() => {
             // Activar mediante jQuery que es más efectivo para manipular pestañas Bootstrap
             $('#tab-producto').tab('show');
-            
+
             // Respaldo con manipulación directa DOM por si jQuery no funciona correctamente
             const tabProducto = document.getElementById('tab-producto');
             const tabCodigo = document.getElementById('tab-codigo');
             const contenidoProducto = document.getElementById('contenido-producto');
             const contenidoCodigo = document.getElementById('contenido-codigo');
-            
+
             tabProducto.classList.add('active');
             tabCodigo.classList.remove('active');
             contenidoProducto.classList.add('show', 'active');
@@ -595,7 +608,7 @@ function configurarLectorCodigoBarras() {
     document.addEventListener('keydown', function (event) {
         // Ignorar teclas de control
         if (event.ctrlKey || event.altKey || event.metaKey) return;
-        
+
         // Ignorar teclas de función y teclas especiales
         if (event.key.length > 1 && event.key !== 'Enter' && event.key !== 'Tab') {
             return;
@@ -644,14 +657,14 @@ function configurarLectorCodigoBarras() {
 
         // Reiniciar el temporizador
         if (timeoutId) clearTimeout(timeoutId);
-        timeoutId = setTimeout(function() {
+        timeoutId = setTimeout(function () {
             if (codigoBuffer.length >= LONGITUD_MINIMA) {
                 procesarCodigoCompleto(codigoBuffer);
             }
             leyendoCodigo = false;
             codigoBuffer = '';
         }, TIEMPO_ESPERA);
-        
+
         // Manejar Enter para confirmar el código actual
         if (event.key === 'Enter' && codigoBuffer.length >= LONGITUD_MINIMA) {
             event.preventDefault();
@@ -663,18 +676,18 @@ function configurarLectorCodigoBarras() {
 
     function procesarCodigoCompleto(codigo) {
         console.log('Iniciando procesamiento de código completo');
-        
+
         // Verificar si estamos en la pestaña de códigos
         const enPestanaCodigos = document.querySelector('#contenido-codigo.tab-pane.active') !== null;
         console.log('¿En pestaña de códigos?', enPestanaCodigos);
-        
+
         let targetElement = null;
-        
+
         // Si estamos en la pestaña de códigos, usar codigoBarrasInput
         if (enPestanaCodigos) {
             console.log('Usando codigoBarrasInput');
             targetElement = document.getElementById('codigoBarrasInput');
-        } 
+        }
         // Si no estamos en la pestaña de códigos, buscar un campo vacío
         else {
             console.log('Buscando campo vacío');
@@ -687,7 +700,7 @@ function configurarLectorCodigoBarras() {
                     break;
                 }
             }
-            
+
             // Si no hay campos vacíos, agregar uno nuevo
             if (!targetElement) {
                 console.log('No hay campos vacíos, agregando uno nuevo');
@@ -696,14 +709,14 @@ function configurarLectorCodigoBarras() {
                 targetElement = nuevosCampos[nuevosCampos.length - 1];
             }
         }
-        
+
         console.log('Elemento objetivo final:', targetElement);
-        
+
         if (targetElement) {
             // Enfocar el elemento antes de procesar
             targetElement.focus();
             console.log('Elemento enfocado');
-            
+
             // Pequeña pausa para asegurar que el enfoque se haya aplicado
             setTimeout(() => {
                 procesarCodigo(codigo, targetElement);
@@ -727,7 +740,7 @@ function configurarLectorCodigoBarras() {
     function procesarCodigo(codigo, elemento) {
         try {
             console.log('Procesando código:', codigo, 'para elemento:', elemento);
-            
+
             // Limpiar el buffer y el temporizador
             leyendoCodigo = false;
             codigoBuffer = '';
@@ -747,7 +760,7 @@ function configurarLectorCodigoBarras() {
             // Verificar si el código ya existe
             if (codigoYaExiste(codigo)) {
                 console.log('Código duplicado:', codigo);
-                
+
                 // Mostrar mensaje según el formulario activo
                 const enPestanaCodigos = document.querySelector('#contenido-codigo.tab-pane.active') !== null;
                 if (enPestanaCodigos) {
@@ -762,7 +775,7 @@ function configurarLectorCodigoBarras() {
                     // En el formulario de producto
                     mostrarMensajeParrafo('Este código de barras esta en lista de espera para ser agregado', 'red', 'mensajeCodigoAdvertenciaProducto');
                 }
-                
+
                 // Mostrar notificación global
                 mostrarMensaje('advertencia', 'Código de barras duplicado');
                 return;
@@ -793,7 +806,7 @@ function configurarLectorCodigoBarras() {
             if (elemento) {
                 console.log('Asignando valor al elemento:', elemento);
                 elemento.value = codigo;
-                
+
                 // Limpiar mensajes de error al asignar correctamente
                 const enPestanaCodigos = document.querySelector('#contenido-codigo.tab-pane.active') !== null;
                 if (enPestanaCodigos) {
@@ -801,17 +814,17 @@ function configurarLectorCodigoBarras() {
                 } else {
                     limpiarMensajeParrafo('mensajeCodigoAdvertenciaProducto');
                 }
-                
+
                 // Disparar eventos para notificar el cambio
                 const inputEvent = new Event('input', { bubbles: true });
                 const changeEvent = new Event('change', { bubbles: true });
                 elemento.dispatchEvent(inputEvent);
                 elemento.dispatchEvent(changeEvent);
-                
+
                 // Enfocar y seleccionar el texto
                 elemento.focus();
                 elemento.select();
-                
+
                 console.log('Valor asignado correctamente');
             } else {
                 console.error('No se pudo encontrar un elemento de destino válido');
@@ -1003,7 +1016,7 @@ function mostrarProductosEnTabla(productos) {
 
         tr.innerHTML = `
             <td>${producto.nombre.toUpperCase()}</td>
-            <td class="text-right pr-1">${producto.precioComprado}</td>
+            <td class="text-right pr-1">${formatNumber(producto.precioComprado)}</td>
             <td class="text-right pr-1">${formatNumber(producto.precioVendido)}</td>
             <td class="text-center">${producto.cantidad}</td>
             <td class="text-center">${producto.categoria.nombre}</td>
@@ -1235,21 +1248,21 @@ async function cargarTotalPorCategoria() {
         // Ordenar por el total de mayor a menor
         const entries = Object.entries(totales);
         entries.sort((a, b) => b[1] - a[1]);
-        
+
         for (const [categoria, total] of entries) {
             const tr = document.createElement('tr');
-            
+
             const tdCategoria = document.createElement('td');
             tdCategoria.textContent = categoria;
             tdCategoria.className = 'text-center font-weight-bold';
-            
+
             const tdTotal = document.createElement('td');
             tdTotal.textContent = `$${formatNumber(total)}`;
             tdTotal.className = 'text-center font-weight-bold';
-            
+
             tr.appendChild(tdCategoria);
             tr.appendChild(tdTotal);
-            
+
             totalCategoriasTbody.appendChild(tr);
         }
     } catch (error) {
@@ -1304,14 +1317,14 @@ async function mostrarCodigosDeBarra(id, mantenerPestanaProducto = false) {
         tag.appendChild(eliminar);
         codigosBarrasContainer.appendChild(tag);
     });
-    
+
     // Si estamos editando y queremos mantener la pestaña de producto activa
     if (mantenerPestanaProducto) {
         const tabProducto = document.getElementById('tab-producto');
         const tabCodigo = document.getElementById('tab-codigo');
         const contenidoProducto = document.getElementById('contenido-producto');
         const contenidoCodigo = document.getElementById('contenido-codigo');
-        
+
         // Forzar la activación de la pestaña de producto
         tabProducto.classList.add('active');
         tabCodigo.classList.remove('active');
