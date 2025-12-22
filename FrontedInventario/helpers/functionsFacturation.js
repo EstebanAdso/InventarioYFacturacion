@@ -1,85 +1,12 @@
-let codigoBarras = '';
-let tiempoUltimaTecla = 0;
-const tiempoMaximoEntreTeclas = 50;
-const longitudMinCodigoBarras = 6;
-let campoLectura = null;
-let productoSeleccionado = null; // Referencia al producto actualmente seleccionado
+// Variable global para el producto seleccionado
+let productoSeleccionado = null;
 
-// Función para leer códigos de barras
-function leerCodigoBarras(event) {
-    const ahora = new Date().getTime();
-
-    // Si ha pasado demasiado tiempo desde la última tecla, reiniciar
-    if (ahora - tiempoUltimaTecla > tiempoMaximoEntreTeclas && codigoBarras.length > 0) {
-        codigoBarras = '';
-        campoLectura = null;
-    }
-
-    // Actualizar el tiempo de la última tecla
-    tiempoUltimaTecla = ahora;
-
-    // Guardar referencia al campo donde se está leyendo
-    if (codigoBarras.length === 0) {
-        campoLectura = event.target;
-    }
-
-    // Procesar solo caracteres imprimibles o Enter
-    if (event.key.length === 1 || event.key === 'Enter') {
-        // Si es Enter y tenemos un código acumulado, procesarlo
-        if (event.key === 'Enter') {
-            if (codigoBarras.length >= longitudMinCodigoBarras) {
-                if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
-                    event.preventDefault();
-                }
-
-                // Limpiar el campo donde se leyó el código
-                limpiarCampoLectura();
-
-                buscarProductoPorCodigoBarras(codigoBarras);
-                codigoBarras = '';
-            }
-        } else {
-            codigoBarras += event.key;
-
-            if ((event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') &&
-                event.target.id !== 'nombreProductoManual' &&
-                codigoBarras.length >= longitudMinCodigoBarras) {
-
-                // Verificar si el código acumulado parece ser un código de barras
-                if (/^\d+$/.test(codigoBarras)) {
-                    limpiarCampoLectura();
-                    buscarProductoPorCodigoBarras(codigoBarras);
-                    codigoBarras = '';
-                }
-            }
-        }
-    }
-}
-
-// Función para limpiar el campo donde se leyó el código de barras
-function limpiarCampoLectura() {
-    if (campoLectura && (campoLectura.tagName === 'INPUT' || campoLectura.tagName === 'TEXTAREA')) {
-        // Guardar el valor original del campo
-        const valorOriginal = campoLectura.value;
-
-        // Si el código está al final del valor del campo, eliminarlo
-        if (valorOriginal.endsWith(codigoBarras)) {
-            campoLectura.value = valorOriginal.slice(0, -codigoBarras.length);
-        } else {
-            campoLectura.value = '';
-        }
-
-        // Restaurar el valor apropiado según el tipo de campo
-        if (campoLectura.id === 'garantiaProducto' && campoLectura.value === '') {
-            campoLectura.value = '0';
-        } else if (campoLectura.id === 'cantidadProductoManual' && campoLectura.value === '') {
-            campoLectura.value = '1';
-        }
-    }
-
-    // Limpiar la referencia al campo
-    campoLectura = null;
-}
+// Inicializar el escáner de códigos de barras cuando se carga la página
+// La función inicializarEscanerCodigoBarras viene de barcodeScannerLib.js
+inicializarEscanerCodigoBarras(function(codigoDetectado) {
+    // Callback que se ejecuta cuando se detecta un código de barras
+    buscarProductoPorCodigoBarras(codigoDetectado);
+});
 
 // Función para buscar un producto por código de barras
 function buscarProductoPorCodigoBarras(codigo) {
@@ -102,8 +29,9 @@ function buscarProductoPorCodigoBarras(codigo) {
             if (producto) {
                 productoSeleccionadoId = producto.id;
                 seleccionarProducto(producto);
-                document.getElementById('cantidadProductoManual').focus();
-                mostrarMensaje('success', 'Producto encontrado');
+                // No hacer focus en ningún input para evitar modificaciones accidentales
+                // document.getElementById('cantidadProductoManual').focus();
+                mostrarMensaje('success', `Producto "${producto.nombre}" agregado correctamente`);
             } else {
                 mostrarMensaje('error', 'Producto no encontrado');
             }

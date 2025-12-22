@@ -8,7 +8,14 @@ const $btnBuscar = $('#btnBuscar');
 const $loadingArea = $('#loadingArea');
 const $resultadoArea = $('#resultadoArea');
 
-// Evento para buscar al presionar Enter
+// Inicializar el escáner de códigos de barras usando la librería compartida
+inicializarEscanerCodigoBarras(function (codigoDetectado) {
+    // Callback que se ejecuta cuando se detecta un código de barras
+    // Simplemente buscar con el código detectado
+    buscarProducto(codigoDetectado);
+});
+
+// Evento para buscar al presionar Enter en el input
 $codigoBarras.on('keypress', function (e) {
     if (e.which === 13) { // Enter
         buscarProducto();
@@ -18,9 +25,11 @@ $codigoBarras.on('keypress', function (e) {
 // Evento para el botón buscar
 $btnBuscar.on('click', buscarProducto);
 
-// Función principal para buscar producto
-function buscarProducto() {
-    const codigoBarra = $codigoBarras.val().trim();
+// Función unificada para buscar producto (desde escáner, input o botón)
+function buscarProducto(codigoParam) {
+    // Si se pasa un código como parámetro (escáner), usarlo
+    // Si no, leer del input (usuario manual)
+    const codigoBarra = codigoParam || $codigoBarras.val().trim();
 
     if (!codigoBarra) {
         mostrarError('Por favor ingresa un código de barras');

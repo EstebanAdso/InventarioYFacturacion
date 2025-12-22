@@ -14,13 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const agregarProductoBtn = document.getElementById('agregarProductoBtn');
     const guardarFacturaBtn = document.getElementById('guardarFacturaBtn');
     const limpiarFormularioBtn = document.getElementById('limpiarFormularioBtn');
-    
+
     if (agregarProductoBtn) agregarProductoBtn.addEventListener('click', agregarProducto);
     if (guardarFacturaBtn) guardarFacturaBtn.addEventListener('click', guardarFactura);
     if (limpiarFormularioBtn) limpiarFormularioBtn.addEventListener('click', limpiarFormulario);
-    
-    // Inicializar el lector de códigos de barras
-    document.addEventListener('keydown', leerCodigoBarras);
+
+    // El escáner de códigos de barras se inicializa automáticamente en functionsFacturation.js
+    // usando la librería barcodeScannerLib.js
 });
 
 // Carga los datos de cliente desde localStorage al cargar la página y configura su eliminación después de 20 minutos
@@ -33,7 +33,7 @@ window.addEventListener('load', () => {
         'telefonoCliente',
         'direccionCliente'
     ];
-    
+
     // Cargar cada campo si existe en localStorage
     clienteFields.forEach(field => {
         const value = localStorage.getItem(field);
@@ -53,20 +53,20 @@ window.addEventListener('load', () => {
 window.addEventListener('load', () => {
     const storedProducts = localStorage.getItem('productosEnFactura');
     if (!storedProducts) return;
-    
+
     // Cargar productos guardados
     productosEnFactura = JSON.parse(storedProducts);
     const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
-    
+
     // Agregar cada producto a la tabla
     productosEnFactura.forEach(producto => {
         const newRow = tbody.insertRow();
-        
+
         // Crear celdas para cada propiedad del producto
         const cellId = newRow.insertCell(0);
         cellId.textContent = producto.id || 'N/A';
         cellId.style.display = 'none';
-        
+
         // Crear y llenar el resto de celdas
         const cellNombre = newRow.insertCell(1);
         const cellCantidad = newRow.insertCell(2);
@@ -75,7 +75,7 @@ window.addEventListener('load', () => {
         const cellDescripcion = newRow.insertCell(5);
         const cellTotal = newRow.insertCell(6);
         const cellAcciones = newRow.insertCell(7);
-        
+
         // Asignar valores a las celdas
         cellNombre.textContent = producto.nombre;
         cellCantidad.textContent = producto.cantidad;
@@ -83,7 +83,7 @@ window.addEventListener('load', () => {
         cellGarantia.textContent = producto.garantia;
         cellDescripcion.textContent = producto.descripcion;
         cellTotal.textContent = producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-        
+
         // Crear botón de eliminar
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Eliminar';
@@ -92,7 +92,7 @@ window.addEventListener('load', () => {
             const row = deleteBtn.closest('tr');
             const index = Array.from(tbody.rows).indexOf(row);
             tbody.deleteRow(index);
-            
+
             // Actualizar total y localStorage
             totalFacturaGlobal -= productosEnFactura[index].total;
             productosEnFactura.splice(index, 1);
@@ -100,14 +100,14 @@ window.addEventListener('load', () => {
             actualizarTotalFactura();
         });
         cellAcciones.appendChild(deleteBtn);
-        
+
         // Sumar al total global
         totalFacturaGlobal += producto.total;
     });
-    
+
     // Actualizar total en el DOM
     actualizarTotalFactura();
-    
+
     // Programar limpieza después de 20 minutos
     setTimeout(() => {
         localStorage.removeItem('productosEnFactura');
@@ -116,32 +116,61 @@ window.addEventListener('load', () => {
 });
 
 // Configura los eventos de input para los campos del cliente
-// Guarda los valores en localStorage y muestra sugerencias cuando corresponde
+// Guarda los valores en localStorage cuando el usuario sale del campo (blur)
 const setupClienteInputEvents = () => {
-    // Campos que necesitan sugerencias
+    // Campos que necesitan sugerencias (input para sugerencias, blur para guardar)
     const fieldsWithSuggestions = ['nombreCliente', 'cedulaNit'];
-    
+
     // Campos que solo necesitan guardarse en localStorage
     const simpleFields = ['correoCliente', 'telefonoCliente', 'direccionCliente'];
-    
+
+    // Timeouts para debounce de sugerencias
+    const sugerenciasTimeouts = {};
+
     // Configurar campos con sugerencias
     fieldsWithSuggestions.forEach(fieldId => {
-        document.getElementById(fieldId).addEventListener('input', (e) => {
+        const field = document.getElementById(fieldId);
+        
+        // Evento 'input' solo para mostrar sugerencias con debounce
+        field.addEventListener('input', (e) => {
             const query = e.target.value.trim();
-            localStorage.setItem(fieldId, query || "");
             
-            // Mostrar u ocultar sugerencias según la longitud de la consulta
-            if (query.length > 1) {
-                obtenerSugerencias(query);
-            } else {
-                document.getElementById('sugerenciasClientes').style.display = 'none';
+            // Limpiar timeout anterior
+            if (sugerenciasTimeouts[fieldId]) {
+                clearTimeout(sugerenciasTimeouts[fieldId]);
             }
+            
+            // Si el campo está vacío, ocultar sugerencias inmediatamente
+            if (query.length === 0) {
+                document.getElementById('sugerenciasClientes').style.display = 'none';
+                return;
+            }
+            
+            // Agregar debounce de 150ms para evitar que códigos escaneados muestren sugerencias
+            // Los escáneres escriben todo en <40ms y el campo se limpia antes de los 150ms
+            // Los usuarios normales tienen >80ms entre teclas, así que verán sugerencias normalmente
+            sugerenciasTimeouts[fieldId] = setTimeout(() => {
+                const currentQuery = e.target.value.trim();
+                
+                // Verificar nuevamente que el campo no esté vacío (pudo ser limpiado por escáner)
+                if (currentQuery.length > 1) {
+                    obtenerSugerencias(currentQuery);
+                } else {
+                    document.getElementById('sugerenciasClientes').style.display = 'none';
+                }
+            }, 150);
+        });
+        
+        // Evento 'blur' para guardar en localStorage (solo cuando sale del campo)
+        field.addEventListener('blur', (e) => {
+            const value = e.target.value.trim();
+            localStorage.setItem(fieldId, value || "");
         });
     });
-    
-    // Configurar campos simples
+
+    // Configurar campos simples (guardar solo al salir del campo)
     simpleFields.forEach(fieldId => {
-        document.getElementById(fieldId).addEventListener('input', (e) => {
+        document.getElementById(fieldId).addEventListener('blur', (e) => {
             localStorage.setItem(fieldId, e.target.value.trim() || "");
         });
     });
@@ -153,11 +182,11 @@ setupClienteInputEvents();
 document.getElementById('nombreProductoManual').addEventListener('input', buscarProductos);
 
 const nombreClienteInput = document.getElementById('nombreCliente');
-nombreClienteInput.addEventListener('input', function(e) {
+nombreClienteInput.addEventListener('input', function (e) {
     const cursorPos = this.selectionStart;
     const textBefore = this.value.slice(0, cursorPos);
     const textAfter = this.value.slice(cursorPos);
-    
+
     // Convertir a mayúsculas y mantener la posición del cursor
     this.value = textBefore.toUpperCase() + textAfter;
     this.selectionStart = this.selectionEnd = cursorPos;

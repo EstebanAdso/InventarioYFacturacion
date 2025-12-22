@@ -16,15 +16,24 @@
         <nav>
             <h6 style="user-select: none;">Gestión Total</h6>
             <ul>
-                <li><a href="facturacion.html"><img src="../css/logos/library-regular-24.png" alt="facturacion"><span class="nav-tooltip">Facturación</span></a></li>
-                <li><a href="index.html"><img src="../css/logos/store-regular-24.png" alt="inventario"><span class="nav-tooltip">Inventario</span></a></li>
-                <li><a href="ventas.html"><img src="../css/logos/money-withdraw-regular-24.png" alt="ventas"><span class="nav-tooltip">Ventas</span></a></li>
-                <li><a href="prestamos.html"><img src="../css/logos/bx--bx-transfer-alt.png" alt="préstamos"><span class="nav-tooltip">Préstamos</span></a></li>
-                <li><a href="#" class="selected"><img src="../css/logos/scan.png" alt="escanear producto"><span class="nav-tooltip">Escanear</span></a></li>
-                <li><a href="pedido.html"><img src="../css/logos/plane-solid-24.png" alt="pedido"><span class="nav-tooltip">Pedidos</span></a></li>
-                <li><a href="activo.html"><img src="../css/logos/bank-solid-24.png" alt="activo"><span class="nav-tooltip">Activos</span></a></li>
-                <li><a href="cliente.html"><img src="../css/logos/user-solid-24.png" alt="cliente"><span class="nav-tooltip">Clientes</span></a></li>
-                <li><a href="config.html"><img src="../css/logos/cog-solid-24.png" alt="configuración"><span class="nav-tooltip">Configuración</span></a></li>
+                <li><a href="facturacion.html"><img src="../css/logos/library-regular-24.png" alt="facturacion"><span
+                            class="nav-tooltip">Facturación</span></a></li>
+                <li><a href="index.html"><img src="../css/logos/store-regular-24.png" alt="inventario"><span
+                            class="nav-tooltip">Inventario</span></a></li>
+                <li><a href="ventas.html"><img src="../css/logos/money-withdraw-regular-24.png" alt="ventas"><span
+                            class="nav-tooltip">Ventas</span></a></li>
+                <li><a href="prestamos.html"><img src="../css/logos/bx--bx-transfer-alt.png" alt="préstamos"><span
+                            class="nav-tooltip">Préstamos</span></a></li>
+                <li><a href="#" class="selected"><img src="../css/logos/scan.png" alt="escanear producto"><span
+                            class="nav-tooltip">Escanear</span></a></li>
+                <li><a href="pedido.html"><img src="../css/logos/plane-solid-24.png" alt="pedido"><span
+                            class="nav-tooltip">Pedidos</span></a></li>
+                <li><a href="activo.html"><img src="../css/logos/bank-solid-24.png" alt="activo"><span
+                            class="nav-tooltip">Activos</span></a></li>
+                <li><a href="cliente.html"><img src="../css/logos/user-solid-24.png" alt="cliente"><span
+                            class="nav-tooltip">Clientes</span></a></li>
+                <li><a href="config.html"><img src="../css/logos/cog-solid-24.png" alt="configuración"><span
+                            class="nav-tooltip">Configuración</span></a></li>
             </ul>
         </nav>
     </header>
@@ -38,15 +47,11 @@
         <!-- Campo de entrada para código de barras -->
         <div class="scan-input-group">
             <div class="input-group input-group-lg">
-                <input type="text" 
-                       id="codigoBarras" 
-                       class="form-control scan-input" 
-                       placeholder="Código de barras del producto" 
-                       autocomplete="off"
-                       autofocus>
+                <input type="text" id="codigoBarras" class="form-control scan-input"
+                    placeholder="Código de barras del producto" autocomplete="off" autofocus>
                 <div class="input-group-append">
                     <button class="btn scan-btn" type="button" id="btnBuscar">
-                        🔍 Buscar
+                        Buscar
                     </button>
                 </div>
             </div>
@@ -71,6 +76,8 @@
     <script src="../lib/jquery.min.js"></script>
     <script src="../lib/popper.min.js"></script>
     <script src="../lib/bootstrap.min.js"></script>
+    <script src="../helpers/barcodeScannerLib.js"></script>
     <script src="../js/scan.js"></script>
 </body>
+
 </html>
