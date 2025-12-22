@@ -3,7 +3,7 @@ let productoSeleccionado = null;
 
 // Inicializar el escáner de códigos de barras cuando se carga la página
 // La función inicializarEscanerCodigoBarras viene de barcodeScannerLib.js
-inicializarEscanerCodigoBarras(function(codigoDetectado) {
+inicializarEscanerCodigoBarras(function (codigoDetectado) {
     // Callback que se ejecuta cuando se detecta un código de barras
     buscarProductoPorCodigoBarras(codigoDetectado);
 });
@@ -385,6 +385,12 @@ function guardarFactura(omitVerification = false) {
         return;
     }
 
+    const descuentoGeneralInput = document.getElementById('descuentoGeneral').value;
+    if (descuentoGeneralInput > 0) {
+        mostrarMensaje('error', 'Tienes un descuento por aplicar. Aplicalo o quítalo antes de imprimir.');
+        return;
+    }
+
     if (nombreCliente && cedulaNit && productos.length > 0) {
         // Calcular el total de la factura
         let totalFactura = 0;
@@ -492,6 +498,12 @@ function guardarFactura(omitVerification = false) {
 function imprimirPos(omitVerification = false) {
     const { nombreCliente, cedulaNit, telefonoCliente, correoCliente, direccionCliente, productos, nombreProducto } = obtenerDatosFactura();
     totalFacturaGlobal = 0;
+
+    const descuentoGeneralInput = document.getElementById('descuentoGeneral').value;
+    if (descuentoGeneralInput > 0) {
+        mostrarMensaje('error', 'Tienes un descuento por aplicar. Aplicalo o quítalo antes de imprimir.');
+        return;
+    }
 
     if (!omitVerification && nombreProducto.length > 0) {
         mostrarConfirmacionProducto(() => imprimirPos(true)); // Pasa imprimirPos como callback
@@ -681,6 +693,12 @@ function limpiarFormulario() {
     document.getElementById('mensajeMaxCantidad').textContent = '';
     document.getElementById('totalDeFactura').textContent = 'TOTAL:';
     productosEnFactura = [];
+
+    // Limpiar descuento
+    document.getElementById('descuentoGeneral').value = '';
+    document.getElementById('descuentoInfo').style.display = 'none';
+    descuentoAplicado = false;
+    preciosOriginales = [];
 
     // Limpiar campos de préstamo/apartado
     const tipoDocumento = document.getElementById('tipoDocumento');
@@ -1164,4 +1182,128 @@ function imprimirPrestamoDesdeFacturacion(formato) {
 
     // Cerrar modal
     $('#modalImpresionPrestamo').modal('hide');
+}
+
+// Variables para control de descuento
+let descuentoAplicado = false;
+let preciosOriginales = [];
+
+// Función para aplicar descuento general a todos los productos
+function aplicarDescuentoGeneral() {
+    const descuentoPorcentaje = parseFloat(document.getElementById('descuentoGeneral').value);
+
+    if (isNaN(descuentoPorcentaje) || descuentoPorcentaje <= 0) {
+        mostrarMensaje('error', 'Ingrese un porcentaje de descuento válido');
+        return;
+    }
+
+    if (descuentoPorcentaje > 20) {
+        mostrarMensaje('error', 'El descuento no puede ser mayor al 20%');
+        return;
+    }
+
+    if (productosEnFactura.length === 0) {
+        mostrarMensaje('error', 'No hay productos en la factura');
+        return;
+    }
+
+    // Guardar precios originales si no hay descuento aplicado
+    if (!descuentoAplicado) {
+        preciosOriginales = productosEnFactura.map(p => ({
+            precioUnitario: p.precioUnitario,
+            total: p.total
+        }));
+    }
+
+    const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
+    let totalConDescuento = 0;
+    let montoDescontado = 0;
+
+    // Aplicar descuento a cada producto
+    productosEnFactura.forEach((producto, index) => {
+        const precioOriginal = descuentoAplicado ? preciosOriginales[index].precioUnitario : producto.precioUnitario;
+        const precioConDescuento = precioOriginal * (1 - descuentoPorcentaje / 100);
+        const totalProducto = precioConDescuento * producto.cantidad;
+
+        producto.precioUnitario = precioConDescuento;
+        producto.total = totalProducto;
+
+        totalConDescuento += totalProducto;
+
+        // Actualizar tabla
+        const row = tbody.rows[index];
+        row.cells[3].textContent = `$${precioConDescuento.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+        row.cells[6].textContent = `$${totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+
+        // Agregar indicador visual de descuento
+        row.style.backgroundColor = '#d4edda';
+        row.style.borderLeft = '2px solid #28a745';
+    });
+
+    // Calcular monto total descontado
+    const totalOriginal = preciosOriginales.reduce((sum, p, i) => sum + (p.precioUnitario * productosEnFactura[i].cantidad), 0);
+    montoDescontado = totalOriginal - totalConDescuento;
+
+    // Actualizar total global
+    totalFacturaGlobal = totalConDescuento;
+    actualizarTotalFactura();
+
+    // Mostrar información del descuento
+    document.getElementById('descuentoPorcentaje').textContent = descuentoPorcentaje;
+    document.getElementById('descuentoMonto').textContent = montoDescontado.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    document.getElementById('descuentoInfo').style.display = 'inline';
+
+    document.getElementById('descuentoGeneral').value = 0;
+    descuentoAplicado = true;
+
+
+
+    // Guardar en localStorage
+    localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
+
+    mostrarMensaje('success', `Descuento del ${descuentoPorcentaje}% aplicado correctamente`);
+}
+
+// Función para quitar el descuento
+function quitarDescuentoGeneral() {
+    if (!descuentoAplicado) {
+        mostrarMensaje('info', 'No hay descuento aplicado');
+        return;
+    }
+
+    const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
+    let totalSinDescuento = 0;
+
+    // Restaurar precios originales
+    productosEnFactura.forEach((producto, index) => {
+        producto.precioUnitario = preciosOriginales[index].precioUnitario;
+        producto.total = preciosOriginales[index].total;
+
+        totalSinDescuento += producto.total;
+
+        // Actualizar tabla
+        const row = tbody.rows[index];
+        row.cells[3].textContent = `$${producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+        row.cells[6].textContent = `$${producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+
+        // Quitar indicador visual de descuento
+        row.style.backgroundColor = '';
+        row.style.borderLeft = '';
+    });
+
+    // Actualizar total global
+    totalFacturaGlobal = totalSinDescuento;
+    actualizarTotalFactura();
+
+    // Ocultar información del descuento
+    document.getElementById('descuentoInfo').style.display = 'none';
+    document.getElementById('descuentoGeneral').value = '';
+
+    descuentoAplicado = false;
+    preciosOriginales = [];
+
+    // Guardar en localStorage
+    localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
+
+    mostrarMensaje('success', 'Descuento eliminado correctamente');
 }

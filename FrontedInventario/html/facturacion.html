@@ -218,8 +218,32 @@
                                 <!-- Filas de productos se llenarán dinámicamente aquí -->
                             </tbody>
                         </table>
-                        <h6 id="totalDeFactura">TOTAL: <span style="color: red;">$0.00</span></h6>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <h6 id="totalDeFactura" style="margin: 0;">TOTAL: <span style="color: red;">$0.00</span>
+                            </h6>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <small style="font-size: 0.8em; color: #6c757d;">Descuento:</small>
+                                <input type="number" class="form-control form-control-sm" id="descuentoGeneral"
+                                    placeholder="0" min="0" max="20" step="1" autocomplete="off"
+                                    style="width: 50px; font-size: 0.8em; padding: 2px 5px;">
+                                <small style="font-size: 0.8em; color: #6c757d;">%</small>
+                                <button type="button" class="btn btn-success btn-sm" onclick="aplicarDescuentoGeneral()"
+                                    style="font-size: 0.75em; padding: 2px 8px;">
+                                    ✓
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm"
+                                    onclick="quitarDescuentoGeneral()" style="font-size: 0.75em; padding: 2px 8px;">
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
+                        <small id="descuentoInfo"
+                            style="color: #28a745; display: none; font-size: 0.8em; margin-left: 5px;">
+                            <span id="descuentoPorcentaje">0</span>% (-$<span id="descuentoMonto">0</span>)
+                        </small>
                     </div>
+
                     <div class="mt-4 text-center" id="botonesDeImpresion">
                         <button type="button" style="width: 300px; letter-spacing: 2px;" class="btn btn-success"
                             onclick="imprimirPos()">Imprimir Pos</button>

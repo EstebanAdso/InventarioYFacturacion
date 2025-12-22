@@ -99,7 +99,38 @@ window.addEventListener('load', () => {
             localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
             actualizarTotalFactura();
         });
+
+        // Crear botón de editar
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Editar';
+        editBtn.className = 'btn btn-warning btn-sm';
+        editBtn.style.marginLeft = '5px';
+        editBtn.addEventListener('click', () => {
+            const row = editBtn.closest('tr');
+            const index = Array.from(tbody.rows).indexOf(row);
+            const producto = productosEnFactura[index];
+
+            // Llenar el formulario con los datos del producto a editar
+            document.getElementById('nombreProductoManual').value = producto.nombre;
+            document.getElementById('descripcionFactura').value = producto.descripcion;
+            document.getElementById('cantidadProductoManual').value = producto.cantidad;
+            document.getElementById('precioUnitarioManual').value = producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+            document.getElementById('garantiaProducto').value = producto.garantia;
+            document.getElementById('PCProducto').value = producto.pc || '';
+
+            // Establecer el ID del producto seleccionado para edición
+            productoSeleccionadoId = producto.id;
+
+            // Eliminar la fila de la tabla y del array
+            tbody.deleteRow(index);
+            totalFacturaGlobal -= productosEnFactura[index].total;
+            productosEnFactura.splice(index, 1);
+            localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
+            actualizarTotalFactura();
+        });
+
         cellAcciones.appendChild(deleteBtn);
+        cellAcciones.appendChild(editBtn);
 
         // Sumar al total global
         totalFacturaGlobal += producto.total;
@@ -130,28 +161,28 @@ const setupClienteInputEvents = () => {
     // Configurar campos con sugerencias
     fieldsWithSuggestions.forEach(fieldId => {
         const field = document.getElementById(fieldId);
-        
+
         // Evento 'input' solo para mostrar sugerencias con debounce
         field.addEventListener('input', (e) => {
             const query = e.target.value.trim();
-            
+
             // Limpiar timeout anterior
             if (sugerenciasTimeouts[fieldId]) {
                 clearTimeout(sugerenciasTimeouts[fieldId]);
             }
-            
+
             // Si el campo está vacío, ocultar sugerencias inmediatamente
             if (query.length === 0) {
                 document.getElementById('sugerenciasClientes').style.display = 'none';
                 return;
             }
-            
+
             // Agregar debounce de 150ms para evitar que códigos escaneados muestren sugerencias
             // Los escáneres escriben todo en <40ms y el campo se limpia antes de los 150ms
             // Los usuarios normales tienen >80ms entre teclas, así que verán sugerencias normalmente
             sugerenciasTimeouts[fieldId] = setTimeout(() => {
                 const currentQuery = e.target.value.trim();
-                
+
                 // Verificar nuevamente que el campo no esté vacío (pudo ser limpiado por escáner)
                 if (currentQuery.length > 1) {
                     obtenerSugerencias(currentQuery);
@@ -160,7 +191,7 @@ const setupClienteInputEvents = () => {
                 }
             }, 150);
         });
-        
+
         // Evento 'blur' para guardar en localStorage (solo cuando sale del campo)
         field.addEventListener('blur', (e) => {
             const value = e.target.value.trim();
