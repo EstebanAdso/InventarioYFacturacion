@@ -182,32 +182,16 @@ public class ProductoServices {
 
     // Genera un código nuevo, utilizando un nombre opcional (por defecto "PRD")
     public String generarCodigoNuevo(String nombreOpcional) {
-        String letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String numeros = "0123456789";
-
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
         StringBuilder codigo = new StringBuilder();
 
-        // 1. Agregar 3 letras aleatorias
-        for (int i = 0; i < 3; i++) {
-            int index = (int) (Math.random() * letras.length());
-            codigo.append(letras.charAt(index));
+        for (int i = 0; i < 6; i++) {
+            codigo.append(caracteres.charAt(random.nextInt(caracteres.length())));
         }
 
-        // 2. Agregar 3 números aleatorios
-        for (int i = 0; i < 3; i++) {
-            int index = (int) (Math.random() * numeros.length());
-            codigo.append(numeros.charAt(index));
-        }
-
-        // 3. Agregar 2 letras aleatorias finales
-        for (int i = 0; i < 2; i++) {
-            int index = (int) (Math.random() * letras.length());
-            codigo.append(letras.charAt(index));
-        }
-
-        return codigo.toString(); // Total: 3 + 3 + 2 = 8 caracteres
+        return codigo.toString(); // Total: 6 caracteres aleatorios
     }
-
 
     // Genera un código y lo asigna al producto existente
     public Producto generarCodigoActualizado(Long idProducto) {

@@ -197,7 +197,13 @@ document.addEventListener('DOMContentLoaded', () => {
             form.reportValidity();
             return;
         }
+        
+        const cantidadCodigos = document.getElementById('cantidadCodigos').value;
 
+        if(cantidadCodigos == 0 || cantidadCodigos == null || cantidadCodigos == undefined){
+            mostrarToast('error', 'Debes agregar una cantidad de codigos.');
+            return;
+        }
         try {
             let response;
             if (id) {
@@ -225,15 +231,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
             const codigoGenerado = `${data.sku}`;
-            const cantidadCodigos = document.getElementById('cantidadCodigos').value;
 
             if (!codigoGenerado) {
-                await mostrarMensajeParrafo('Debes agregar un código', 'red', 'mensajeCodigoAdvertencia');
-                console.log('Debes agregar un código');
-
-                setTimeout(() => {
-                    document.getElementById('mensajeCodigoAdvertencia').textContent = '';
-                }, 3000);
+                mostrarToast('error', 'Debes agregar un código');
                 return;
             }
 

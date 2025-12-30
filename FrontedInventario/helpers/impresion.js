@@ -332,7 +332,7 @@ async function generarHTMLParaCodigos(cantidad, codigo) {
             padding: 0;
             font-family: Arial, sans-serif;
             width: 100%;
-            height: 100%;
+            height: 100vh;
             box-sizing: border-box;
         }
 
@@ -350,6 +350,7 @@ async function generarHTMLParaCodigos(cantidad, codigo) {
 
         .contenedor-barcode {
             width: 100%;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -357,11 +358,17 @@ async function generarHTMLParaCodigos(cantidad, codigo) {
         }
 
         svg.barcode {
-            width: 98%;
+            width: 77%;
             height: auto;
             max-width: 100%;
             max-height: 90vh;
             margin-top: 0mm;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+            shape-rendering: crispEdges;
+            vector-effect: non-scaling-stroke;
         }
 
         .codigo-texto {
