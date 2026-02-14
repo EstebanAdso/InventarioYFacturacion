@@ -110,17 +110,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const producto = { nombre, precioComprado, precioVendido, cantidad, alertaStock, precioMayorista, garantia, codigosDeBarra, categoria: { id: categoriaId }, codigosDeBarra, total: precioComprado * cantidad, descripcion };
 
-        if(producto.precioVendido <= producto.precioComprado){
+        if(precioVendido <= precioComprado){
             mostrarToast('error', 'El precio de venta debe ser mayor que el precio de compra.');
             return
         }       
         
-        if(precioMayorista <= precioComprado){
+        if(precioMayorista <= precioComprado && precioMayorista !== 0){
             mostrarToast('error', 'El precio de mayoreo debe ser mayor que el precio de compra.');
             return;
         }
 
-        if(precioVendido <= precioMayorista){
+        if(precioVendido < precioMayorista && precioMayorista !== 0){
             mostrarToast('error', 'El precio de venta debe ser mayor que el precio de mayoreo.');
             return
         }
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 const errorData = await response.json();
                 const mensajeError = errorData.message || 'Error al guardar el producto.';
-                mostrarMensajeParrafo(mensajeError, 'red', 'mensajeCodigoAdvertenciaProducto');
+                mostrarMensaje('error', mensajeError);
                 return;
             }
 
@@ -601,7 +601,7 @@ function configurarLectorCodigoBarras() {
     let leyendoCodigo = false;
     let timeoutId = null;
     const TIEMPO_ESPERA = 150; // Aumentado para lecturas más estables
-    const LONGITUD_MINIMA = 6; // Mínimo para códigos de barras EAN-13
+    const LONGITUD_MINIMA = 3; // Mínimo para códigos de barras (reducido para soportar códigos cortos)
     const TIEMPO_MAXIMO_ESPERA = 300; // Tiempo máximo para considerar un código completo
 
     // Manejador global de teclado para detectar códigos de barras

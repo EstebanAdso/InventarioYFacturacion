@@ -28,10 +28,9 @@ function buscarProductoPorCodigoBarras(codigo) {
             }
             if (producto) {
                 productoSeleccionadoId = producto.id;
+                document.getElementById('sugerenciasProductos').style.display = 'none';
                 seleccionarProducto(producto);
-                // No hacer focus en ningún input para evitar modificaciones accidentales
-                // document.getElementById('cantidadProductoManual').focus();
-                mostrarMensaje('success', `Producto "${producto.nombre}" agregado correctamente`);
+                mostrarMensaje('success', `Producto "${producto.nombre}" seleccionado correctamente`);
             } else {
                 mostrarMensaje('error', 'Producto no encontrado');
             }
@@ -95,8 +94,11 @@ function mostrarSugerencias(clientes) {
 // Función para buscar productos y mostrar sugerencias
 function buscarProductos() {
     const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
+    // Si el usuario está escribiendo, resetear el producto seleccionado para permitir nueva búsqueda
+    productoSeleccionadoId = null;
+    productoSeleccionado = null;
 
-    if (nombreProducto.length < 2) {
+    if (nombreProducto.length < 3) {
         // Oculta la lista si el texto es menor a 2 caracteres
         document.getElementById('sugerenciasProductos').style.display = 'none';
         return;
@@ -111,6 +113,12 @@ function buscarProductos() {
             return response.json();
         })
         .then(data => {
+            // Si ya se seleccionó un producto (por código de barras u otro medio), no mostrar sugerencias
+            if (productoSeleccionadoId !== null) {
+                //console.log('[BUSCAR] Producto ya seleccionado, ignorando sugerencias', productoSeleccionadoId);
+                return;
+            }
+            
             const sugerencias = document.getElementById('sugerenciasProductos');
             sugerencias.innerHTML = ''; // Limpiar sugerencias anteriores
 
@@ -135,6 +143,7 @@ function buscarProductos() {
                     // Evento al hacer clic en la sugerencia
                     li.onclick = () => {
                         productoSeleccionadoId = producto.id;
+                        sugerencias.style.display = 'none';
                         seleccionarProducto(producto); // Llama a la función para mostrar los detalles
                     };
 
@@ -151,33 +160,31 @@ function buscarProductos() {
 // Función para seleccionar un producto de la lista de sugerencias
 function seleccionarProducto(producto) {
     document.getElementById('nombreProductoManual').value = producto.nombre;
-    console.log(producto);
-
+    
     // Verificar si el checkbox de precio mayoreo está activado y si el producto tiene precio de mayoreo
     const precioMayoreoCheck = document.getElementById('precioMayoreoCheck');
     const tienePrecioMayoreo = producto.precioMayorista && producto.precioMayorista > 0;
-
+    
     // Mostrar el precio según corresponda
     if (precioMayoreoCheck.checked && tienePrecioMayoreo) {
         document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioMayorista);
     } else {
         document.getElementById('precioUnitarioManual').value = formatNumber(producto.precioVendido);
     }
-
+    
     document.getElementById('PCProducto').value = formatNumber(producto.precioComprado);
     document.getElementById('garantiaProducto').value = producto.garantia || 1;
-    document.getElementById('sugerenciasProductos').style.display = 'none';
-
+    
     productoSeleccionadoId = producto.id;
     productoSeleccionado = producto; // Guardar referencia al producto actual
-
+    
     // Ajusta el máximo permitido en el campo de cantidad
     const inputCantidad = document.getElementById('cantidadProductoManual');
     inputCantidad.max = producto.cantidad;
 
     // Mostrar un mensaje al usuario sobre el stock máximo
     document.getElementById('mensajeMaxCantidad').innerText =
-        `Cantidad máxima disponible: ${producto.cantidad}`;
+    `Cantidad máxima disponible: ${producto.cantidad}`;
 
     // Configurar el evento del checkbox de mayoreo
     configurarEventoMayoreo();
@@ -229,6 +236,10 @@ function cerrarConfirmacion() {
 }
 
 function agregarProducto() {
+    if(productoSeleccionadoId === null){
+        mostrarMensaje('error', 'No se selecciono un producto valido, verifica que el producto exista');
+        return;
+    }
     const nombreProducto = document.getElementById('nombreProductoManual').value.trim();
     const descripcion = document.getElementById('descripcionFactura').value.trim();
     const cantidad = parseInt(document.getElementById('cantidadProductoManual').value);
@@ -339,7 +350,7 @@ function agregarProducto() {
         productoSeleccionadoId = null;
         limpiarFormularioProducto();
     } else {
-        mostrarMensaje('error', 'Por favor, completa todos los campos requeridos de la factura.');
+        mostrarMensaje('error', 'No se selecciono un producto valido, verifica que el producto exista.');
     }
 }
 
@@ -491,6 +502,10 @@ function guardarFactura(omitVerification = false) {
                 console.error('Error al guardar la factura:', error);
             });
     } else {
+        if(nombreCliente.trim() === "" || cedulaNit.trim() === ""){
+            mostrarMensaje('error', 'El nombre y la identificación son obligatorios.');
+            return;
+        }
         mostrarMensaje('error', 'Por favor, completa todos los campos requeridos de la factura.');
     }
 }
@@ -635,6 +650,10 @@ function imprimirPos(omitVerification = false) {
                 console.error('Error al guardar la factura:', error);
             });
     } else {
+        if(nombreCliente.trim() === "" || cedulaNit.trim() === ""){
+            mostrarMensaje('error', 'El nombre y la identificación son obligatorios.');
+            return;
+        }
         mostrarMensaje('error', 'Por favor, completa todos los campos requeridos de la factura.');
     }
 }
@@ -655,6 +674,7 @@ function actualizarTotalFactura() {
 }
 
 function limpiarFormularioProducto() {
+    document.getElementById('sugerenciasProductos').style.display = 'none';
     document.getElementById('nombreProductoManual').value = '';
     document.getElementById('descripcionFactura').value = '';
     document.getElementById('cantidadProductoManual').value = '1';
