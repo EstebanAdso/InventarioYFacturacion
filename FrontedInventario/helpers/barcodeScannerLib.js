@@ -78,7 +78,7 @@ function _leerCodigoBarras(event) {
     const esLecturaRapida = tiempoTranscurrido < TIEMPO_MAXIMO_ENTRE_TECLAS;
 
     // Patrón flexible: acepta alfanuméricos y caracteres comunes en códigos de barras
-    const esPatronCodigoBarras = /^[0-9A-Z\-\.\_\/\s]+$/i.test(
+    const esPatronCodigoBarras = /^[0-9A-Z\-\.\_\/]+$/i.test(
       _codigoBarras + event.key,
     );
 
@@ -139,7 +139,7 @@ function _leerCodigoBarras(event) {
 function _procesarCodigoBarras() {
   clearTimeout(_timeoutLimpieza);
 
-  const codigoFinal = _codigoBarras;
+  const codigoFinal = _codigoBarras.trim();
 
   // Limpiar el campo que pudo contaminarse
   _limpiarCampoCompleto();
