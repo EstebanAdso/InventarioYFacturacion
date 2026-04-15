@@ -56,88 +56,24 @@ window.addEventListener('load', () => {
 
     // Cargar productos guardados
     productosEnFactura = JSON.parse(storedProducts);
-    const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
 
-    // Agregar cada producto a la tabla
+    // Migrar productos antiguos que no tengan precioOriginal/descuento
     productosEnFactura.forEach(producto => {
-        const newRow = tbody.insertRow();
-
-        // Crear celdas para cada propiedad del producto
-        const cellId = newRow.insertCell(0);
-        cellId.textContent = producto.id || 'N/A';
-        cellId.style.display = 'none';
-
-        // Crear y llenar el resto de celdas
-        const cellNombre = newRow.insertCell(1);
-        const cellCantidad = newRow.insertCell(2);
-        const cellPrecioUnitario = newRow.insertCell(3);
-        const cellGarantia = newRow.insertCell(4);
-        const cellDescripcion = newRow.insertCell(5);
-        const cellTotal = newRow.insertCell(6);
-        const cellAcciones = newRow.insertCell(7);
-
-        // Asignar valores a las celdas
-        cellNombre.textContent = producto.nombre;
-        cellCantidad.textContent = producto.cantidad;
-        cellPrecioUnitario.textContent = producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-        cellGarantia.textContent = producto.garantia;
-        cellDescripcion.textContent = producto.descripcion;
-        cellTotal.textContent = producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-
-        // Crear botón de eliminar
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Eliminar';
-        deleteBtn.className = 'btn btn-danger btn-sm';
-        deleteBtn.addEventListener('click', () => {
-            const row = deleteBtn.closest('tr');
-            const index = Array.from(tbody.rows).indexOf(row);
-            tbody.deleteRow(index);
-
-            // Actualizar total y localStorage
-            totalFacturaGlobal -= productosEnFactura[index].total;
-            productosEnFactura.splice(index, 1);
-            localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
-            actualizarTotalFactura();
-        });
-
-        // Crear botón de editar
-        const editBtn = document.createElement('button');
-        editBtn.textContent = 'Editar';
-        editBtn.className = 'btn btn-warning btn-sm';
-        editBtn.style.marginLeft = '5px';
-        editBtn.addEventListener('click', () => {
-            const row = editBtn.closest('tr');
-            const index = Array.from(tbody.rows).indexOf(row);
-            const producto = productosEnFactura[index];
-
-            // Llenar el formulario con los datos del producto a editar
-            document.getElementById('nombreProductoManual').value = producto.nombre;
-            document.getElementById('descripcionFactura').value = producto.descripcion;
-            document.getElementById('cantidadProductoManual').value = producto.cantidad;
-            document.getElementById('precioUnitarioManual').value = producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-            document.getElementById('garantiaProducto').value = producto.garantia;
-            document.getElementById('PCProducto').value = producto.pc || '';
-
-            // Establecer el ID del producto seleccionado para edición
-            productoSeleccionadoId = producto.id;
-
-            // Eliminar la fila de la tabla y del array
-            tbody.deleteRow(index);
-            totalFacturaGlobal -= productosEnFactura[index].total;
-            productosEnFactura.splice(index, 1);
-            localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
-            actualizarTotalFactura();
-        });
-
-        cellAcciones.appendChild(deleteBtn);
-        cellAcciones.appendChild(editBtn);
-
-        // Sumar al total global
-        totalFacturaGlobal += producto.total;
+        if (producto.precioOriginal === undefined) {
+            producto.precioOriginal = producto.precioUnitario;
+        }
+        if (producto.descuento === undefined) {
+            producto.descuento = 0;
+        }
     });
 
-    // Actualizar total en el DOM
-    actualizarTotalFactura();
+    // Renderizar cada producto usando la función compartida
+    productosEnFactura.forEach((producto, index) => {
+        renderizarFilaProducto(producto, index);
+    });
+
+    // Recalcular total desde el array
+    recalcularTotalCarrito();
 
     // Programar limpieza después de 20 minutos
     setTimeout(() => {

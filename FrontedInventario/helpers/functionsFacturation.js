@@ -257,95 +257,24 @@ function agregarProducto() {
         const productoId = productoSeleccionadoId || null;
         const totalProducto = cantidad * precioUnitario;
 
-        const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
-        const newRow = tbody.insertRow();
-
-        const cellId = newRow.insertCell(0);
-        cellId.textContent = productoId || 'N/A';
-        cellId.style.display = 'none';
-
-        const cellNombre = newRow.insertCell(1);
-        const cellCantidad = newRow.insertCell(2);
-        const cellPrecioUnitario = newRow.insertCell(3);
-        const cellGarantia = newRow.insertCell(4);
-        const cellDescripcion = newRow.insertCell(5);
-        const cellTotal = newRow.insertCell(6);
-        const cellAcciones = newRow.insertCell(7);
-        const cellPc = newRow.insertCell(8);
-        cellPc.style.display = 'none';
-
-        cellNombre.textContent = nombreProducto;
-        cellCantidad.textContent = cantidad;
-        cellPrecioUnitario.textContent = precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-        cellGarantia.textContent = garantia;
-        cellDescripcion.textContent = descripcion;
-        cellTotal.textContent = totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-        cellPc.textContent = pc;
-
-        productosEnFactura.push({
+        const productoObj = {
             id: productoId,
             nombre: nombreProducto,
             cantidad: cantidad,
+            precioOriginal: precioUnitario,
             precioUnitario: precioUnitario,
             garantia: garantia,
             descripcion: descripcion || "",
             total: totalProducto,
-            pc: pc
-        });
+            pc: pc,
+            descuento: 0
+        };
+
+        productosEnFactura.push(productoObj);
+        renderizarFilaProducto(productoObj, productosEnFactura.length - 1);
 
         localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
-
-        // Actualizar el total de la factura
-        totalFacturaGlobal += totalProducto;
-        actualizarTotalFactura();
-
-        // Botón Eliminar
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Eliminar';
-        deleteBtn.className = 'btn btn-danger btn-sm';
-        deleteBtn.addEventListener('click', () => {
-            const row = deleteBtn.closest('tr');
-            const index = row.rowIndex - 1;
-            tbody.deleteRow(index);
-
-            totalFacturaGlobal -= productosEnFactura[index].total;
-            productosEnFactura.splice(index, 1);
-            actualizarTotalFactura();
-        });
-
-        // Botón Editar
-        const editBtn = document.createElement('button');
-        editBtn.textContent = 'Editar';
-        editBtn.className = 'btn btn-warning btn-sm';
-        editBtn.style.marginLeft = '5px';
-        editBtn.addEventListener('click', () => {
-            const row = editBtn.closest('tr');
-            const index = row.rowIndex - 1;
-            const producto = productosEnFactura[index];
-
-
-            // Llenar el formulario con los datos del producto a editar
-            document.getElementById('nombreProductoManual').value = producto.nombre;
-            document.getElementById('descripcionFactura').value = producto.descripcion;
-            document.getElementById('cantidadProductoManual').value = producto.cantidad;
-            document.getElementById('precioUnitarioManual').value = producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
-            document.getElementById('garantiaProducto').value = producto.garantia;
-            document.getElementById('PCProducto').value = producto.pc;
-
-
-
-            // Establecer el ID del producto seleccionado para edición
-            productoSeleccionadoId = producto.id;
-
-            // Eliminar la fila de la tabla y del array
-            tbody.deleteRow(index);
-            totalFacturaGlobal -= productosEnFactura[index].total;
-            productosEnFactura.splice(index, 1);
-            actualizarTotalFactura();
-        });
-
-        cellAcciones.appendChild(deleteBtn);
-        cellAcciones.appendChild(editBtn);
+        recalcularTotalCarrito();
 
         productoSeleccionadoId = null;
         limpiarFormularioProducto();
@@ -713,12 +642,11 @@ function limpiarFormulario() {
     document.getElementById('mensajeMaxCantidad').textContent = '';
     document.getElementById('totalDeFactura').textContent = 'TOTAL:';
     productosEnFactura = [];
+    totalFacturaGlobal = 0;
 
     // Limpiar descuento
     document.getElementById('descuentoGeneral').value = '';
     document.getElementById('descuentoInfo').style.display = 'none';
-    descuentoAplicado = false;
-    preciosOriginales = [];
 
     // Limpiar campos de préstamo/apartado
     const tipoDocumento = document.getElementById('tipoDocumento');
@@ -1204,11 +1132,154 @@ function imprimirPrestamoDesdeFacturacion(formato) {
     $('#modalImpresionPrestamo').modal('hide');
 }
 
-// Variables para control de descuento
-let descuentoAplicado = false;
-let preciosOriginales = [];
+// Renderiza una fila de producto en la tabla del carrito
+function renderizarFilaProducto(producto, index) {
+    const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
+    const newRow = tbody.insertRow();
 
-// Función para aplicar descuento general a todos los productos
+    const cellId = newRow.insertCell(0);
+    cellId.textContent = producto.id || 'N/A';
+    cellId.style.display = 'none';
+
+    const cellNombre = newRow.insertCell(1);
+    const cellCantidad = newRow.insertCell(2);
+    const cellPrecioUnitario = newRow.insertCell(3);
+    const cellDescuento = newRow.insertCell(4);
+    const cellGarantia = newRow.insertCell(5);
+    const cellDescripcion = newRow.insertCell(6);
+    const cellTotal = newRow.insertCell(7);
+    const cellAcciones = newRow.insertCell(8);
+    const cellPc = newRow.insertCell(9);
+    cellPc.style.display = 'none';
+
+    cellNombre.textContent = producto.nombre;
+    cellCantidad.textContent = producto.cantidad;
+    cellPrecioUnitario.textContent = producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+    cellGarantia.textContent = producto.garantia;
+    cellDescripcion.textContent = producto.descripcion;
+    cellTotal.textContent = producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+    cellPc.textContent = producto.pc;
+
+    // Input de descuento individual
+    const descuentoInput = document.createElement('input');
+    descuentoInput.type = 'number';
+    descuentoInput.className = 'form-control form-control-sm';
+    descuentoInput.min = '0';
+    descuentoInput.max = '20';
+    descuentoInput.step = '1';
+    descuentoInput.value = producto.descuento || 0;
+    descuentoInput.style.cssText = 'width: 55px; font-size: 0.8em; padding: 2px 4px; text-align: center;';
+    descuentoInput.addEventListener('change', () => {
+        const rowIndex = Array.from(tbody.rows).indexOf(newRow);
+        aplicarDescuentoIndividual(rowIndex, parseFloat(descuentoInput.value) || 0);
+    });
+    cellDescuento.appendChild(descuentoInput);
+
+    // Aplicar estilo visual si ya tiene descuento
+    if (producto.descuento > 0) {
+        newRow.style.backgroundColor = '#d4edda';
+        newRow.style.borderLeft = '2px solid #28a745';
+    }
+
+    // Botón Eliminar
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Eliminar';
+    deleteBtn.className = 'btn btn-danger btn-sm';
+    deleteBtn.addEventListener('click', () => {
+        const row = deleteBtn.closest('tr');
+        const rowIndex = Array.from(tbody.rows).indexOf(row);
+        tbody.deleteRow(rowIndex);
+        productosEnFactura.splice(rowIndex, 1);
+        localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
+        recalcularTotalCarrito();
+    });
+
+    // Botón Editar
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Editar';
+    editBtn.className = 'btn btn-warning btn-sm';
+    editBtn.style.marginLeft = '5px';
+    editBtn.addEventListener('click', () => {
+        const row = editBtn.closest('tr');
+        const rowIndex = Array.from(tbody.rows).indexOf(row);
+        const prod = productosEnFactura[rowIndex];
+
+        document.getElementById('nombreProductoManual').value = prod.nombre;
+        document.getElementById('descripcionFactura').value = prod.descripcion;
+        document.getElementById('cantidadProductoManual').value = prod.cantidad;
+        document.getElementById('precioUnitarioManual').value = prod.precioOriginal.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+        document.getElementById('garantiaProducto').value = prod.garantia;
+        document.getElementById('PCProducto').value = prod.pc;
+        productoSeleccionadoId = prod.id;
+
+        tbody.deleteRow(rowIndex);
+        productosEnFactura.splice(rowIndex, 1);
+        localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
+        recalcularTotalCarrito();
+    });
+
+    cellAcciones.appendChild(deleteBtn);
+    cellAcciones.appendChild(editBtn);
+}
+
+// Recalcula el total del carrito desde el array de productos
+function recalcularTotalCarrito() {
+    totalFacturaGlobal = productosEnFactura.reduce((sum, p) => sum + p.total, 0);
+    actualizarTotalFactura();
+    actualizarInfoDescuento();
+}
+
+// Aplica descuento individual a un producto
+function aplicarDescuentoIndividual(index, porcentaje) {
+    if (porcentaje < 0) porcentaje = 0;
+    if (porcentaje > 20) {
+        porcentaje = 20;
+        mostrarMensaje('error', 'El descuento no puede ser mayor al 20%');
+    }
+
+    const producto = productosEnFactura[index];
+    producto.descuento = porcentaje;
+    producto.precioUnitario = producto.precioOriginal * (1 - porcentaje / 100);
+    producto.total = producto.precioUnitario * producto.cantidad;
+
+    // Actualizar celdas de la fila
+    const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
+    const row = tbody.rows[index];
+    row.cells[3].textContent = producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    row.cells[7].textContent = producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+
+    // Actualizar input de descuento
+    row.cells[4].querySelector('input').value = porcentaje;
+
+    // Estilo visual
+    if (porcentaje > 0) {
+        row.style.backgroundColor = '#d4edda';
+        row.style.borderLeft = '2px solid #28a745';
+    } else {
+        row.style.backgroundColor = '';
+        row.style.borderLeft = '';
+    }
+
+    localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
+    recalcularTotalCarrito();
+}
+
+// Muestra u oculta el resumen de descuento total
+function actualizarInfoDescuento() {
+    const totalOriginal = productosEnFactura.reduce((sum, p) => sum + (p.precioOriginal * p.cantidad), 0);
+    const totalActual = productosEnFactura.reduce((sum, p) => sum + p.total, 0);
+    const montoDescontado = totalOriginal - totalActual;
+
+    const descuentoInfo = document.getElementById('descuentoInfo');
+    if (montoDescontado > 0) {
+        document.getElementById('descuentoMonto').textContent = montoDescontado.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+        descuentoInfo.style.display = 'inline';
+    } else {
+        descuentoInfo.style.display = 'none';
+    }
+}
+
+// Aplica un porcentaje de descuento a TODOS los productos
 function aplicarDescuentoGeneral() {
     const descuentoPorcentaje = parseFloat(document.getElementById('descuentoGeneral').value);
 
@@ -1227,103 +1298,26 @@ function aplicarDescuentoGeneral() {
         return;
     }
 
-    // Guardar precios originales si no hay descuento aplicado
-    if (!descuentoAplicado) {
-        preciosOriginales = productosEnFactura.map(p => ({
-            precioUnitario: p.precioUnitario,
-            total: p.total
-        }));
-    }
-
-    const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
-    let totalConDescuento = 0;
-    let montoDescontado = 0;
-
-    // Aplicar descuento a cada producto
     productosEnFactura.forEach((producto, index) => {
-        const precioOriginal = descuentoAplicado ? preciosOriginales[index].precioUnitario : producto.precioUnitario;
-        const precioConDescuento = precioOriginal * (1 - descuentoPorcentaje / 100);
-        const totalProducto = precioConDescuento * producto.cantidad;
-
-        producto.precioUnitario = precioConDescuento;
-        producto.total = totalProducto;
-
-        totalConDescuento += totalProducto;
-
-        // Actualizar tabla
-        const row = tbody.rows[index];
-        row.cells[3].textContent = `$${precioConDescuento.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
-        row.cells[6].textContent = `$${totalProducto.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
-
-        // Agregar indicador visual de descuento
-        row.style.backgroundColor = '#d4edda';
-        row.style.borderLeft = '2px solid #28a745';
+        aplicarDescuentoIndividual(index, descuentoPorcentaje);
     });
 
-    // Calcular monto total descontado
-    const totalOriginal = preciosOriginales.reduce((sum, p, i) => sum + (p.precioUnitario * productosEnFactura[i].cantidad), 0);
-    montoDescontado = totalOriginal - totalConDescuento;
-
-    // Actualizar total global
-    totalFacturaGlobal = totalConDescuento;
-    actualizarTotalFactura();
-
-    // Mostrar información del descuento
-    document.getElementById('descuentoPorcentaje').textContent = descuentoPorcentaje;
-    document.getElementById('descuentoMonto').textContent = montoDescontado.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-    document.getElementById('descuentoInfo').style.display = 'inline';
-
-    document.getElementById('descuentoGeneral').value = 0;
-    descuentoAplicado = true;
-
-
-
-    // Guardar en localStorage
-    localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
-
-    mostrarMensaje('success', `Descuento del ${descuentoPorcentaje}% aplicado correctamente`);
+    document.getElementById('descuentoGeneral').value = '';
+    mostrarMensaje('success', `Descuento del ${descuentoPorcentaje}% aplicado a todos los productos`);
 }
 
-// Función para quitar el descuento
+// Quita el descuento de TODOS los productos
 function quitarDescuentoGeneral() {
-    if (!descuentoAplicado) {
-        mostrarMensaje('info', 'No hay descuento aplicado');
+    const tieneDescuento = productosEnFactura.some(p => p.descuento > 0);
+    if (!tieneDescuento) {
+        mostrarMensaje('info', 'No hay descuentos aplicados');
         return;
     }
 
-    const tbody = document.getElementById('productosTabla').getElementsByTagName('tbody')[0];
-    let totalSinDescuento = 0;
-
-    // Restaurar precios originales
     productosEnFactura.forEach((producto, index) => {
-        producto.precioUnitario = preciosOriginales[index].precioUnitario;
-        producto.total = preciosOriginales[index].total;
-
-        totalSinDescuento += producto.total;
-
-        // Actualizar tabla
-        const row = tbody.rows[index];
-        row.cells[3].textContent = `$${producto.precioUnitario.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
-        row.cells[6].textContent = `$${producto.total.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
-
-        // Quitar indicador visual de descuento
-        row.style.backgroundColor = '';
-        row.style.borderLeft = '';
+        aplicarDescuentoIndividual(index, 0);
     });
 
-    // Actualizar total global
-    totalFacturaGlobal = totalSinDescuento;
-    actualizarTotalFactura();
-
-    // Ocultar información del descuento
-    document.getElementById('descuentoInfo').style.display = 'none';
     document.getElementById('descuentoGeneral').value = '';
-
-    descuentoAplicado = false;
-    preciosOriginales = [];
-
-    // Guardar en localStorage
-    localStorage.setItem('productosEnFactura', JSON.stringify(productosEnFactura));
-
-    mostrarMensaje('success', 'Descuento eliminado correctamente');
+    mostrarMensaje('success', 'Descuentos eliminados de todos los productos');
 }
