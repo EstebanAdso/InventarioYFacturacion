@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,9 @@ public class Producto {
     private String estado;
     private Integer alertaStock;
 
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
     public Producto() {
         this.estado = "activo"; // Estado por defecto
         this.descripcion = null;
@@ -44,7 +48,7 @@ public class Producto {
         this.garantia = 1;
     }
 
-    // Calcular el total al persistir o actualizar
+    // Calcular el total y registrar fecha de modificación al persistir o actualizar
     @PrePersist
     @PreUpdate
     private void calcularTotal() {
@@ -53,5 +57,6 @@ public class Producto {
         } else {
             this.total = 0;
         }
+        this.updatedAt = Instant.now();
     }
 }
